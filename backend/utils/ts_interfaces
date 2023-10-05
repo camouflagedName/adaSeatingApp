@@ -1,0 +1,54 @@
+/* import { ObjectId } from "mongodb";
+
+interface EventPatrons {
+    patronId: ObjectId;
+    seatId: ObjectId;
+}
+
+interface EventSeats {
+    seatId: ObjectId;
+    available: boolean;
+}
+
+interface IEvents {
+    _id?: ObjectId;
+    name: string;
+    date: Date;
+    patrons?: EventPatrons[]
+    seats?: EventSeats[]
+}
+
+interface IPatrons {
+    _id: ObjectId;
+    eventId: ObjectId;
+    fullName: string;
+    numberRequested: number;
+    arrived: boolean;
+    notes: string;
+}
+
+interface ISeats {
+    _id?: ObjectId;
+    eventId: ObjectId;
+    floor: number;
+    section: string;
+    row: number;
+    seatNumber: number;
+    available: boolean;
+    inPlay: boolean;
+    patron?: {
+        callAhead: boolean;
+        name: string;
+        patronId: ObjectId;
+    }
+}
+
+
+export {
+    IEvents,
+    IPatrons,
+    ISeats,
+    EventPatrons,
+    EventSeats
+}
+ */

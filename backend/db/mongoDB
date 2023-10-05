@@ -1,0 +1,30 @@
+import { MongoClient, ServerApiVersion } from "mongodb";
+
+if (!process.env.MONGODB_URI) throw new Error("Missing environment variable 'MONGODB_URI'.")
+const uri = process.env.MONGODB_URI
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+let clientPromise: Promise<MongoClient>
+
+
+    if (process.env.NODE_ENV === 'development') {
+        let globalMongo = global as typeof globalThis & {
+          _mongoConnect?: Promise<MongoClient>
+        }
+      
+        if (!globalMongo._mongoConnect) {
+          globalMongo._mongoConnect = client.connect();
+        }
+        clientPromise = globalMongo._mongoConnect;
+      } else {
+        clientPromise = client.connect();
+      }      
+
+export default clientPromise;
+
