@@ -1,5 +1,5 @@
 # Ignore node_modules directory
-node_modules/
+**/node_modules/
 
 # Ignore build and distribution directories
 build/
@@ -8,23 +8,23 @@ out/
 public/
 
 # Ignore environment-specific files
-.env
-.env.local
-.env.development
-.env.test
-.env.production
+**/.env
+**/.env.local
+**/.env.development
+**/.env.test
+**/.env.production
 
 # Ignore editor/IDE specific files
-.vscode/
-.idea/
+**/.vscode/
+**/.idea/
 
 # Ignore logs and other runtime data
-logs/
-*.log
+**/logs/
+**/*.log
 
 # Ignore OS-generated files
-.DS_Store
-Thumbs.db
+**/.DS_Store
+**/humbs.db
 
 # Ignore npm/yarn lock files
 package-lock.json
