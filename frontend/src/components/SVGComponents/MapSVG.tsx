@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { /* useState ,*/ useEffect } from "react";
 import Seats from "./SeatsSVG";
 //import ZoomedMap from "./ZoomedMap";
 import { Center, Flex } from "@chakra-ui/react";
@@ -6,7 +6,7 @@ import { ISeat } from "../../utils/interfaces";
 
 
 const MapSVG = ({ update }: { update: (param: ISeat)=> void}) => {
-    const [mapDimensions, setMapDimensions] = useState({
+/*     const [mapDimensions, setMapDimensions] = useState({
         width: 1024,
         height: 768
     });
@@ -15,6 +15,14 @@ const MapSVG = ({ update }: { update: (param: ISeat)=> void}) => {
     const handleClick = () => {
         //setIsZoomedIn(!isZoomedIn);
     }
+ */
+
+    const mapDimensions = {
+        width: 1024,
+        height: 768
+    }
+
+    const isZoomedIn = true;
 
     useEffect(() => {
         /*

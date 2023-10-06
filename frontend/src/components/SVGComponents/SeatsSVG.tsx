@@ -26,8 +26,8 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
 
     /* 3rd FLOOR WINGS */
     const thirdFloorWingMap = seatList.filter(seatObj => seatObj.floor === 3 && (seatObj.section === "LeftWing" || seatObj.section === "RightWing"))
-    const thirdRightWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "RightWing")
-    const thirdLeftWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "LeftWing")
+    //const thirdRightWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "RightWing")
+    //const thirdLeftWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "LeftWing")
 
 
 
