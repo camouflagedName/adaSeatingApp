@@ -12,7 +12,6 @@ app.use(express.json());
 
 
 /* ROUTES */
-//
 app.use('/test', home)
 app.use('/seatAPI', seatRouter)
 
