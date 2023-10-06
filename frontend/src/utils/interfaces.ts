@@ -1,8 +1,7 @@
-import { ObjectId } from "mongodb";
 
 export interface ISeat {
-    _id: ObjectId;
-    eventId: ObjectId;
+    _id: string;
+    eventId: string;
     floor: number;
     section: string;
     row: string;

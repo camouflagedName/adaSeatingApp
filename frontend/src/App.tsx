@@ -1,5 +1,5 @@
 //import { useState } from 'react'
-import {
+/* import {
   Button,
   Container,
   Flex,
@@ -14,15 +14,15 @@ import {
   MenuOptionGroup,
   MenuDivider,
   Spacer,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react' */
 import SeatingMap from './components/SeatingMap';
 import { getAllSeats } from './api/seatAPI';
 import { ISeat } from './utils/interfaces';
 import { useEffect, useState } from 'react';
 
 //import './App.css'
-const currentDate = new Date();
-const eventList = [
+//const currentDate = new Date();
+/* const eventList = [
   {
     _id: 'abc',
     name: 'event #1',
@@ -51,7 +51,7 @@ const eventList = [
     patrons: [],
     seats: []
   }
-]
+] */
 
 function App() {
   const [seatData, setSeatData] = useState<ISeat[]>([]);
