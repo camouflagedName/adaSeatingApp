@@ -3,7 +3,6 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 import { IPatronData, ISeat } from "../utils/interfaces";
 import SeatNotesModal from "./SeatNotesModal";
 import { useState } from "react";
-import { addPatron } from "../api/patronAPI";
 
 const MapNav = ({ seatData, handleModal, updateSidebar, navTitle }: { seatData: ISeat[], handleModal: (param: ISeat) => void, updateSidebar: () => void, navTitle: string }) => {
     const [data, setData] = useState<IPatronData>({

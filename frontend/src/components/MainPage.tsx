@@ -93,7 +93,7 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
                         <ModalBody>
                             <Center>
                                 <QRCode
-                                    value=""
+                                    value="https://development.ddobtp5zu51gl.amplifyapp.com/"
                                 />
                             </Center>
                         </ModalBody>

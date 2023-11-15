@@ -1,6 +1,5 @@
 import axios from "axios";
 //import API_ROOT from "./apiRoot";
-import { ISeat } from "../utils/interfaces";
 import { IEventData } from "../utils/creatorInterfaces";
 
 const baseURL = 'http://localhost:30001/' + 'eventAPI'

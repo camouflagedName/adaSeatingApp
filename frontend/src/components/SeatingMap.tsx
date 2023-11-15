@@ -34,12 +34,14 @@ const SeatingMap = ({ seatData }: { seatData: ISeat[] }) => {
         onOpen();
     }
 
+    const title = <></>
+    const footer = <></>
     const updatedMapSVG = <MapSVG update={updateSideBarNav} updateNavTitle={updateNavTitle} />
     const updatedMapNav = <MapNav seatData={sideBarData} handleModal={handleModal} updateSidebar={updateSideBarNav} navTitle={navTitle} />
 
     return (
         <>
-            <SeatingMapLayout seatData={seatData} mode="normal" svg={updatedMapSVG} nav={updatedMapNav} />
+            <SeatingMapLayout mode="normal" svg={updatedMapSVG} nav={updatedMapNav} title={title} footer={footer} />
             <SeatDataModal isOpen={isOpen} onClose={onClose} seatInfo={modalData} />
         </>
     )
