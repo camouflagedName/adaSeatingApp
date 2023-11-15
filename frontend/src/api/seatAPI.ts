@@ -6,7 +6,6 @@ const baseURL = 'http://localhost:30001/' + 'seatAPI'
 
 export const getAllSeats = async () => {
     const url = `${baseURL}/allSeats`;
-    console.log("URL: ", url)
 
     try {
         const seatList = await axios.get(url);

@@ -1,35 +1,37 @@
-import { ISeat } from "../../utils/interfaces"
-import { seatList } from "../../seedData/seats"
+import { ISeat, IAppData } from "../../utils/interfaces"
+//import { seatList } from "../../seedData/seats"
+import { useContext } from 'react'
+import { DataContext } from "../../context/context"
 
 const Seats = ({ update }: { update: (param: ISeat) => void }) => {
+    const data = useContext(DataContext);
+    const { seatData } = data as IAppData;
 
     // include seats that aren't in play //
 
     /* TIER A */
-    const tierAMap = seatList.filter(seatObj => seatObj.section === "TierA")
+    const tierAMap = seatData.filter(seatObj => seatObj.section === "TierA")
     const tierARowA = tierAMap.filter(seatObj => seatObj.row === "A")
     const tierARowB = tierAMap.filter(seatObj => seatObj.row === "B")
 
 
 
     /* TIER C */
-    const tierCMap = seatList.filter(seatObj => seatObj.section === "TierC")
+    const tierCMap = seatData.filter(seatObj => seatObj.section === "TierC")
     const tierCRight = tierCMap.filter(seatObj => seatObj.seatNumber <= 106)
     const tierCRCtr = tierCMap.filter(seatObj => seatObj.seatNumber > 106 && seatObj.seatNumber <= 122)
     const tierCLCtr = tierCMap.filter(seatObj => seatObj.seatNumber > 122 && seatObj.seatNumber <= 137)
     const tierCLeft = tierCMap.filter(seatObj => seatObj.seatNumber > 137)
 
     /* 2nd FlOOR WINGS */
-    const secondFloorWingMap = seatList.filter(seatObj => seatObj.floor === 2 && (seatObj.section === "LeftWing" || seatObj.section === "RightWing"))
-    const secondRightWing = secondFloorWingMap.filter(seatObj => seatObj.section === "RightWing")
-    const secondLeftWing = secondFloorWingMap.filter(seatObj => seatObj.section === "LeftWing")
+    const secondFloorWingMap = seatData.filter(seatObj => seatObj.floor === 2 && (seatObj.section === "2ndFloorLeftWing" || seatObj.section === "2ndFloorRightWing"))
+    const secondRightWing = secondFloorWingMap.filter(seatObj => seatObj.section === "2ndFloorRightWing")
+    const secondLeftWing = secondFloorWingMap.filter(seatObj => seatObj.section === "2ndFloorLeftWing")
 
     /* 3rd FLOOR WINGS */
-    const thirdFloorWingMap = seatList.filter(seatObj => seatObj.floor === 3 && (seatObj.section === "LeftWing" || seatObj.section === "RightWing"))
+    const thirdFloorWingMap = seatData.filter(seatObj => seatObj.floor === 3 && (seatObj.section === "3rdFloorLeftWing" || seatObj.section === "3rdFloorRightWing"))
     //const thirdRightWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "RightWing")
     //const thirdLeftWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "LeftWing")
-
-
 
     const handleClick = (seatData: ISeat) => {
         update(seatData)
@@ -78,7 +80,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                         cy={(2580 + 45 * index).toString()}
                                         r="18"
                                         onClick={() => handleClick(seat)}
-                                        >
+                                    >
                                     </circle>
                                 ))
                             }
@@ -106,7 +108,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                             cy={cy}
                                             r="18"
                                             onClick={() => handleClick(seat)}
-                                            >
+                                        >
                                         </circle>
                                     )
                                 })
@@ -130,7 +132,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                             cy={cy}
                                             r="18"
                                             onClick={() => handleClick(seat)}
-                                            >
+                                        >
                                         </circle>
                                     )
                                 })
@@ -154,7 +156,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                             cy={cy}
                                             r="18"
                                             onClick={() => handleClick(seat)}
-                                            >
+                                        >
                                         </circle>
                                     )
                                 })
@@ -180,7 +182,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                             cy={cy}
                                             r="18"
                                             onClick={() => handleClick(seat)}
-                                            >
+                                        >
                                         </circle>
                                     )
                                 })
@@ -209,7 +211,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                             cy={cy}
                                             r="18"
                                             onClick={() => handleClick(seat)}
-                                            >
+                                        >
                                         </circle>
                                     )
                                 })
@@ -233,7 +235,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                             cy={cy}
                                             r="18"
                                             onClick={() => handleClick(seat)}
-                                            >
+                                        >
                                         </circle>
                                     )
                                 })

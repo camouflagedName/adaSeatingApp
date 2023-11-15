@@ -15,10 +15,13 @@
   MenuDivider,
   Spacer,
 } from '@chakra-ui/react' */
-import SeatingMap from './components/SeatingMap';
+//import SeatingMap from './components/SeatingMap';
 import { getAllSeats } from './api/seatAPI';
-import { ISeat } from './utils/interfaces';
+import { IEventData, ISeat } from './utils/interfaces';
 import { useEffect, useState } from 'react';
+import { DataContext } from './context/context';
+import { getEvent } from './api/eventAPI';
+import MainPage from './components/MainPage';
 
 //import './App.css'
 //const currentDate = new Date();
@@ -55,6 +58,13 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [seatData, setSeatData] = useState<ISeat[]>([]);
+  const [eventData, setEventData] = useState<IEventData[]>([])
+  const [currentPage, setCurrentPage] = useState<React.ReactElement>()
+
+  const changePage = (page: React.ReactElement) => {
+
+    setCurrentPage(page)
+  }
 
   useEffect(() => {
     const fetchSeats = async () => {
@@ -70,72 +80,76 @@ function App() {
       }
     }
 
+    const fetchEvents = async () => {
+      try {
+        const res = await getEvent();
+        if (res) {
+          const eventList = res.data;
+          setEventData(eventList);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    fetchEvents();
     fetchSeats();
+
   }, [])
 
-  /* 
-    const handleClickEdit = (eventID: string) => {
-      console.log(eventID)
-    }
-  
-    const handleClickStart = (eventID: string) => {
-      console.log(eventID)
-    }
-   */
+
+  /* TIER A */
+  const tierAMap = seatData.filter(seatObj => seatObj.section === "TierA")
+  const sortedTierARowA = tierAMap.filter(seatObj => seatObj.row === "A").sort((a, b) => a.seatNumber - b.seatNumber)
+  const sortedTierARowB = tierAMap.filter(seatObj => seatObj.row === "B").sort((a, b) => a.seatNumber - b.seatNumber)
+
+  /* TIER C */
+  const sortedTierCMap = seatData.filter(seatObj => seatObj.section === "TierC").sort((a, b) => a.seatNumber - b.seatNumber)
+  const tierCRight = sortedTierCMap.filter(seatObj => seatObj.seatNumber <= 106)
+  const tierCRCtr = sortedTierCMap.filter(seatObj => seatObj.seatNumber > 106 && seatObj.seatNumber <= 122)
+  const tierCLCtr = sortedTierCMap.filter(seatObj => seatObj.seatNumber > 122 && seatObj.seatNumber <= 137)
+  const tierCLeft = sortedTierCMap.filter(seatObj => seatObj.seatNumber > 137)
+
+
+  /* 2nd FlOOR WINGS */
+  const secondFloorWingMap = seatData.filter(seatObj => seatObj.floor === 2 && (seatObj.section === "2ndFloorLeftWing" || seatObj.section === "2ndFloorRightWing"))
+  const sortedSecondRightWing = secondFloorWingMap.filter(seatObj => seatObj.section === "2ndFloorRightWing").sort((a, b) => a.seatNumber - b.seatNumber)
+  const sortedSecondLeftWing = secondFloorWingMap.filter(seatObj => seatObj.section === "2ndFloorLeftWing").sort((a, b) => a.seatNumber - b.seatNumber)
+
+  /* 3rd FLOOR WINGS */
+  const thirdFloorWingMap = seatData.filter(seatObj => seatObj.floor === 3 && (seatObj.section === "3rdFloorLeftWing" || seatObj.section === "3rdFloorRightWing"))
+  const sortedThirdRightWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "RightWing").sort((a, b) => a.seatNumber - b.seatNumber)
+  const sortedThirdLeftWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "LeftWing").sort((a, b) => a.seatNumber - b.seatNumber)
+
+  //const allSeatsSorted = [...sortedTierARowA, ...sortedTierARowB, ...sortedTierCMap, ...sortedSecondRightWing, ...sortedSecondLeftWing, ...sortedThirdRightWing, ...sortedThirdLeftWing]
+  const allSeatsSorted = {
+    tierARowA: sortedTierARowA,
+    tierARowB: sortedTierARowB,
+    tierCRight: tierCRight,
+    tierCLeft: tierCLeft,
+    tierCLeftCenter: tierCLCtr,
+    tierCRightCenter: tierCRCtr,
+    secondRightWing: sortedSecondRightWing,
+    secondLeftWing: sortedSecondLeftWing,
+    thirdRightWing: sortedThirdRightWing,
+    thirdLeftWing: sortedThirdLeftWing
+  }
+
+  useEffect(() => {
+    if (eventData && seatData) setCurrentPage(<MainPage changePage={changePage} />)
+  }, [eventData, seatData])
+
+
 
   return (
-    <SeatingMap seatData={seatData} />
+    <DataContext.Provider value={{ seatData: seatData, eventData: eventData, sortedSeatData: allSeatsSorted }}>
+      {currentPage}
+    </DataContext.Provider>
   )
 }
 
-export default App
+export default App;
+
 /*
-
-<>
-      <Flex justify='center' style={{ height: "100vh" }}>
-        <Container centerContent maxW='container.lg' style={{ margin: "auto" }}>
-          <Text fontSize='4xl'>Welcome to The Anthem Seating App</Text>
-          <Text fontSize='2xl'> Choose one below: </Text>
-          <Text fontSize='xl'> Current Event: </Text>
-          {
-            eventList.map(event => {
-              if (event.date === currentDate.getDate()) return (
-                <Menu>
-                  <MenuButton as={Button}>
-                    {event.name}
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem key={`edit_${event._id}`} onClick={() => handleClickEdit(event._id)}>Edit</MenuItem>
-                    <MenuItem key={`start_${event._id}`} onClick={() => handleClickStart(event._id)}>Start</MenuItem>
-                  </MenuList>
-                </Menu>
-              )
-            })
-          }
-
-          <Text fontSize='xl'> Upcoming Events: </Text>
-          <VStack>
-            {
-              eventList.map(event => {
-                if (event.date !== currentDate.getDate()) return (
-                  <>
-                    <Menu key={event._id}>
-                      <MenuButton key={event._id} as={Button}>
-                        {event.name}
-                      </MenuButton>
-                      <MenuList>
-                        <MenuItem key={`edit_${event._id}`} onClick={() => handleClickEdit(event._id)}>Edit</MenuItem>
-                        <MenuItem key={`start_${event._id}`} onClick={() => handleClickStart(event._id)}>Start</MenuItem>
-                      </MenuList>
-                    </Menu>
-                  </>
-                )
-              })
-            }
-          </VStack>
-        </Container>
-
-      </Flex>
-    </>
-
+      <SeatingMap seatData={seatData} />
 */

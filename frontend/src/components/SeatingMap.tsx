@@ -1,97 +1,48 @@
-import { Text, Grid, GridItem, Center } from "@chakra-ui/react"
-//import { useEffect, useState } from "react"
-import MapSVG from "./SVGComponents/MapSVG";
-import MapNav from "./MapNav";
+import {  useDisclosure } from "@chakra-ui/react"
 import { ISeat } from "../utils/interfaces";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import SeatDataModal from "./SeatDataModal";
+import SeatingMapLayout from "./SeatingMapLayout";
+import MapNav from "./MapNav";
+import MapSVG from "./SVGComponents/MapSVG";
 //import anthemMap from "../
 
 
 const SeatingMap = ({ seatData }: { seatData: ISeat[] }) => {
     const [sideBarData, setSideBarData] = useState<ISeat[]>(seatData);
+    const [modalData, setModalData] = useState<ISeat>();
+    const [navTitle, setNavTitle] = useState('ALL SEATS');
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const updateSideBarNav = (data: ISeat) => {
-        setSideBarData([data]);
+    useEffect(() => {
+        setSideBarData(seatData);
+    }, [seatData])
+
+    const updateSideBarNav = (data?: ISeat | ISeat[]) => {
+
+        if (data && Array.isArray(data)) setSideBarData(data)
+        else if (data) setSideBarData([data]);
+        else setSideBarData(seatData);
     }
 
+    const updateNavTitle = (title: string) => {
+        setNavTitle(title)
+    }
+
+    const handleModal = (data: ISeat) => {
+        setModalData(data)
+        onOpen();
+    }
+
+    const updatedMapSVG = <MapSVG update={updateSideBarNav} updateNavTitle={updateNavTitle} />
+    const updatedMapNav = <MapNav seatData={sideBarData} handleModal={handleModal} updateSidebar={updateSideBarNav} navTitle={navTitle} />
 
     return (
-        <Grid
-            css={{
-                "@media (min-width: 768px)": {
-                    /* Styles for larger screens (e.g., desktop) */
-                    gridTemplateColumns: "repeat(5, 1fr)",
-                    gridTemplateRows: "repeat(8, 1fr)",
-                    height: "100vh",
-                    gridTemplateAreas: 
-                    `"header header header header header" 
-                    "main main main main nav"
-                    "main main main main nav"
-                    "main main main main nav"
-                    "main main main main nav"
-                    "main main main main nav"
-                    "main main main main nav"
-                    "footer footer footer footer footer"`
-                },
-                "@media (max-width: 767px)": {
-                    /* Styles for small screens (e.g., mobile) */
-                    gridTemplateColumns: "1fr",
-                    gridTemplateRows: "repeat(9, 1fr)",
-                    height: "100vh",
-                    gridTemplateAreas:
-                    `"header"
-                    "main"
-                    "main"
-                    "main"
-                    "main"
-                    "nav"
-                    "nav"
-                    "nav"
-                    "footer"`
-                },
-            }}
-        >
-            <GridItem area={"header"}>
-                <Center style={{ marginLeft: "auto", marginRight: "auto" }}>
-                    <Text fontSize='4xl'>ADA Seating</Text>
-                </Center>
-            </GridItem>
-            <GridItem area={"main"}>
-                <MapSVG update={updateSideBarNav} />
-            </GridItem>
-            <GridItem area={"nav"}>
-                <MapNav seatData={sideBarData}/>
-            </GridItem>
-            <GridItem area={"footer"}>
-            </GridItem>
-        </Grid >
+        <>
+            <SeatingMapLayout seatData={seatData} mode="normal" svg={updatedMapSVG} nav={updatedMapNav} />
+            <SeatDataModal isOpen={isOpen} onClose={onClose} seatInfo={modalData} />
+        </>
     )
 }
 
 export default SeatingMap;
-
-/*
-
-        <Grid
-            templateAreas={`"header header header header header" 
-                            "main main main main nav" 
-                            "footer footer footer footer nav"`}
-            gridTemplateRows={"1fr 1fr 1fr"}
-            gridTemplateColumns={"1fr 1fr 1fr 1fr 1fr"}
-            h={"100vh"}
-
-        >
-            <GridItem area={"header"}>
-                <Center style={{ marginLeft: "auto", marginRight: "auto" }}>
-                    <Text fontSize='4xl'>Title</Text>
-                </Center>
-            </GridItem>
-            <GridItem area={"main"}>
-                <MapSVG />
-            </GridItem>
-            <GridItem area={"nav"}>
-                <MapNav />
-            </GridItem>
-        </Grid >
-
-*/

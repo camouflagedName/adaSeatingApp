@@ -1,13 +1,14 @@
 import { useState, useRef, useContext } from "react";
-import Seats from "./SeatsSVG";
+import SeatsLayoutCreator from "./SeatsLayoutCreator";
 //import ZoomedMap from "./ZoomedMap";
 import { Center, Flex } from "@chakra-ui/react";
 import { IAppData, ISeat } from "../../utils/interfaces";
 import Path from "./Path";
 import { DataContext } from "../../context/context";
+import { ISeatMeta } from "../../utils/creatorInterfaces";
 
 
-const MapSVG = ({ update, updateNavTitle }: { update: (param: ISeat | ISeat[]) => void, updateNavTitle: (title: string) => void }) => {
+const MapSVGCreator = ({ update, updateNavTitle, seatMeta, updateMeta }: { update: (param: ISeat | ISeat[]) => void, updateNavTitle: (title: string) => void, seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
     const [zoom, setZoom] = useState(1);
     const [viewBox, setViewBox] = useState({
         minX: 0,
@@ -73,7 +74,6 @@ const MapSVG = ({ update, updateNavTitle }: { update: (param: ISeat | ISeat[]) =
             //setSvgHeightFactor(1)
         }
     }
-
 
     return (
         <Flex style={{ background: "rgb(232, 236, 242)", justifyContent: "center", maxHeight: "100%", overflow: "auto" }}>
@@ -174,11 +174,11 @@ const MapSVG = ({ update, updateNavTitle }: { update: (param: ISeat | ISeat[]) =
                         </g>
 
                     </g>
-                     <Seats update={update} />
+                    <SeatsLayoutCreator update={update} seatMeta={seatMeta} updateMeta={updateMeta} />
                 </svg>
             </Center>
         </Flex>
     )
 }
 
-export default MapSVG;
+export default MapSVGCreator;
