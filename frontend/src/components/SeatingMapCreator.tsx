@@ -1,8 +1,7 @@
-import { Center, useDisclosure, Button, VStack, Flex } from "@chakra-ui/react"
+import { Center, Button, Flex } from "@chakra-ui/react"
 //import { useEffect, useState } from "react"
 import { ISeat } from "../utils/interfaces";
 import { useEffect, useMemo, useState } from "react";
-import SeatDataModal from "./SeatDataModal";
 import SeatingMapLayout from "./SeatingMapLayout";
 import MapNavCreator from "./MapNavCreator";
 import MapSVGCreator from "./SVGComponents/MapSVGCreator";
@@ -36,29 +35,13 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
         seats: [''],
     });
     const [metaData, setMetaData] = useState<ISeatMeta>(seatMeta)
-    const [sideBarData, setSideBarData] = useState<ISeat[]>(seatData);
-    const [modalData, setModalData] = useState<ISeat>();
-    const { isOpen, onOpen, onClose } = useDisclosure();
-
-    useEffect(() => {
-        setSideBarData(seatData);
-    }, [seatData])
-
-    const updateSideBarNav = (data?: ISeat | ISeat[]) => {
-
-        if (data && Array.isArray(data)) setSideBarData(data)
-        else if (data) setSideBarData([data]);
-        else setSideBarData(seatData);
-    }
+    //const [sideBarData, setSideBarData] = useState<ISeat[]>(seatData);
+    //const [modalData, setModalData] = useState<ISeat>();
 
     const updateNavTitle = (title: string) => {
-
+        console.log(title)
     }
 
-    const handleModal = (data: ISeat) => {
-        setModalData(data)
-        onOpen();
-    }
 
     useEffect(() => {
         const seatIDArray: string[] = []
@@ -72,14 +55,13 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
     console.log(eventData)
 
     const updatedTitle = <EventInputCreator updateData={updateEventData} />
-    const updatedMapSVG = <MapSVGCreator update={updateSideBarNav} updateNavTitle={updateNavTitle} seatMeta={metaData} updateMeta={setMetaData} />
-    const updatedMapNav = <MapNavCreator seatData={sideBarData} handleModal={handleModal} updateSidebar={updateSideBarNav} seatMeta={metaData} updateMeta={setMetaData} />
+    const updatedMapSVG = <MapSVGCreator updateNavTitle={updateNavTitle} seatMeta={metaData} updateMeta={setMetaData} />
+    const updatedMapNav = <MapNavCreator seatMeta={metaData} updateMeta={setMetaData} />
     const updatedCreateBtn = eventData.name.length > 0 ? <CreateButton data={eventData} changePage={changePage}/> : null
 
     return (
         <>
-            <SeatingMapLayout seatData={seatData} mode="create" svg={updatedMapSVG} nav={updatedMapNav} title={updatedTitle} footer={updatedCreateBtn} />
-            <SeatDataModal isOpen={isOpen} onClose={onClose} seatInfo={modalData} />
+            <SeatingMapLayout mode="create" svg={updatedMapSVG} nav={updatedMapNav} title={updatedTitle} footer={updatedCreateBtn} />
         </>
     )
 

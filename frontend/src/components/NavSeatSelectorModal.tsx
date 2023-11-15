@@ -1,15 +1,10 @@
-import { Box, Center, Checkbox, SimpleGrid } from "@chakra-ui/react";
+import { Box, Center, Checkbox } from "@chakra-ui/react";
 import ModalComponent from "./ModalComponent"
-import { useState } from "react";
-import SelectableButton from "./SelectableButton";
 import { ISeat } from "../utils/interfaces";
 import { ISeatMeta } from "../utils/creatorInterfaces";
 
-interface IButtons {
-    [key: string]: string;
-}
 
-const NavSeatSelectorModal = ({ isOpen, onClose, handleClose, content, seatMeta, handleCheck }: { isOpen: boolean, onClose: () => void, handleClose: (data: string[]) => void, content: ISeat[], seatMeta: ISeatMeta, handleCheck: (evt: React.ChangeEvent<HTMLInputElement>, data: ISeat[]) => void }) => {
+const NavSeatSelectorModal = ({ isOpen, onClose, content, seatMeta, handleCheck }: { isOpen: boolean, onClose: () => void, content: ISeat[], seatMeta: ISeatMeta, handleCheck: (evt: React.ChangeEvent<HTMLInputElement>, data: ISeat[]) => void }) => {
     /*     
     const buttonTitleArray = [
             "Mobile Device",

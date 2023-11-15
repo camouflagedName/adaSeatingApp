@@ -5,7 +5,7 @@ import { ISeatMeta } from "../../utils/creatorInterfaces";
 const SeatCreator = ({ seatData, cx, cy, isSelected, updateMeta }: { seatData: ISeat, cx: string, cy: string, isSelected: boolean, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
     const [seatSelected, setSeatSelected] = useState(isSelected);
 
-    const handleClick = (data: ISeat) => {
+    const handleClick = () => {
         updateMeta(prev => {
             const copyOfPrev = {
                 ...prev,
@@ -35,7 +35,7 @@ const SeatCreator = ({ seatData, cx, cy, isSelected, updateMeta }: { seatData: I
             cx={cx}
             cy={cy}
             r="18"
-            onClick={() => handleClick(seatData)}
+            onClick={handleClick}
             style={{ fill: `${seatSelected ? "#026cdf" : "#ebebeb"}` }}
         >
         </circle>

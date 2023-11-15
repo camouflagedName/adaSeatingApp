@@ -2,13 +2,13 @@ import { useState, useRef, useContext } from "react";
 import SeatsLayoutCreator from "./SeatsLayoutCreator";
 //import ZoomedMap from "./ZoomedMap";
 import { Center, Flex } from "@chakra-ui/react";
-import { IAppData, ISeat } from "../../utils/interfaces";
+import { IAppData } from "../../utils/interfaces";
 import Path from "./Path";
 import { DataContext } from "../../context/context";
 import { ISeatMeta } from "../../utils/creatorInterfaces";
 
 
-const MapSVGCreator = ({ update, updateNavTitle, seatMeta, updateMeta }: { update: (param: ISeat | ISeat[]) => void, updateNavTitle: (title: string) => void, seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
+const MapSVGCreator = ({ updateNavTitle, seatMeta, updateMeta }: { updateNavTitle: (title: string) => void, seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
     const [zoom, setZoom] = useState(1);
     const [viewBox, setViewBox] = useState({
         minX: 0,
@@ -56,8 +56,9 @@ const MapSVGCreator = ({ update, updateNavTitle, seatMeta, updateMeta }: { updat
                     const filteredData = seatData.filter(seat => {
                         return seat.section.toLowerCase() === filteredID.toLowerCase()
                     })
+                    console.log(filteredData)
 
-                    update(filteredData)
+                    //update(filteredData)
                     updateNavTitle(id)
                 }
 
@@ -174,7 +175,7 @@ const MapSVGCreator = ({ update, updateNavTitle, seatMeta, updateMeta }: { updat
                         </g>
 
                     </g>
-                    <SeatsLayoutCreator update={update} seatMeta={seatMeta} updateMeta={updateMeta} />
+                    <SeatsLayoutCreator seatMeta={seatMeta} updateMeta={updateMeta} />
                 </svg>
             </Center>
         </Flex>

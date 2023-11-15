@@ -1,13 +1,15 @@
-import { Flex, Container, Menu, MenuButton, Button, MenuList, MenuItem, VStack, Text, StackDivider, Center } from "@chakra-ui/react"
-import { IAppData, IEventData, ISeat } from "../utils/interfaces"
+import { Flex, Container, Menu, MenuButton, Button, MenuList, MenuItem, VStack, Text, StackDivider, Center, useDisclosure, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react"
+import { IAppData } from "../utils/interfaces"
 import SeatingMap from "./SeatingMap";
 import SeatingMapCreator from "./SeatingMapCreator";
 import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../context/context";
+import QRCode from "react-qr-code";
 
 //import './App.css'
 const currentDate = new Date();
 const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => void }) => {
+    const { isOpen, onOpen, onClose } = useDisclosure()
     const contextData = useContext(DataContext);
     const { seatData, eventData } = contextData as IAppData;
     const [eventList, setEventList] = useState(eventData);
@@ -25,8 +27,9 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
         changePage(<SeatingMapCreator seatData={seatData} changePage={changePage} />)
     }
 
-    const currentEvent = eventList.filter(event => event.date === currentDate).map(event => {
-        if (event.date === currentDate) return (
+
+    const currentEvent = eventList.filter(event => event.date.toLocaleString().split("T")[0] === currentDate.toISOString().split("T")[0]).map(event => {
+        return (
             <Menu>
                 <MenuButton key={`menu-${event._id}`} as={Button}>
                     {event.name}
@@ -59,7 +62,9 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
                             <VStack>
                                 {
                                     eventList.map(event => {
-                                        if (event.date !== currentDate) return (
+                                        console.log(event.date.toLocaleString().split("T")[0])
+                                        console.log(currentDate)
+                                          if (event.date.toLocaleString().split("T")[0] !== currentDate.toISOString().split("T")[0]) return (
                                             <>
                                                 <Menu key={`futureEvents-menu-${event._id}`}>
                                                     <MenuButton key={`futureEvents-menuButton-${event._id}`} as={Button}>
@@ -76,10 +81,29 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
                                 }
                             </VStack>
                         </Container>
-
                         <Button onClick={handleClickCreate}>Create Event</Button>
                     </VStack>
                 </Container>
+                <Button onClick={onOpen}>Share URL</Button>
+                <Modal isOpen={isOpen} onClose={onClose}>
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ModalHeader>Modal Title</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>
+                            <Center>
+                                <QRCode
+                                    value=""
+                                />
+                            </Center>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button colorScheme='blue' mr={3} onClick={onClose}>
+                                Close
+                            </Button>
+                        </ModalFooter>
+                    </ModalContent>
+                </Modal>
             </Flex>
         </>
     )

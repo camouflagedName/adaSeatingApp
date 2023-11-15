@@ -1,11 +1,9 @@
-import { Text, Grid, GridItem, Center, Button } from "@chakra-ui/react"
+import { Text, Grid, GridItem, Center } from "@chakra-ui/react"
 //import { useEffect, useState } from "react"
-import { ISeat } from "../utils/interfaces";
-
 //import anthemMap from "../
 
 
-const SeatingMapLayout = ({ seatData, mode, svg, nav, title, footer }: { seatData: ISeat[], mode: string, svg: React.ReactNode, nav: React.ReactNode, title: React.ReactNode, footer: React.ReactNode }) => {
+const SeatingMapLayout = ({ mode, svg, nav, title, footer }: { mode: string, svg: React.ReactNode, nav: React.ReactNode, title: React.ReactNode, footer: React.ReactNode }) => {
 
 
     return (

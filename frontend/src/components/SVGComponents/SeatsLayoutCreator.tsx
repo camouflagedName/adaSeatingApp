@@ -1,11 +1,11 @@
-import { ISeat, IAppData } from "../../utils/interfaces"
+import { IAppData } from "../../utils/interfaces"
 //import { seatList } from "../../seedData/seats"
 import { useContext } from 'react'
 import { DataContext } from "../../context/context"
 import SeatCreator from "./SeatCreator"
 import { ISeatMeta } from "../../utils/creatorInterfaces"
 
-const SeatsLayoutCreator = ({ update, seatMeta, updateMeta }: { update: (param: ISeat) => void, seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
+const SeatsLayoutCreator = ({ seatMeta, updateMeta }: { seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
     const data = useContext(DataContext);
     const { sortedSeatData } = data as IAppData;
     const { tierARowA, tierARowB, tierCLeft, tierCRight, tierCLeftCenter, tierCRightCenter, secondLeftWing, secondRightWing, thirdLeftWing, thirdRightWing } = sortedSeatData;
