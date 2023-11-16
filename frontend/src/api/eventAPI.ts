@@ -1,8 +1,8 @@
 import axios from "axios";
-//import API_ROOT from "./apiRoot";
+import API_ROOT from "./apiRoot";
 import { IEventData } from "../utils/creatorInterfaces";
 
-const baseURL = 'http://localhost:30001/' + 'eventAPI'
+const baseURL = API_ROOT + 'eventAPI'
 
 export const getEvent = async (query?: { [key: string]: string | boolean | object }) => {
     const url = `${baseURL}/events`;

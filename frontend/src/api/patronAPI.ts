@@ -1,7 +1,8 @@
 import axios from "axios";
 import { IPatronData } from "../utils/interfaces";
+import API_ROOT from "./apiRoot";
 
-const baseURL = 'http://localhost:30001/' + 'patronAPI'
+const baseURL = API_ROOT + 'patronAPI'
 
 export const getPatrons = async (query: { [key: string]: string | boolean | object }) => {
     const url = `${baseURL}/patrons`;

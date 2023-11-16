@@ -1,8 +1,8 @@
 import axios from "axios";
-//import API_ROOT from "./apiRoot";
+import API_ROOT from "./apiRoot";
 import { ISeat } from "../utils/interfaces";
 
-const baseURL = 'http://localhost:30001/' + 'seatAPI'
+const baseURL = API_ROOT + 'seatAPI'
 
 export const getAllSeats = async () => {
     const url = `${baseURL}/allSeats`;
