@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ADA Server Homepage</title>
+    <title>SEAT API Homepage</title>
     <!-- Link Bootstrap CSS locally -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -21,13 +21,13 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                        <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="eventAPI">Events</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="seatAPI">Seats</a>
+                        <a class="nav-link active" aria-current="page" href="seatAPI">Seats</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="patronAPI">Patrons</a>
@@ -38,52 +38,11 @@
     </nav>
 
     <div class="container text-center">
-        <h1>This is the server for the ADA Seating App</h1>
         <div class="row">
             <div class="col">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h4 class="card-title">About this server</h4>
-                        <p class="card-text">Server start time: <span id="time"></span></p>
-                        <p class="card-text">Running on port <span id="port"></span></p>
-                        <p class="card-text">Currently in <span id="env"></span> mode</p>
-                    </div>
-                </div>
-            </div>
-            <script>
-                fetch('/about')
-                    .then(res => res.json())
-                    .then(json => {
-                        console.log(json)
-                        document.getElementById('port').innerText = json.port;
-                        document.getElementById('time').innerText = json.time;
-                        document.getElementById('env').innerText = json.env;
-                    })
-
-            </script>
-            <div class="col">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <h4 class="card-title">Explore the different endpoints:</h4>
-                        <h5>Events API</h5>
-                        <ul>
-                            <li>
-                                <a href="/eventAPI/events"
-                                    class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-                                    See all events
-                                </a>
-                            </li>
-                        </ul>
-                        <h5>Patrons API</h5>
-                        <ul>
-                            <li>
-                                <a href="/patronAPI/patrons"
-                                    class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-                                    See all patrons
-                                </a>
-                            </li>
-                        </ul>
-                        <h5>Seats API</h5>
+                        <h4 class="card-title">Seats API</h4>
                         <ul>
                             <li>
                                 <a href="/seatAPI/allSeats"

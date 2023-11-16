@@ -1,23 +1,15 @@
 import { Router } from 'express';
 import * as seatController from '../../controllers/seatController.js'
-
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const router = Router();
 
 // Define route to retrieve available seats
 router.get('/', (req, res) => {
-    res.setHeader('Content-Type', 'text/html');
-
-    res.send(`    
-      <html>
-        <body>
-          <h1>Seats API</h1>
-          <p>Explore the different endpoints:</p>
-          <ul>
-            <li><a href="/allSeats">See All Seats</a></li>
-          </ul>
-        </body>
-      </html>);
-      `)
+  res.setHeader('Content-Type', 'text/html');
+  res.sendFile(path.join(__dirname, '../../view/seats.html'))
 })
 
 router.get('/allSeats', seatController.getAvailableSeats);
