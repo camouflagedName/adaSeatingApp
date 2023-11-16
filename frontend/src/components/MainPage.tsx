@@ -92,9 +92,7 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
                         <ModalCloseButton />
                         <ModalBody>
                             <Center>
-                                <QRCode
-                                    value="https://development.ddobtp5zu51gl.amplifyapp.com/"
-                                />
+                                <QRCode value={`${window.location}`} />
                             </Center>
                         </ModalBody>
                         <ModalFooter>
