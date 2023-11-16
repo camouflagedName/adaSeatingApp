@@ -4,12 +4,11 @@ import clientPromise from "../db/mongoDB.js";
 const client = await clientPromise;
 const model = new SeatModel(client);
 
-
 export async function getAvailableSeats(req, res) {
     try {
         const result = await model.getAvailableSeatsForEvent();
         if (result) {
-            console.log(result)
+            //console.log(result)
             return res.json(result);
         } else {
             console.log("No results could be found.")

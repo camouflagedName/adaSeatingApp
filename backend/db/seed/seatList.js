@@ -853,7 +853,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 2,
-        section: "RightWing",
+        section: "2ndFloorLeftWing",
         row: "",
         seatNumber: 101,
         available: true,
@@ -863,7 +863,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 2,
-        section: "RightWing",
+        section: "2ndFloorLeftWing",
         row: "",
         seatNumber: 102,
         available: true,
@@ -873,7 +873,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 2,
-        section: "RightWing",
+        section: "2ndFloorLeftWing",
         row: "",
         seatNumber: 103,
         available: true,
@@ -883,7 +883,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 2,
-        section: "RightWing",
+        section: "2ndFloorLeftWing",
         row: "",
         seatNumber: 104,
         available: true,
@@ -893,7 +893,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 2,
-        section: "LeftWing",
+        section: "2ndFloorRightWing",
         row: "",
         seatNumber: 101,
         available: true,
@@ -903,7 +903,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 2,
-        section: "LeftWing",
+        section: "2ndFloorRightWing",
         row: "",
         seatNumber: 102,
         available: true,
@@ -913,7 +913,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 2,
-        section: "LeftWing",
+        section: "2ndFloorRightWing",
         row: "",
         seatNumber: 103,
         available: true,
@@ -923,7 +923,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 2,
-        section: "LeftWing",
+        section: "2ndFloorRightWing",
         row: "",
         seatNumber: 104,
         available: true,
@@ -933,7 +933,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 3,
-        section: "RightWing",
+        section: "3rdFloorLeftWing",
         row: "",
         seatNumber: 101,
         available: true,
@@ -943,7 +943,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 3,
-        section: "RightWing",
+        section: "3rdFloorLeftWing",
         row: "",
         seatNumber: 102,
         available: true,
@@ -953,7 +953,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 3,
-        section: "RightWing",
+        section: "3rdFloorLeftWing",
         row: "",
         seatNumber: 103,
         available: true,
@@ -963,7 +963,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 3,
-        section: "RightWing",
+        section: "3rdFloorLeftWing",
         row: "",
         seatNumber: 104,
         available: true,
@@ -973,7 +973,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 3,
-        section: "LeftWing",
+        section: "3rdFloorRightWing",
         row: "",
         seatNumber: 101,
         available: true,
@@ -983,7 +983,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 3,
-        section: "LeftWing",
+        section: "3rdFloorRightWing",
         row: "",
         seatNumber: 102,
         available: true,
@@ -993,7 +993,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 3,
-        section: "LeftWing",
+        section: "3rdFloorRightWing",
         row: "",
         seatNumber: 103,
         available: true,
@@ -1003,7 +1003,7 @@ export const data = [
         
         eventId: "eventId_test",
         floor: 3,
-        section: "LeftWing",
+        section: "3rdFloorRightWing",
         row: "",
         seatNumber: 104,
         available: true,
