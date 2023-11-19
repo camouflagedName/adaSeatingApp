@@ -11,7 +11,6 @@ const MapNavCreator = ({ seatMeta, updateMeta }: { seatMeta: ISeatMeta, updateMe
     const contextData = useContext(DataContext);
     const { sortedSeatData } = contextData as IAppData;
     const [modalContent, setModalContent] = useState<ISeat[]>([]);
-    //const { tierARowA, tierARowB, tierCLeft, tierCRight, tierCLeftCenter, tierCRightCenter, secondLeftWing, secondRightWing, thirdLeftWing, thirdRightWing } = sortedSeatData;
     const { tierARowA, tierARowB, tierCLeft, tierCLeftCenter, tierCRight, tierCRightCenter, secondLeftWing, secondRightWing, thirdLeftWing, thirdRightWing } = sortedSeatData;
     const tierC = [...tierCLeft, ...tierCLeftCenter, ...tierCRight, ...tierCRightCenter]
 

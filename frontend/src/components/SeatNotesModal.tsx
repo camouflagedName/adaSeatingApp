@@ -19,6 +19,7 @@ const SeatNotesModal = ({ isOpen, onClose, handleClose }: { isOpen: boolean, onC
                 const deletedArray = copyPrevious.splice(index, 1);
                 console.log(deletedArray)
             }
+            
             return copyPrevious
         })
     }
@@ -35,24 +36,6 @@ const SeatNotesModal = ({ isOpen, onClose, handleClose }: { isOpen: boolean, onC
         pregnant: "Pregnant",
         other: "Other Health Issue"
     }
-
-/*     
-const buttonTitleArray = [
-        "Mobile Device",
-        "No Stairs",
-        "Walking Device",
-        "Cannot Stand",
-        "Limit Walking",
-        "EMT Access",
-        "Uncrowded",
-        "Injured",
-        "Pregnant",
-        "Other Health Issue"
-    ]
-
-    const buttonMap = buttonTitleArray.map(title => <SelectableButton id={title} label={title} updateSelection={handleClick} /> )
- */
-
 
     const buttonsArr: React.ReactElement[] = []
 

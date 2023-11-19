@@ -50,7 +50,7 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
 
     console.log(eventData)
 
-    const updatedTitle = <EventInputCreator updateData={updateEventData} />
+    const updatedTitle = <EventInputCreator updateData={updateEventData} changePage={changePage} />
     const updatedMapSVG = <MapSVGCreator seatMeta={metaData} updateMeta={setMetaData} />
     const updatedMapNav = <MapNavCreator seatMeta={metaData} updateMeta={setMetaData} />
     const updatedCreateBtn = eventData.name.length > 0 ? <CreateButton data={eventData} changePage={changePage}/> : null

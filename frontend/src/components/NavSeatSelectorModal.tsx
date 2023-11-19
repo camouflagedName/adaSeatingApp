@@ -6,34 +6,6 @@ import handleCheck from "../utils/handleCheck";
 
 
 const NavSeatSelectorModal = ({ isOpen, onClose, content, seatMeta, handleSelectedSeatCheck }: { isOpen: boolean, onClose: () => void, content: ISeat[], seatMeta: ISeatMeta, handleSelectedSeatCheck: (param: object) => void }) => {
-    /*     
-    const buttonTitleArray = [
-            "Mobile Device",
-            "No Stairs",
-            "Walking Device",
-            "Cannot Stand",
-            "Limit Walking",
-            "EMT Access",
-            "Uncrowded",
-            "Injured",
-            "Pregnant",
-            "Other Health Issue"
-        ]
-    
-        const buttonMap = buttonTitleArray.map(title => <SelectableButton id={title} label={title} updateSelection={handleClick} /> )
-     */
-
-
-    //const buttonsArr: React.ReactElement[] = []
-
-    /*     for (const key in buttons) {
-            if (Object.prototype.hasOwnProperty.call(buttons, key)) {
-                const value = buttons[key as keyof typeof buttons];
-                buttonsArr.push(
-                    <SelectableButton id={key} label={value} updateSelection={handleClick} />
-                )
-            }
-        } */
 
     const contentArray = content.map(seatInfo => {
         const id = seatInfo._id;
