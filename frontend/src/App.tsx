@@ -17,7 +17,7 @@
 } from '@chakra-ui/react' */
 //import SeatingMap from './components/SeatingMap';
 import { getAllSeats } from './api/seatAPI';
-import { IEventData, ISeat } from './utils/interfaces';
+import { IEventData, ISeat } from './interfaces/interfaces';
 import { useEffect, useState } from 'react';
 import { DataContext } from './context/context';
 import { getEvent } from './api/eventAPI';
@@ -142,7 +142,7 @@ function App() {
 
 
   return (
-    <DataContext.Provider value={{ seatData: seatData, eventData: eventData, sortedSeatData: allSeatsSorted }}>
+    <DataContext.Provider value={{ seatData: seatData, eventData: eventData, sortedSeatData: allSeatsSorted, updateEvents: setEventData }}>
       {currentPage}
     </DataContext.Provider>
   )

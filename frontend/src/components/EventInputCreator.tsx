@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex, Input, Menu, MenuButton, MenuItem, MenuList, } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
-import { DateValue, IEventData } from "../utils/creatorInterfaces";
+import { DateValue, IEventData } from "../interfaces/creatorInterfaces";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 

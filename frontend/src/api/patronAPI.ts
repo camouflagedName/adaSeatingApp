@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IPatronData } from "../utils/interfaces";
+import { IPatronData } from "../interfaces/interfaces";
 import API_ROOT from "./apiRoot";
 
 const baseURL = API_ROOT + 'patronAPI'

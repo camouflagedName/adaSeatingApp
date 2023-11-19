@@ -1,6 +1,6 @@
 import axios from "axios";
 import API_ROOT from "./apiRoot";
-import { IEventData } from "../utils/creatorInterfaces";
+import { IEventData } from "../interfaces/creatorInterfaces";
 
 const baseURL = API_ROOT + 'eventAPI'
 

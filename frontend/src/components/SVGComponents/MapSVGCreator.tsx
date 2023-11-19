@@ -1,14 +1,12 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef } from "react";
 import SeatsLayoutCreator from "./SeatsLayoutCreator";
 //import ZoomedMap from "./ZoomedMap";
 import { Center, Flex } from "@chakra-ui/react";
-import { IAppData } from "../../utils/interfaces";
 import Path from "./Path";
-import { DataContext } from "../../context/context";
-import { ISeatMeta } from "../../utils/creatorInterfaces";
+import { ISeatMeta } from "../../interfaces/creatorInterfaces";
 
 
-const MapSVGCreator = ({ updateNavTitle, seatMeta, updateMeta }: { updateNavTitle: (title: string) => void, seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
+const MapSVGCreator = ({ seatMeta, updateMeta }: { seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
     const [zoom, setZoom] = useState(1);
     const [viewBox, setViewBox] = useState({
         minX: 0,
@@ -16,9 +14,6 @@ const MapSVGCreator = ({ updateNavTitle, seatMeta, updateMeta }: { updateNavTitl
         width: 10240,
         height: 7680,
     });
-
-    const data = useContext(DataContext);
-    const { seatData } = data as IAppData;
 
     const svgRef = useRef<SVGSVGElement | null>(null);
 
@@ -28,9 +23,9 @@ const MapSVGCreator = ({ updateNavTitle, seatMeta, updateMeta }: { updateNavTitl
     }
 
     const handleZoom = (event: React.MouseEvent<SVGElement>) => {
-        if (zoom < 3) {
-            const zoomFactor = zoom + 1;
-            //const svgCurrent = svgRef.current;
+        if (zoom < 4) {
+            const zoomFactor = zoom + 2;
+
             if (svgRef.current) {
                 const svgPoint = svgRef.current.createSVGPoint();
                 svgPoint.x = event.clientX;
@@ -48,23 +43,8 @@ const MapSVGCreator = ({ updateNavTitle, seatMeta, updateMeta }: { updateNavTitl
 
                 setViewBox(newViewBox);
                 setZoom(zoomFactor);
-                //setSvgHeightFactor(zoomFactor * 2 + (-5 + 5 * (zoomFactor - 1)))
-
-                if (event.currentTarget.parentElement) {
-                    const id = event.currentTarget.parentElement.id.split("_").join(" ")
-                    const filteredID = event.currentTarget.parentElement.id.split("_").join("")
-                    const filteredData = seatData.filter(seat => {
-                        return seat.section.toLowerCase() === filteredID.toLowerCase()
-                    })
-                    console.log(filteredData)
-
-                    //update(filteredData)
-                    updateNavTitle(id)
-                }
-
             }
         } else {
-            updateNavTitle("All SEATS");
             setZoom(1)
             setViewBox({
                 minX: 0,
@@ -72,7 +52,6 @@ const MapSVGCreator = ({ updateNavTitle, seatMeta, updateMeta }: { updateNavTitl
                 width: 10240,
                 height: 7680,
             });
-            //setSvgHeightFactor(1)
         }
     }
 

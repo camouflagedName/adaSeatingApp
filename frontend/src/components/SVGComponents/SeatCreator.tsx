@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { ISeat } from "../../utils/interfaces";
-import { ISeatMeta } from "../../utils/creatorInterfaces";
+import { ISeat } from "../../interfaces/interfaces";
+import { ISeatMeta } from "../../interfaces/creatorInterfaces";
 
 const SeatCreator = ({ seatData, cx, cy, isSelected, updateMeta }: { seatData: ISeat, cx: string, cy: string, isSelected: boolean, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
     const [seatSelected, setSeatSelected] = useState(isSelected);

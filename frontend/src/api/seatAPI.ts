@@ -1,6 +1,6 @@
 import axios from "axios";
 import API_ROOT from "./apiRoot";
-import { ISeat } from "../utils/interfaces";
+import { ISeat } from "../interfaces/interfaces";
 
 const baseURL = API_ROOT + 'seatAPI'
 

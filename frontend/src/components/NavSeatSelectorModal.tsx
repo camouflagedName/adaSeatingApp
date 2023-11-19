@@ -1,10 +1,11 @@
 import { Box, Center, Checkbox } from "@chakra-ui/react";
 import ModalComponent from "./ModalComponent"
-import { ISeat } from "../utils/interfaces";
-import { ISeatMeta } from "../utils/creatorInterfaces";
+import { ISeat } from "../interfaces/interfaces";
+import { ISeatMeta } from "../interfaces/creatorInterfaces";
+import handleCheck from "../utils/handleCheck";
 
 
-const NavSeatSelectorModal = ({ isOpen, onClose, content, seatMeta, handleCheck }: { isOpen: boolean, onClose: () => void, content: ISeat[], seatMeta: ISeatMeta, handleCheck: (evt: React.ChangeEvent<HTMLInputElement>, data: ISeat[]) => void }) => {
+const NavSeatSelectorModal = ({ isOpen, onClose, content, seatMeta, handleSelectedSeatCheck }: { isOpen: boolean, onClose: () => void, content: ISeat[], seatMeta: ISeatMeta, handleSelectedSeatCheck: (param: object) => void }) => {
     /*     
     const buttonTitleArray = [
             "Mobile Device",
@@ -38,7 +39,7 @@ const NavSeatSelectorModal = ({ isOpen, onClose, content, seatMeta, handleCheck 
         const id = seatInfo._id;
         return (
             <Center>
-                <Checkbox onChange={(evt) => handleCheck(evt, [seatInfo])} isChecked={seatMeta[id].isSelected}>
+                <Checkbox onChange={(evt) => handleCheck(evt, [seatInfo], handleSelectedSeatCheck)} isChecked={seatMeta[id].isSelected}>
                     {seatInfo.seatNumber}
                 </Checkbox>
             </Center>

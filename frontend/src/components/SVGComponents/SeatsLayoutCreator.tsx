@@ -1,9 +1,9 @@
-import { IAppData } from "../../utils/interfaces"
+import { IAppData } from "../../interfaces/interfaces"
 //import { seatList } from "../../seedData/seats"
 import { useContext } from 'react'
 import { DataContext } from "../../context/context"
 import SeatCreator from "./SeatCreator"
-import { ISeatMeta } from "../../utils/creatorInterfaces"
+import { ISeatMeta } from "../../interfaces/creatorInterfaces"
 
 const SeatsLayoutCreator = ({ seatMeta, updateMeta }: { seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
     const data = useContext(DataContext);

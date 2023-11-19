@@ -1,6 +1,6 @@
 import { Box, Flex, SimpleGrid, Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Button, Center, MenuButton, MenuList, MenuItem, Menu, useDisclosure, Text } from "@chakra-ui/react"
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { IPatronData, ISeat } from "../utils/interfaces";
+import { IPatronData, ISeat } from "../interfaces/interfaces";
 import SeatNotesModal from "./SeatNotesModal";
 import { useState } from "react";
 

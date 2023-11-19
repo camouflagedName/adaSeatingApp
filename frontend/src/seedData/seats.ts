@@ -1,4 +1,4 @@
-import { ISeat } from "../utils/interfaces"
+import { ISeat } from "../interfaces/interfaces"
 
 export const seatList: ISeat[] = [
     {

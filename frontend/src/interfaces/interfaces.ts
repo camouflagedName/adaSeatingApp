@@ -10,6 +10,8 @@ export interface ISeat {
     inPlay: boolean;
 }
 
+type UpdateEvent = React.Dispatch<React.SetStateAction<IEventData[]>>;
+
 export interface IAppData {
     seatData: ISeat[];
     eventData: IEventData[];
@@ -24,7 +26,8 @@ export interface IAppData {
         secondLeftWing: ISeat[];
         thirdRightWing: ISeat[];
         thirdLeftWing: ISeat[];
-    }
+    };
+    updateEvents: UpdateEvent;
 }
 
 export interface IPatronData {

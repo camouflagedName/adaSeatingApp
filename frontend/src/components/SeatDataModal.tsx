@@ -1,7 +1,7 @@
 import { Box, SimpleGrid, Editable, EditablePreview, EditableInput } from "@chakra-ui/react"
 import ModalComponent from "./ModalComponent"
 import { useState } from "react"
-import { ISeat } from "../utils/interfaces"
+import { ISeat } from "../interfaces/interfaces"
 
 const SeatDataModal = ({ isOpen, onClose, seatInfo }: { isOpen: boolean, onClose: () => void, seatInfo: ISeat | undefined }) => {
     const [textInput, setTextInput] = useState({})

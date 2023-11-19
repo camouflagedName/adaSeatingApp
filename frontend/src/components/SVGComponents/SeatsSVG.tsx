@@ -1,4 +1,4 @@
-import { ISeat, IAppData } from "../../utils/interfaces"
+import { ISeat, IAppData } from "../../interfaces/interfaces"
 //import { seatList } from "../../seedData/seats"
 import { useContext } from 'react'
 import { DataContext } from "../../context/context"

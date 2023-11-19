@@ -1,5 +1,5 @@
 import {  useDisclosure } from "@chakra-ui/react"
-import { ISeat } from "../utils/interfaces";
+import { ISeat } from "../interfaces/interfaces";
 import { useEffect, useState } from "react";
 import SeatDataModal from "./SeatDataModal";
 import SeatingMapLayout from "./SeatingMapLayout";

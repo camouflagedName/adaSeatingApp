@@ -2,7 +2,7 @@ import { useState, useRef, useContext } from "react";
 import Seats from "./SeatsSVG";
 //import ZoomedMap from "./ZoomedMap";
 import { Center, Flex } from "@chakra-ui/react";
-import { IAppData, ISeat } from "../../utils/interfaces";
+import { IAppData, ISeat } from "../../interfaces/interfaces";
 import Path from "./Path";
 import { DataContext } from "../../context/context";
 

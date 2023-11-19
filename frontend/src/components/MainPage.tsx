@@ -1,8 +1,8 @@
 import { Flex, Container, Menu, MenuButton, Button, MenuList, MenuItem, VStack, Text, StackDivider, Center, useDisclosure, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react"
-import { IAppData } from "../utils/interfaces"
+import { IAppData } from "../interfaces/interfaces"
 import SeatingMap from "./SeatingMap";
 import SeatingMapCreator from "./SeatingMapCreator";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { DataContext } from "../context/context";
 import QRCode from "react-qr-code";
 
@@ -12,7 +12,6 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
     const { isOpen, onOpen, onClose } = useDisclosure()
     const contextData = useContext(DataContext);
     const { seatData, eventData } = contextData as IAppData;
-    const [eventList, setEventList] = useState(eventData);
 
     const handleClickEdit = (eventID: string) => {
         console.log(eventID)
@@ -28,7 +27,7 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
     }
 
 
-    const currentEvent = eventList.filter(event => event.date.toLocaleString().split("T")[0] === currentDate.toISOString().split("T")[0]).map(event => {
+    const currentEvent = eventData.filter(event => event.date.toLocaleString().split("T")[0] === currentDate.toISOString().split("T")[0]).map(event => {
         return (
             <Menu>
                 <MenuButton key={`menu-${event._id}`} as={Button}>
@@ -42,13 +41,11 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
         )
     })
 
-    useEffect(() => {
-        setEventList(eventData)
-    }, [eventData])
+
 
     return (
         <>
-            <Flex justify='center' style={{ height: "100vh" }}>
+            <Flex direction='column' justify='center' style={{ height: "100vh" }}>
                 <Container centerContent maxW='container.lg' style={{ margin: "auto" }}>
                     <VStack spacing={10} divider={<StackDivider borderColor='gray.400' />}>
                         <Center>
@@ -57,14 +54,16 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
                         <Container centerContent maxW='container.lg' style={{ margin: "auto" }}>
                             <Text fontSize='2xl' > Choose one below: </Text>
                             <Text fontSize='xl' margin={5}> Current Event: </Text>
-                            {currentEvent.length > 0 ? currentEvent : <Text fontSize='l' style={{ fontWeight: 'bold' }}> -- No Scheduled Event -- </Text>}
+                            {currentEvent.length > 0 ? (
+                                <VStack>
+                                    {currentEvent}
+                                </VStack>
+                            ) : <Text fontSize='l' style={{ fontWeight: 'bold' }}> -- No Scheduled Event -- </Text>}
                             <Text fontSize='xl' margin={5}> Upcoming Events: </Text>
                             <VStack>
                                 {
-                                    eventList.map(event => {
-                                        console.log(event.date.toLocaleString().split("T")[0])
-                                        console.log(currentDate)
-                                          if (event.date.toLocaleString().split("T")[0] !== currentDate.toISOString().split("T")[0]) return (
+                                    eventData.map(event => {
+                                        if (event.date.toLocaleString().split("T")[0] !== currentDate.toISOString().split("T")[0]) return (
                                             <>
                                                 <Menu key={`futureEvents-menu-${event._id}`}>
                                                     <MenuButton key={`futureEvents-menuButton-${event._id}`} as={Button}>
@@ -88,7 +87,7 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
                 <Modal isOpen={isOpen} onClose={onClose}>
                     <ModalOverlay />
                     <ModalContent>
-                        <ModalHeader>Modal Title</ModalHeader>
+                        <ModalHeader>Scan </ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
                             <Center>
