@@ -19,7 +19,7 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
 
     const handleClickStart = (eventID: string) => {
         console.log(eventID)
-        changePage(<SeatingMap seatData={seatData} />)
+        changePage(<SeatingMap seatData={seatData} changePage={changePage}/>)
     }
 
     const handleClickCreate = () => {

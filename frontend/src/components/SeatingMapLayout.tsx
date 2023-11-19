@@ -1,4 +1,4 @@
-import { Text, Grid, GridItem, Center } from "@chakra-ui/react"
+import { Grid, GridItem } from "@chakra-ui/react"
 //import { useEffect, useState } from "react"
 //import anthemMap from "../
 
@@ -44,14 +44,7 @@ const SeatingMapLayout = ({ mode, svg, nav, title, footer }: { mode: string, svg
                 }}
             >
                 <GridItem area={"header"}>
-
-                    {
-                        mode === 'create' ? title : (
-                            <Center style={{ height: "100%", }}>
-                                <Text fontSize='4xl'>ADA Seating</Text>
-                            </Center>
-                        )
-                    }
+                    {title}
                 </GridItem>
                 <GridItem area={"main"}>
                     {svg}

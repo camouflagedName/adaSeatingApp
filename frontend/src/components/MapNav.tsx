@@ -1,8 +1,9 @@
 import { Box, Flex, SimpleGrid, Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Button, Center, MenuButton, MenuList, MenuItem, Menu, useDisclosure, Text } from "@chakra-ui/react"
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { IPatronData, ISeat } from "../interfaces/interfaces";
+import { IAppData, IPatronData, ISeat } from "../interfaces/interfaces";
 import SeatNotesModal from "./SeatNotesModal";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { DataContext } from "../context/context";
 
 const MapNav = ({ seatData, handleModal, updateSidebar, navTitle }: { seatData: ISeat[], handleModal: (param: ISeat) => void, updateSidebar: () => void, navTitle: string }) => {
     const [data, setData] = useState<IPatronData>({
@@ -15,6 +16,12 @@ const MapNav = ({ seatData, handleModal, updateSidebar, navTitle }: { seatData: 
         seatID: [],
     })
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const contextData = useContext(DataContext);
+    const { sortedSeatData } = contextData as IAppData;
+    const { tierARowA, tierARowB, tierCLeft, tierCLeftCenter, tierCRight, tierCRightCenter, secondLeftWing, secondRightWing, thirdLeftWing, thirdRightWing } = sortedSeatData;
+
+    const allSeatsSorted = [...tierARowA, ...tierARowB, ...tierCLeft, ...tierCLeftCenter, ...tierCRight, ...tierCRightCenter, ...secondLeftWing, ...secondRightWing, ...thirdLeftWing, ...thirdRightWing]
 
     const handleEditBtnClick = (data: ISeat) => {
         handleModal(data);
@@ -78,26 +85,6 @@ const MapNav = ({ seatData, handleModal, updateSidebar, navTitle }: { seatData: 
 
     }
 
-        /* TIER A */
-        const tierAMap = seatData.filter(seatObj => seatObj.section === "TierA")
-        const sortedTierARowA = tierAMap.filter(seatObj => seatObj.row === "A").sort((a, b) => a.seatNumber - b.seatNumber)
-        const sortedTierARowB = tierAMap.filter(seatObj => seatObj.row === "B").sort((a, b) => a.seatNumber - b.seatNumber)
-           
-        /* TIER C */
-        const sortedTierCMap = seatData.filter(seatObj => seatObj.section === "TierC").sort((a, b) => a.seatNumber - b.seatNumber)
-
-    
-        /* 2nd FlOOR WINGS */
-        const secondFloorWingMap = seatData.filter(seatObj => seatObj.floor === 2 && (seatObj.section === "2ndFloorLeftWing" || seatObj.section === "2ndFloorRightWing"))
-        const sortedSecondRightWing = secondFloorWingMap.filter(seatObj => seatObj.section === "2ndFloorRightWing").sort((a, b) => a.seatNumber - b.seatNumber)
-        const sortedSecondLeftWing = secondFloorWingMap.filter(seatObj => seatObj.section === "2ndFloorLeftWing").sort((a, b) => a.seatNumber - b.seatNumber)
-    
-        /* 3rd FLOOR WINGS */
-        const thirdFloorWingMap = seatData.filter(seatObj => seatObj.floor === 3 && (seatObj.section === "3rdFloorLeftWing" || seatObj.section === "3rdFloorRightWing"))
-        const sortedThirdRightWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "RightWing").sort((a, b) => a.seatNumber - b.seatNumber)
-        const sortedThirdLeftWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "LeftWing").sort((a, b) => a.seatNumber - b.seatNumber)
-
-        const allSeatsSorted = [...sortedTierARowA, ...sortedTierARowB, ...sortedTierCMap, ...sortedSecondRightWing, ...sortedSecondLeftWing, ...sortedThirdRightWing, ...sortedThirdLeftWing]
 
     return (
         <>
@@ -199,4 +186,3 @@ const MapNav = ({ seatData, handleModal, updateSidebar, navTitle }: { seatData: 
 }
 
 export default MapNav;
-

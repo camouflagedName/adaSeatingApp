@@ -5,10 +5,10 @@ import SeatDataModal from "./SeatDataModal";
 import SeatingMapLayout from "./SeatingMapLayout";
 import MapNav from "./MapNav";
 import MapSVG from "./SVGComponents/MapSVG";
-//import anthemMap from "../
+import SeatingMapTitle from "./SeatingMapTitle";
 
 
-const SeatingMap = ({ seatData }: { seatData: ISeat[] }) => {
+const SeatingMap = ({ seatData, changePage }: { seatData: ISeat[], changePage: (param: React.ReactElement) => void }) => {
     const [sideBarData, setSideBarData] = useState<ISeat[]>(seatData);
     const [modalData, setModalData] = useState<ISeat>();
     const [navTitle, setNavTitle] = useState('ALL SEATS');
@@ -34,7 +34,7 @@ const SeatingMap = ({ seatData }: { seatData: ISeat[] }) => {
         onOpen();
     }
 
-    const title = <></>
+    const title = <SeatingMapTitle changePage={changePage}/>
     const footer = <></>
     const updatedMapSVG = <MapSVG update={updateSideBarNav} updateNavTitle={updateNavTitle} />
     const updatedMapNav = <MapNav seatData={sideBarData} handleModal={handleModal} updateSidebar={updateSideBarNav} navTitle={navTitle} />
