@@ -3,8 +3,7 @@ import { Grid, GridItem } from "@chakra-ui/react"
 //import anthemMap from "../
 
 
-const SeatingMapLayout = ({ mode, svg, nav, title, footer }: { mode: string, svg: React.ReactNode, nav: React.ReactNode, title: React.ReactNode, footer: React.ReactNode }) => {
-
+const SeatingMapLayout = ({ children }: {children: React.ReactNode}) => {
 
     return (
         <>
@@ -43,47 +42,27 @@ const SeatingMapLayout = ({ mode, svg, nav, title, footer }: { mode: string, svg
                     },
                 }}
             >
-                <GridItem area={"header"}>
-                    {title}
-                </GridItem>
-                <GridItem area={"main"}>
-                    {svg}
-                </GridItem>
-                <GridItem area={"nav"}>
-                    {nav}
-                </GridItem>
-                <GridItem area={"footer"}>
-                    {mode === "create" ? footer : null}
-                </GridItem>
+                { children }
             </Grid >
         </>
     )
 }
 
+const Header = ({ children }: { children: React.ReactNode }) => (
+    <GridItem area={"header"}>{children}</GridItem>
+);
+const Main = ({ children }: { children: React.ReactNode }) => (
+    <GridItem area={"main"}>{children}</GridItem>
+);
+const Nav = ({ children }: { children: React.ReactNode }) => (
+    <GridItem area={"nav"}>{children}</GridItem>
+);
+const Footer = ({ children }: { children: React.ReactNode }) => (
+    <GridItem area={"footer"}>{children}</GridItem>
+);
+
+SeatingMapLayout.Header = Header;
+SeatingMapLayout.Main = Main;
+SeatingMapLayout.Nav = Nav;
+SeatingMapLayout.Footer = Footer;
 export default SeatingMapLayout;
-
-/*
-
-        <Grid
-            templateAreas={`"header header header header header" 
-                            "main main main main nav" 
-                            "footer footer footer footer nav"`}
-            gridTemplateRows={"1fr 1fr 1fr"}
-            gridTemplateColumns={"1fr 1fr 1fr 1fr 1fr"}
-            h={"100vh"}
-
-        >
-            <GridItem area={"header"}>
-                <Center style={{ marginLeft: "auto", marginRight: "auto" }}>
-                    <Text fontSize='4xl'>Title</Text>
-                </Center>
-            </GridItem>
-            <GridItem area={"main"}>
-                <MapSVG />
-            </GridItem>
-            <GridItem area={"nav"}>
-                <MapNav />
-            </GridItem>
-        </Grid >
-
-*/

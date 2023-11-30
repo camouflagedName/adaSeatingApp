@@ -11,7 +11,7 @@ const NavSeatSelectorModal = ({ isOpen, onClose, content, seatMeta, handleSelect
         const id = seatInfo._id;
         return (
             <Center>
-                <Checkbox onChange={(evt) => handleCheck(evt, [seatInfo], handleSelectedSeatCheck)} isChecked={seatMeta[id].isSelected}>
+                <Checkbox onChange={(evt) => handleCheck(evt, [seatInfo], handleSelectedSeatCheck)} isChecked={seatMeta[id]} >
                     {seatInfo.seatNumber}
                 </Checkbox>
             </Center>

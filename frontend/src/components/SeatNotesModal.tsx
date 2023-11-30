@@ -43,7 +43,7 @@ const SeatNotesModal = ({ isOpen, onClose, handleClose }: { isOpen: boolean, onC
         if (Object.prototype.hasOwnProperty.call(buttons, key)) {
             const value = buttons[key as keyof typeof buttons];
             buttonsArr.push(
-                <SelectableButton id={key} label={value} updateSelection={handleClick} />
+                <SelectableButton key={key} id={key} label={value} updateSelection={handleClick} />
             )
         }
     }

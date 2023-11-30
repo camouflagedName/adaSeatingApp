@@ -1,37 +1,14 @@
-import { ISeat, IAppData } from "../../interfaces/interfaces"
+import { ISeat } from "../../interfaces/interfaces"
+import { IAppLiveEventData } from "../../interfaces/liveEventInterfaces";
 //import { seatList } from "../../seedData/seats"
 import { useContext } from 'react'
-import { DataContext } from "../../context/context"
+import { LiveEventContext } from "../../context/context"
+import SeatComponent from "./SeatComponent";
 
 const Seats = ({ update }: { update: (param: ISeat) => void }) => {
-    const data = useContext(DataContext);
-    const { seatData } = data as IAppData;
-
-    // include seats that aren't in play //
-
-    /* TIER A */
-    const tierAMap = seatData.filter(seatObj => seatObj.section === "TierA")
-    const tierARowA = tierAMap.filter(seatObj => seatObj.row === "A")
-    const tierARowB = tierAMap.filter(seatObj => seatObj.row === "B")
-
-
-
-    /* TIER C */
-    const tierCMap = seatData.filter(seatObj => seatObj.section === "TierC")
-    const tierCRight = tierCMap.filter(seatObj => seatObj.seatNumber <= 106)
-    const tierCRCtr = tierCMap.filter(seatObj => seatObj.seatNumber > 106 && seatObj.seatNumber <= 122)
-    const tierCLCtr = tierCMap.filter(seatObj => seatObj.seatNumber > 122 && seatObj.seatNumber <= 137)
-    const tierCLeft = tierCMap.filter(seatObj => seatObj.seatNumber > 137)
-
-    /* 2nd FlOOR WINGS */
-    const secondFloorWingMap = seatData.filter(seatObj => seatObj.floor === 2 && (seatObj.section === "2ndFloorLeftWing" || seatObj.section === "2ndFloorRightWing"))
-    const secondRightWing = secondFloorWingMap.filter(seatObj => seatObj.section === "2ndFloorRightWing")
-    const secondLeftWing = secondFloorWingMap.filter(seatObj => seatObj.section === "2ndFloorLeftWing")
-
-    /* 3rd FLOOR WINGS */
-    const thirdFloorWingMap = seatData.filter(seatObj => seatObj.floor === 3 && (seatObj.section === "3rdFloorLeftWing" || seatObj.section === "3rdFloorRightWing"))
-    //const thirdRightWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "RightWing")
-    //const thirdLeftWing = thirdFloorWingMap.filter(seatObj => seatObj.section === "LeftWing")
+    const data = useContext(LiveEventContext);
+    const { sortedStructInPlaySeats } = data as IAppLiveEventData;
+    const { tierARowA, tierARowB, tierCLeft, tierCLeftCenter, tierCRight, tierCRightCenter, secondLeftWing, secondRightWing, thirdLeftWing, thirdRightWing } = sortedStructInPlaySeats;
 
     const handleClick = (seatData: ISeat) => {
         update(seatData)
@@ -40,7 +17,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
     return (
         <g className="seats">
             {
-                tierAMap &&
+                (tierARowA && tierARowB) &&
                 <g data-component="svg__block" data-section-name="TierA" data-section-id="s_57" className="section" transform="">
                     {
                         tierARowA &&
@@ -48,19 +25,10 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                             {
                                 tierARowA.map((seat, index) => {
                                     if (seat.inPlay) {
-                                        return (
-                                            <circle
-                                                data-component="svg__seat"
-                                                id={seat._id}
-                                                className="seat"
-                                                data-seat-name={seat.seatNumber.toString()}
-                                                cx="5600"
-                                                cy={(2580 + 45 * index).toString()}
-                                                r="18"
-                                                onClick={() => handleClick(seat)}
-                                            >
-                                            </circle>
-                                        )
+                                        const cx = "5600";
+                                        const cy = (2580 + 45 * index).toString();
+
+                                        return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
                                     }
                                 })
                             }
@@ -70,26 +38,19 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                         tierARowB &&
                         <g data-component="svg__row" data-row-name="B" className="row">
                             {
-                                tierARowB.map((seat, index) => (
-                                    <circle
-                                        data-component="svg__seat"
-                                        id={seat._id}
-                                        className="seat"
-                                        data-seat-name={seat.seatNumber.toString()}
-                                        cx="5680"
-                                        cy={(2580 + 45 * index).toString()}
-                                        r="18"
-                                        onClick={() => handleClick(seat)}
-                                    >
-                                    </circle>
-                                ))
+                                tierARowB.map((seat, index) => {
+                                    const cx = "5680";
+                                    const cy = (2580 + 45 * index).toString();
+
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                })
                             }
                         </g>
                     }
                 </g>
             }
             {
-                tierCMap &&
+                (tierCLeft && tierCRight && tierCLeftCenter && tierCRightCenter) &&
                 <g data-component="svg__block" data-section-name="TierC" data-section-id="s_57" className="section" transform="">
                     {
                         tierCRight &&
@@ -98,67 +59,34 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                 tierCRight.map((seat, index) => {
                                     const cx = index < 3 ? (7325 + 45 * index).toString() : "7445"
                                     const cy = index < 3 ? (2225 + 60 * index).toString() : (2225 + 70 * index).toString()
-                                    return (
-                                        <circle
-                                            data-component="svg__seat"
-                                            id={seat._id}
-                                            className="seat"
-                                            data-seat-name={seat.seatNumber.toString()}
-                                            cx={cx}
-                                            cy={cy}
-                                            r="18"
-                                            onClick={() => handleClick(seat)}
-                                        >
-                                        </circle>
-                                    )
+
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
                                 })
                             }
                         </g>
                     }
                     {
-                        tierCRCtr &&
+                        tierCRightCenter &&
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
-                                tierCRCtr.map((seat, index) => {
+                                tierCRightCenter.map((seat, index) => {
+                                    const cx = "7445";
+                                    const cy = (2745 + 70 * index).toString();
 
-                                    const cy = (2745 + 70 * index).toString()
-                                    return (
-                                        <circle
-                                            data-component="svg__seat"
-                                            id={seat._id}
-                                            className="seat"
-                                            data-seat-name={seat.seatNumber.toString()}
-                                            cx="7445"
-                                            cy={cy}
-                                            r="18"
-                                            onClick={() => handleClick(seat)}
-                                        >
-                                        </circle>
-                                    )
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
                                 })
                             }
                         </g>
                     }
                     {
-                        tierCLCtr &&
+                        tierCLeftCenter &&
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
-                                tierCLCtr.map((seat, index) => {
+                                tierCLeftCenter.map((seat, index) => {
+                                    const cx = "7445";
+                                    const cy = (3880 + 70 * index).toString();
 
-                                    const cy = (3880 + 70 * index).toString()
-                                    return (
-                                        <circle
-                                            data-component="svg__seat"
-                                            id={seat._id}
-                                            className="seat"
-                                            data-seat-name={seat.seatNumber.toString()}
-                                            cx="7445"
-                                            cy={cy}
-                                            r="18"
-                                            onClick={() => handleClick(seat)}
-                                        >
-                                        </circle>
-                                    )
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
                                 })
                             }
                         </g>
@@ -172,19 +100,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                     const cy = index < 5 ? (4965 + 70 * index).toString() :
                                         index === 5 ? "5315" : (5100 + 45 * index).toString()
 
-                                    return (
-                                        <circle
-                                            data-component="svg__seat"
-                                            id={seat._id}
-                                            className="seat"
-                                            data-seat-name={seat.seatNumber.toString()}
-                                            cx={cx}
-                                            cy={cy}
-                                            r="18"
-                                            onClick={() => handleClick(seat)}
-                                        >
-                                        </circle>
-                                    )
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
                                 })
                             }
                         </g>
@@ -192,28 +108,17 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                 </g>
             }
             {
-                secondFloorWingMap &&
+                (secondLeftWing && secondRightWing) &&
                 <g data-component="svg__block" data-section-name="secondFloorWings" data-section-id="s_57" className="section" transform="">
                     {
                         secondRightWing &&
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
                                 secondRightWing.map((seat, index) => {
-                                    const cx = (6400 + 40 * index).toString()
-                                    const cy = (2200 + 60 * index).toString()
-                                    return (
-                                        <circle
-                                            data-component="svg__seat"
-                                            id={seat._id}
-                                            className="seat"
-                                            data-seat-name={seat.seatNumber.toString()}
-                                            cx={cx}
-                                            cy={cy}
-                                            r="18"
-                                            onClick={() => handleClick(seat)}
-                                        >
-                                        </circle>
-                                    )
+                                    const cx = (6400 + 40 * index).toString();
+                                    const cy = (2200 + 60 * index).toString();
+
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
                                 })
                             }
                         </g>
@@ -223,21 +128,10 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
                                 secondLeftWing.map((seat, index) => {
-                                    const cx = (6525 - 38 * index).toString()
-                                    const cy = (5300 + 55 * index).toString()
-                                    return (
-                                        <circle
-                                            data-component="svg__seat"
-                                            id={seat._id}
-                                            className="seat"
-                                            data-seat-name={seat.seatNumber.toString()}
-                                            cx={cx}
-                                            cy={cy}
-                                            r="18"
-                                            onClick={() => handleClick(seat)}
-                                        >
-                                        </circle>
-                                    )
+                                    const cx = (6525 - 38 * index).toString();
+                                    const cy = (5300 + 55 * index).toString();
+
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
                                 })
                             }
                         </g>
@@ -245,10 +139,31 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                 </g>
             }
             {
-                thirdFloorWingMap &&
+                (thirdLeftWing && thirdRightWing) &&
                 <g data-component="svg__block" data-section-name="thirdFloorWings" data-section-id="s_57" className="section" transform="">
                     {
-
+                        thirdRightWing &&
+                        <g data-component="svg__row" data-row-name="F" className="row">
+                            {
+                                thirdRightWing.map((seat, index) => {
+                                    const cx = (8050 + 42 * index).toString()
+                                    const cy = (2275 + 62 * index).toString()
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                })
+                            }
+                        </g>
+                    }
+                    {
+                        thirdLeftWing &&
+                        <g data-component="svg__row" data-row-name="F" className="row">
+                            {
+                                thirdLeftWing.map((seat, index) => {
+                                    const cx = (8175 - 40 * index).toString()
+                                    const cy = (5200 + 60 * index).toString()
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                })
+                            }
+                        </g>
                     }
                 </g>
             }

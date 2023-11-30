@@ -1,5 +1,4 @@
 import { Center, Button, Flex } from "@chakra-ui/react"
-//import { useEffect, useState } from "react"
 import { IAppData, ISeat } from "../interfaces/interfaces";
 import { useContext, useEffect, useMemo, useState } from "react";
 import SeatingMapLayout from "./SeatingMapLayout";
@@ -10,20 +9,18 @@ import EventInputCreator from "./EventInputCreator";
 import { addEvent } from "../api/eventAPI";
 import MainPage from "./MainPage";
 import { DataContext } from "../context/context";
-//import anthemMap from "../
+import seatSorter from "../utils/seatSorter";
+import { EventCreator } from "../context/context";
 
-
-const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], changePage: (param: React.ReactElement) => void  }) => {
+const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], changePage: (param: React.ReactElement) => void }) => {
+    const allSeatsSorted = useMemo(() => seatSorter(seatData), [seatData])
     const seatMeta = useMemo(() => {
         let updatedSeatMeta = {}
 
         seatData.forEach(seat => {
             updatedSeatMeta = {
                 ...updatedSeatMeta,
-                [seat._id]: {
-                    seat: seat,
-                    isSelected: false
-                }
+                [seat._id]: false
             }
         })
 
@@ -36,37 +33,43 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
         seats: [''],
     });
     const [metaData, setMetaData] = useState<ISeatMeta>(seatMeta)
-    //const [sideBarData, setSideBarData] = useState<ISeat[]>(seatData);
-    //const [modalData, setModalData] = useState<ISeat>();
+
 
     useEffect(() => {
         const seatIDArray: string[] = []
         Object.keys(metaData).forEach(key => {
-            if (metaData[key].isSelected) seatIDArray.push(metaData[key].seat._id)
+            if (metaData[key] === true) seatIDArray.push(key)
         })
         updateEventData(prev => ({ ...prev, ['seats']: seatIDArray }))
-
     }, [metaData])
 
-    console.log(eventData)
-
-    const updatedTitle = <EventInputCreator updateData={updateEventData} changePage={changePage} />
-    const updatedMapSVG = <MapSVGCreator seatMeta={metaData} updateMeta={setMetaData} />
-    const updatedMapNav = <MapNavCreator seatMeta={metaData} updateMeta={setMetaData} />
-    const updatedCreateBtn = eventData.name.length > 0 ? <CreateButton data={eventData} changePage={changePage}/> : null
+    const updatedCreateBtn = eventData.name.length > 0 ? <CreateButton data={eventData} changePage={changePage} /> : null
 
     return (
-        <>
-            <SeatingMapLayout mode="create" svg={updatedMapSVG} nav={updatedMapNav} title={updatedTitle} footer={updatedCreateBtn} />
-        </>
-    )
+        <EventCreator.Provider value={{ sortedSeatData: allSeatsSorted}}>
+            <SeatingMapLayout>
+                <SeatingMapLayout.Header>
+                    <EventInputCreator updateData={updateEventData} changePage={changePage} />
+                </SeatingMapLayout.Header>
+                <SeatingMapLayout.Main>
+                    <MapSVGCreator seatMeta={metaData} updateMeta={setMetaData} />
+                </SeatingMapLayout.Main>
+                <SeatingMapLayout.Nav>
+                    <MapNavCreator seatMeta={metaData} updateMeta={setMetaData} />
+                </SeatingMapLayout.Nav>
+                <SeatingMapLayout.Footer>
+                    {updatedCreateBtn}
+                </SeatingMapLayout.Footer>
+            </SeatingMapLayout>
+        </EventCreator.Provider>
 
+    )
 }
 
 export default SeatingMapCreator;
 
 
-const CreateButton = ({ data, changePage }: { data: IEventData, changePage: (param: React.ReactElement) => void  }) => {
+const CreateButton = ({ data, changePage }: { data: IEventData, changePage: (param: React.ReactElement) => void }) => {
     const contextData = useContext(DataContext)
     const { updateEvents } = contextData as IAppData;
 
@@ -91,5 +94,4 @@ const CreateButton = ({ data, changePage }: { data: IEventData, changePage: (par
             </Center>
         </Flex>
     )
-
 }

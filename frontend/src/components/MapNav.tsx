@@ -1,186 +1,107 @@
-import { Box, Flex, SimpleGrid, Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Button, Center, MenuButton, MenuList, MenuItem, Menu, useDisclosure, Text } from "@chakra-ui/react"
-import { ChevronDownIcon } from '@chakra-ui/icons'
+import { Box, Button, Center, Flex, SimpleGrid } from "@chakra-ui/react"
 import { IAppData, IPatronData, ISeat } from "../interfaces/interfaces";
-import SeatNotesModal from "./SeatNotesModal";
-import { useContext, useState } from "react";
-import { DataContext } from "../context/context";
+import { IAppLiveEventData } from "../interfaces/liveEventInterfaces";
+import { useContext, useEffect, useState } from "react";
+import { DataContext, LiveEventContext } from "../context/context";
+import ScrollChunkComponent from "./ScrollChunkComponent";
+import dataUpdater from "../utils/dataUpdater";
+import MapNavAccordion from "./MapNavAccordion";
+import seatSorter from "../utils/seatSorter";
 
-const MapNav = ({ seatData, handleModal, updateSidebar, navTitle }: { seatData: ISeat[], handleModal: (param: ISeat) => void, updateSidebar: () => void, navTitle: string }) => {
-    const [data, setData] = useState<IPatronData>({
-        eventID: "",
-        fullName: "",
-        callAhead: false,
-        numberRequested: 0,
-        arrived: false,
-        notes: [],
-        seatID: [],
-    })
-    const { isOpen, onOpen, onClose } = useDisclosure();
-
+const MapNav = ({ mapNavSeatData, handleModal, updateSidebar, navTitle }:
+    { mapNavSeatData: (ISeat[] | ISeat), handleModal: (param: ISeat) => void, updateSidebar: () => void, navTitle: string }) => {
     const contextData = useContext(DataContext);
-    const { sortedSeatData } = contextData as IAppData;
-    const { tierARowA, tierARowB, tierCLeft, tierCLeftCenter, tierCRight, tierCRightCenter, secondLeftWing, secondRightWing, thirdLeftWing, thirdRightWing } = sortedSeatData;
+    const { patronData, updateSeats, updatePatrons } = contextData as IAppData;
+    const liveEventData = useContext(LiveEventContext)
+    const { sortedInPlaySeats } = liveEventData as IAppLiveEventData;
+    const [isBottom, setIsBottom] = useState(false);
+    const [currentSeats, setCurrentSeats] = useState(mapNavSeatData)
 
-    const allSeatsSorted = [...tierARowA, ...tierARowB, ...tierCLeft, ...tierCLeftCenter, ...tierCRight, ...tierCRightCenter, ...secondLeftWing, ...secondRightWing, ...thirdLeftWing, ...thirdRightWing]
-
-    const handleEditBtnClick = (data: ISeat) => {
-        handleModal(data);
+    const handleScroll = (evt: React.UIEvent<HTMLDivElement>) => {
+        const atBottom = evt.currentTarget.scrollHeight - evt.currentTarget.scrollTop === evt.currentTarget.clientHeight;
+        setIsBottom(atBottom);
     }
 
-    const handleNotesBtnClick = () => {
-        onOpen();
-    }
+    const handleUpdate = (selectedSeatData: ISeat, selectedPatron: IPatronData) => {
+        const updatedSeatData = { available: false, assignedTo: selectedPatron._id }
 
-    const showAll = () => {
-        updateSidebar();
-    }
+        if (selectedPatron.numberRequested > 1) {
+            const seatIDArr: string[] = [];
+            const sortedFilteredSeatList = sortedInPlaySeats.filter(seat => seat.section === selectedSeatData.section && seat.row === selectedSeatData.row).sort((a, b) => a.seatNumber - b.seatNumber)
+            const selectedSeatArr = sortedFilteredSeatList.filter(seat => seat.seatNumber >= selectedSeatData.seatNumber && seat.seatNumber < selectedSeatData.seatNumber + selectedPatron.numberRequested)
+            const updatedAllSeats = dataUpdater(sortedInPlaySeats, selectedSeatArr, updatedSeatData) as ISeat[];
+            const sortedUpdatedSeats = seatSorter(updatedAllSeats, "array") as ISeat[];
 
-    /*
-    const handleTextInput = (key: string, value: string) => {
-        setTextInput({ ...textInput, [key]: value })
-    }
-    */
+            /* UPDATES ALL SEATS */
+            updateSeats(sortedUpdatedSeats);
 
-    const handleClose = (modalData: string[]) => {
-        setData({ ...data, notes: modalData })
-    }
+            selectedSeatArr.forEach(seat => {
+                seatIDArr.push(seat._id)
+            })
 
-    const handleAssignToClick = (evt: React.MouseEvent) => {
-        const value = evt.currentTarget.textContent || "";
-        const callAhead = value !== 'Walk-Up';
-        setData({ ...data, fullName: value, callAhead: callAhead })
-    }
+            const updatedPatron = dataUpdater(patronData, selectedPatron, { seatID: seatIDArr, arrived: true }) as IPatronData[];
+            updatePatrons(updatedPatron);
 
-    const handleSeatNumberClick = (evt: React.MouseEvent) => {
-        const valueString = evt.currentTarget.textContent || "";
-        const value = Number(valueString);
-        setData({ ...data, numberRequested: value })
-    }
+            if (Array.isArray(mapNavSeatData)) {
+                setCurrentSeats(prev => {
+                    const currentAsArray = prev as ISeat[];
+                    const updateCurrentSeats = dataUpdater(currentAsArray, selectedSeatArr, updatedSeatData) as ISeat[];
+                    const sortedUpdateCurrentSeats = seatSorter(updateCurrentSeats, "array") as ISeat[];
+                    return sortedUpdateCurrentSeats;
+                });
+            } else setCurrentSeats({ ...selectedSeatData, available: false, assignedTo: selectedPatron._id })
 
-    const handleSubmit = async (selectedSeatData: ISeat) => {
+        } else {
+            const updatedSeats = dataUpdater(sortedInPlaySeats, selectedSeatData, updatedSeatData) as ISeat[];
+            const sortedUpdatedSeats = seatSorter(updatedSeats, "array") as ISeat[];
+            const updatedPatron = dataUpdater(patronData, selectedPatron, { seatID: [selectedSeatData._id], arrived: true }) as IPatronData[];
 
-        const seatIDArr: string[] = [];
-        const sortedFilteredSeatList = seatData.filter(seat => seat.section === selectedSeatData.section && seat.row === selectedSeatData.row).sort((a, b) => a.seatNumber - b.seatNumber)
-        const selectedSeatArr = sortedFilteredSeatList.filter(seat => seat.seatNumber >= selectedSeatData.seatNumber && seat.seatNumber < selectedSeatData.seatNumber + data.numberRequested)
-
-        selectedSeatArr.forEach(seat => {
-            seatIDArr.push(seat._id)
-        })
-
-        const patronData: IPatronData = { ...data, seatID: seatIDArr, arrived: true }
-        console.log(patronData)
-
-
-        try {
-
-            //const results = await addPatron(data);
-
-        } catch (err) {
-            console.log(err);
+            /* UPDATES ALL SEATS */
+            updateSeats(sortedUpdatedSeats)
+            updatePatrons(updatedPatron);
+            if (Array.isArray(mapNavSeatData)) setCurrentSeats(prev => {
+                const currentAsArray = prev as ISeat[];
+                const updateCurrentSeats = dataUpdater(currentAsArray, selectedSeatData, updatedSeatData) as ISeat[];
+                const sortedUpdateCurrentSeats = seatSorter(updateCurrentSeats, "array") as ISeat[];
+                return sortedUpdateCurrentSeats;
+            });
+            else setCurrentSeats({ ...selectedSeatData, available: false, assignedTo: selectedPatron._id })
         }
-
-        // TODO
-        // check how many seats requested and fill in subsequent seats
-        // color in seats that are now assigned
-
     }
 
+    useEffect(() => {
+        setCurrentSeats(mapNavSeatData)
+    }, [mapNavSeatData])
 
     return (
         <>
-            <Flex id="navContainer" direction="column" borderWidth="1px" borderRadius={"sm"} style={{ position: 'relative', height: "100%", overflow: 'auto' }}>
+            <Flex id="navContainer" direction="column" borderWidth="1px" borderRadius={"sm"} style={{ position: 'relative', height: "100%", overflow: 'auto' }} onScroll={handleScroll}>
                 <Box w='100%' p={4} borderWidth='1px' borderRadius='sm' fontWeight='bold' color={'blue.600'} style={{ position: 'sticky', top: 0, width: "100%" }}>
                     <Center>{navTitle}</Center>
                 </Box>
-                <Box w='100%' p={4} borderWidth='1px' borderRadius='sm' fontWeight='bold' bg={'gray.100'} color={'blue.600'} style={{ position: 'sticky', top: 0, width: "100%" }}>
+                <Box w='100%' p={4} borderWidth='1px' borderRadius='sm' fontWeight='bold' bg={'gray.100'} color={'blue.600'} style={{ position: 'sticky', top: 0, width: "100%", zIndex: 100, }}>
                     <SimpleGrid columns={3} spacing={10} >
                         <Box>SEC</Box>
                         <Box>ROW</Box>
                         <Box>NUM</Box>
                     </SimpleGrid>
                 </Box>
-                {
-                    allSeatsSorted.map(seatInfo =>
-                        <Accordion allowToggle>
-                            <AccordionItem>
-                                <AccordionButton>
-                                    <Box w='100%' p={4} >
-                                        <SimpleGrid columns={3} spacing={5}>
-                                            <Text style={{ display: "flex", margin: "auto" }}>{seatInfo.section.split(/(?=[A-Z])/).join(" ")}</Text>
-                                            <Text style={{ display: "flex", margin: "auto" }}>{seatInfo.row}</Text>
-                                            <Text style={{ display: "flex", margin: "auto" }}>{seatInfo.seatNumber}</Text>
-                                        </SimpleGrid>
-                                    </Box>
-                                    <AccordionIcon />
-                                </AccordionButton>
-                                <AccordionPanel >
-                                    <Box w='100%' p={4} >
-                                        <SimpleGrid columns={1} row={4} spacing={5} marginBottom={5}>
-                                            {
-                                                seatInfo.available ?
-                                                    <>
-                                                        <Box>
-                                                            <Center>- Seat is AVAILABLE -</Center>
-                                                        </Box>
-                                                        <Menu>
-                                                            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>{
-                                                                data.fullName.length > 0 ? `Assigned to ${data.fullName}` : 'Assign to:'
-                                                            }</MenuButton>
-                                                            <MenuList >
-                                                                <MenuItem value='walk-up' onClick={handleAssignToClick}>Walk-Up</MenuItem>
-                                                                <MenuItem value='other' onClick={handleAssignToClick}>Other</MenuItem>
-                                                            </MenuList>
-                                                        </Menu>
-                                                        <Menu>
-                                                            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>{
-                                                                data.numberRequested > 0 ? `${data.numberRequested} seats selected` : 'Number of Seats'
-                                                            }</MenuButton>
-                                                            <MenuList >
-                                                                <MenuItem value='1' onClick={handleSeatNumberClick}>1</MenuItem>
-                                                                <MenuItem value='2' onClick={handleSeatNumberClick}>2</MenuItem>
-                                                                <MenuItem value='3' onClick={handleSeatNumberClick}>3</MenuItem>
-                                                                <MenuItem value='4' onClick={handleSeatNumberClick}>4</MenuItem>
-                                                                <MenuItem value='5' onClick={handleSeatNumberClick}>5</MenuItem>
-                                                            </MenuList>
-                                                        </Menu>
-                                                        <Box>
-                                                            <Center>
-                                                                <Button onClick={() => handleNotesBtnClick()}>Add Notes</Button>
-                                                            </Center>
-                                                        </Box>
-                                                    </>
-                                                    :
-                                                    <>
-                                                        <Box>
-                                                            <Center>- Seat is ASSIGNED -</Center>
-                                                        </Box>
-                                                        <Text>Assigned to: { }</Text>
-                                                        <Button>Has arrived</Button>
-                                                        <Text>NOTES</Text>
-                                                    </>
-                                            }
-
-                                        </SimpleGrid>
-                                        <Center>
-                                            <Button marginBottom={5} onClick={() => handleSubmit(seatInfo)}>Submit Updated Data</Button>
-                                        </Center>
-                                        <Center>
-                                            <Button onClick={() => handleEditBtnClick(seatInfo)}>EDIT SEAT DATA</Button>
-                                        </Center>
-                                    </Box>
-                                </AccordionPanel>
-                            </AccordionItem>
-                        </Accordion>
-                    )
+                {Array.isArray(currentSeats) ?
+                    <ScrollChunkComponent
+                        seatData={currentSeats}
+                        handleModal={handleModal}
+                        handleUpdate={handleUpdate}
+                        isBottom={isBottom} /> :
+                    <>
+                        <MapNavAccordion
+                            key={currentSeats._id}
+                            seatInfo={currentSeats}
+                            handleModal={handleModal}
+                            handleUpdate={handleUpdate} />
+                        <Button onClick={() => updateSidebar()}>Show All Seats</Button>
+                    </>
                 }
-                {
-                    seatData.length === 1 ?
-                        <Button onClick={showAll}>Show All Seats</Button> :
-                        <></>
-                }
-
             </Flex>
-            <SeatNotesModal isOpen={isOpen} onClose={onClose} handleClose={handleClose} />
         </>
     )
 }

@@ -8,30 +8,38 @@ export interface ISeat {
     seatNumber: number;
     available: boolean;
     inPlay: boolean;
+    assignedTo: string;
+}
+
+export interface ISortedSeatMap {
+    tierARowA: ISeat[];
+    tierARowB: ISeat[];
+    tierCRight: ISeat[];
+    tierCLeft: ISeat[];
+    tierCLeftCenter: ISeat[];
+    tierCRightCenter: ISeat[];
+    secondRightWing: ISeat[];
+    secondLeftWing: ISeat[];
+    thirdRightWing: ISeat[];
+    thirdLeftWing: ISeat[];
 }
 
 type UpdateEvent = React.Dispatch<React.SetStateAction<IEventData[]>>;
+type UpdatePatrons = React.Dispatch<React.SetStateAction<IPatronData[]>>;
+type UpdateSeats = React.Dispatch<React.SetStateAction<ISeat[]>>;
 
 export interface IAppData {
     seatData: ISeat[];
     eventData: IEventData[];
-    sortedSeatData: {
-        tierARowA: ISeat[];
-        tierARowB: ISeat[];
-        tierCRight: ISeat[];
-        tierCLeft: ISeat[];
-        tierCLeftCenter: ISeat[];
-        tierCRightCenter: ISeat[];
-        secondRightWing: ISeat[];
-        secondLeftWing: ISeat[];
-        thirdRightWing: ISeat[];
-        thirdLeftWing: ISeat[];
-    };
+    patronData: IPatronData[];
+    patronDataMap: Map<string, IPatronData>
     updateEvents: UpdateEvent;
+    updateSeats: UpdateSeats;
+    updatePatrons: UpdatePatrons;
 }
 
 export interface IPatronData {
-    _id?: string;
+    _id: string;
     eventID: string;
     fullName: string;
     callAhead: boolean;

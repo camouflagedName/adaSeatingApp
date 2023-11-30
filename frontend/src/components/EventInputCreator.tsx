@@ -1,9 +1,10 @@
 import { ChevronDownIcon, ChevronLeftIcon } from "@chakra-ui/icons";
-import { Box, Button, Flex, Input, Menu, MenuButton, MenuItem, MenuList, } from "@chakra-ui/react"
+import { Box, Button, Flex, Input, Menu, MenuButton, MenuList } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
 import { DateValue, IEventData } from "../interfaces/creatorInterfaces";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
+import '../Calendar.css';
 import MainPage from "./MainPage";
 
 const EventInputCreator = ({ updateData, changePage }: {
@@ -11,6 +12,7 @@ const EventInputCreator = ({ updateData, changePage }: {
     changePage: (param: React.ReactElement) => void
 }) => {
     const [dateValue, onCalendarChange] = useState<DateValue>(new Date());
+    const [dateSelected, setDataSelected] = useState(false);
     const [inputValue, onInputChange] = useState<string>('')
 
     useEffect(() => {
@@ -25,6 +27,11 @@ const EventInputCreator = ({ updateData, changePage }: {
         changePage(<MainPage changePage={changePage} />)
     }
 
+    const handleCalendarChange = (dateVal: DateValue) => {
+        onCalendarChange(dateVal);
+        if (!dateSelected) setDataSelected(true);
+    }
+
     return (
         <Flex direction="column" justify={'space-evenly'} h={'100%'}>
             <Box marginBottom={'auto'} marginTop={'auto'}>
@@ -34,19 +41,16 @@ const EventInputCreator = ({ updateData, changePage }: {
                 </Button>
             </Box>
             <Flex justify={'space-evenly'} h={'100%'}>
-
                 <Box w="50%" marginBottom={'auto'} marginTop={'auto'}>
-                    <Input placeholder='Event Title' size='lg' onChange={(evt) => onInputChange(evt.target.value)} />
+                    <Input name="event_title_input"  placeholder='Event Title' size='lg' onChange={(evt) => onInputChange(evt.target.value)} />
                 </Box>
                 <Box marginBottom={'auto'} marginTop={'auto'}>
                     <Menu>
                         <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                            {dateValue ? formatDate(dateValue) : "Select a Date"}
+                            {dateSelected ? formatDate(dateValue) : "Select a Date"}
                         </MenuButton>
-                        <MenuList>
-                            <MenuItem>
-                                <Calendar onChange={onCalendarChange} value={dateValue} />
-                            </MenuItem>
+                        <MenuList padding={5}>
+                            <Calendar onChange={handleCalendarChange} value={dateValue} />
                         </MenuList>
                     </Menu>
                 </Box>

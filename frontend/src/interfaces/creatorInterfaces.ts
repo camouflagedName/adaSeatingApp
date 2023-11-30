@@ -1,10 +1,7 @@
-import { ISeat } from "./interfaces"
+import { ISortedSeatMap } from "./interfaces";
 
 export interface ISeatMeta {
-    [key: string] : {
-        seat: ISeat;
-        isSelected: boolean;
-    }
+    [key: string] : boolean;
 }
 
 type ValuePiece = Date | null;
@@ -15,3 +12,8 @@ export interface IEventData {
     date: DateValue;
     seats: string[];
 }
+
+export interface IAppEventCreatorData {
+    sortedSeatData: ISortedSeatMap;
+}
+

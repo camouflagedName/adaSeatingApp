@@ -9,10 +9,7 @@ const SeatCreator = ({ seatData, cx, cy, isSelected, updateMeta }: { seatData: I
         updateMeta(prev => {
             const copyOfPrev = {
                 ...prev,
-                [seatData._id]: {
-                    seat: seatData,
-                    isSelected: !seatSelected,
-                }
+                [seatData._id]: !seatSelected,
             };
 
             return copyOfPrev;

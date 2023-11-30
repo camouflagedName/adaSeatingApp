@@ -1,12 +1,11 @@
-import { Flex, Container, Menu, MenuButton, Button, MenuList, MenuItem, VStack, Text, StackDivider, Center, useDisclosure, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react"
-import { IAppData } from "../interfaces/interfaces"
-import SeatingMap from "./SeatingMap";
-import SeatingMapCreator from "./SeatingMapCreator";
+import { Flex, Container, Menu, MenuButton, Button, MenuList, MenuItem, VStack, Text, StackDivider, Center, useDisclosure, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Badge } from "@chakra-ui/react"
+import { IAppData, IEventData } from "../interfaces/interfaces"
+//import SeatingMapManager from "./SeatingMapManager";
+//import SeatingMapCreator from "./SeatingMapCreator";
 import { useContext } from "react";
 import { DataContext } from "../context/context";
 import QRCode from "react-qr-code";
 
-//import './App.css'
 const currentDate = new Date();
 const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => void }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -17,40 +16,49 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
         console.log(eventID)
     }
 
-    const handleClickStart = (eventID: string) => {
-        console.log(eventID)
-        changePage(<SeatingMap seatData={seatData} changePage={changePage}/>)
+    const handleClickStart = async (event: IEventData) => {
+        try {
+            const inPlaySeatIDs = event.seats ? event.seats : [];
+            const { default: SeatingMapManager } = await import("./SeatingMapManager");
+            changePage(<SeatingMapManager changePage={changePage} inPlaySeatIDs={inPlaySeatIDs} />);
+        } catch (err) {
+            console.error("Error while importing SeatingMapManager", err)
+        }
     }
 
-    const handleClickCreate = () => {
-        changePage(<SeatingMapCreator seatData={seatData} changePage={changePage} />)
+    const handleClickCreate = async () => {
+        try {
+            const { default: SeatingMapCreator } = await import("./SeatingMapCreator");
+            changePage(<SeatingMapCreator seatData={seatData} changePage={changePage} />);
+        } catch (err) {
+            console.error("Error while loading SeatingMapCreator", err);
+        }
     }
-
 
     const currentEvent = eventData.filter(event => event.date.toLocaleString().split("T")[0] === currentDate.toISOString().split("T")[0]).map(event => {
         return (
-            <Menu>
-                <MenuButton key={`menu-${event._id}`} as={Button}>
+            <Menu key={`menu-${event._id}`}>
+                <MenuButton  as={Button}>
                     {event.name}
                 </MenuButton>
-                <MenuList key={`menuList-${event._id}`}>
-                    <MenuItem key={`edit_${event._id}`} onClick={() => handleClickEdit(event._id)}>Edit</MenuItem>
-                    <MenuItem key={`start_${event._id}`} onClick={() => handleClickStart(event._id)}>Start</MenuItem>
+                <MenuList>
+                    <MenuItem onClick={() => handleClickEdit(event._id)}>Edit</MenuItem>
+                    <MenuItem onClick={() => handleClickStart(event)}>Start</MenuItem>
                 </MenuList>
             </Menu>
         )
     })
-
-
 
     return (
         <>
             <Flex direction='column' justify='center' style={{ height: "100vh" }}>
                 <Container centerContent maxW='container.lg' style={{ margin: "auto" }}>
                     <VStack spacing={10} divider={<StackDivider borderColor='gray.400' />}>
-                        <Center>
-                            <Text textAlign="center" fontSize='4xl'>Welcome to The Anthem Seating App</Text>
-                        </Center>
+
+                        <Text textAlign="center" fontSize='4xl'>
+                            Welcome to The Anthem Seating App
+                            <Badge ml="2" colorScheme="red" variant="subtle">ALPHA</Badge>
+                        </Text>
                         <Container centerContent maxW='container.lg' style={{ margin: "auto" }}>
                             <Text fontSize='2xl' > Choose one below: </Text>
                             <Text fontSize='xl' margin={5}> Current Event: </Text>
@@ -64,17 +72,15 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
                                 {
                                     eventData.map(event => {
                                         if (event.date.toLocaleString().split("T")[0] !== currentDate.toISOString().split("T")[0]) return (
-                                            <>
-                                                <Menu key={`futureEvents-menu-${event._id}`}>
-                                                    <MenuButton key={`futureEvents-menuButton-${event._id}`} as={Button}>
-                                                        {event.name}
-                                                    </MenuButton>
-                                                    <MenuList key={`futureEvents-menuList-${event._id}`}>
-                                                        <MenuItem key={`futureEvents-edit_${event._id}`} onClick={() => handleClickEdit(event._id)}>Edit</MenuItem>
-                                                        <MenuItem key={`futureEvents-start_${event._id}`} onClick={() => handleClickStart(event._id)}>Start</MenuItem>
-                                                    </MenuList>
-                                                </Menu>
-                                            </>
+                                            <Menu key={`futureEvents-menu-${event._id}`}>
+                                                <MenuButton as={Button}>
+                                                    {event.name}
+                                                </MenuButton>
+                                                <MenuList>
+                                                    <MenuItem onClick={() => handleClickEdit(event._id)}>Edit</MenuItem>
+                                                    <MenuItem onClick={() => handleClickStart(event)}>Start</MenuItem>
+                                                </MenuList>
+                                            </Menu>
                                         )
                                     })
                                 }
