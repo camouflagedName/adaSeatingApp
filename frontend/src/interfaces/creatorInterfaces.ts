@@ -15,5 +15,9 @@ export interface IEventData {
 
 export interface IAppEventCreatorData {
     sortedSeatData: ISortedSeatMap;
+    seatMeta: {
+        [key: string]: boolean;
+    };
+    updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>>;
 }
 

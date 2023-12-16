@@ -1,14 +1,35 @@
+import { useContext, useEffect, useState } from "react";
 import { ISeat } from "../../interfaces/interfaces";
+import { LiveEventContext } from "../../context/context"
+import { IAppLiveEventData } from "../../interfaces/liveEventInterfaces";
 
 interface SeatComponentProps {
     seatData: ISeat;
     cx: string;
     cy: string;
-    seatSelected: boolean;
-    handleClick: () => void;
-  }
+    seatAvailable: boolean;
+}
 
-const SeatComponent: React.FC<SeatComponentProps> = ({ seatData, cx, cy, seatSelected, handleClick }: { seatData: ISeat, cx: string, cy: string, seatSelected: boolean, handleClick: () => void }) => {
+const SeatComponent: React.FC<SeatComponentProps> = ({ seatData, cx, cy, seatAvailable }:
+    { seatData: ISeat, cx: string, cy: string, seatAvailable: boolean }) => {
+    const [seatColor, setSeatColor] = useState("#ebebeb");
+    const data = useContext(LiveEventContext);
+    const { addSelectedSeat, removeSelectedSeat } = data as IAppLiveEventData;
+
+    const handleThisClick = () => {
+        if (seatColor === "#ebebeb") {
+            setSeatColor("#9fc5ef");
+            addSelectedSeat(seatData);
+        }
+        else if (seatColor === "#9fc5ef") {
+            setSeatColor("#ebebeb");
+            removeSelectedSeat(seatData);
+        }
+    }
+
+    useEffect(() => {
+        setSeatColor(seatAvailable ? "#ebebeb" : "#026cdf")
+    }, [seatAvailable])
 
     return (
         <circle
@@ -19,8 +40,8 @@ const SeatComponent: React.FC<SeatComponentProps> = ({ seatData, cx, cy, seatSel
             cx={cx}
             cy={cy}
             r="18"
-            onClick={handleClick}
-            style={{ fill: `${seatSelected ? "#026cdf" : "#ebebeb"}` }}
+            onClick={handleThisClick}
+            style={{ fill: `${seatColor}` }}
         >
         </circle>
     )

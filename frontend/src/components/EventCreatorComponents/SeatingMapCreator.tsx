@@ -1,19 +1,20 @@
 import { Center, Button, Flex } from "@chakra-ui/react"
-import { IAppData, ISeat } from "../interfaces/interfaces";
+import { IAppData, ISeat } from "../../interfaces/interfaces";
 import { useContext, useEffect, useMemo, useState } from "react";
-import SeatingMapLayout from "./SeatingMapLayout";
+import SeatingMapLayout from "../SeatingMapLayout";
 import MapNavCreator from "./MapNavCreator";
-import MapSVGCreator from "./SVGComponents/MapSVGCreator";
-import { ISeatMeta, IEventData } from "../interfaces/creatorInterfaces";
+import MapSVGCreator from "./MapSVGCreator";
+import { ISeatMeta, IEventData } from "../../interfaces/creatorInterfaces";
 import EventInputCreator from "./EventInputCreator";
-import { addEvent } from "../api/eventAPI";
-import MainPage from "./MainPage";
-import { DataContext } from "../context/context";
-import seatSorter from "../utils/seatSorter";
-import { EventCreator } from "../context/context";
+import { addEvent } from "../../api/eventAPI";
+import MainPage from "../MainPage";
+import { DataContext } from "../../context/context";
+import seatSorter from "../../utils/seatSorter";
+import { EventCreator } from "../../context/context";
+//import { getAllSeats } from "../../api/seatAPI";
 
 const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], changePage: (param: React.ReactElement) => void }) => {
-    const allSeatsSorted = useMemo(() => seatSorter(seatData), [seatData])
+    const allSeatsSorted = useMemo(() => seatSorter(seatData), [seatData]);
     const seatMeta = useMemo(() => {
         let updatedSeatMeta = {}
 
@@ -22,10 +23,11 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
                 ...updatedSeatMeta,
                 [seat._id]: false
             }
-        })
+        });
 
         return updatedSeatMeta;
-    }, [seatData])
+    }, [seatData]);
+
 
     const [eventData, updateEventData] = useState<IEventData>({
         name: '',
@@ -33,6 +35,24 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
         seats: [''],
     });
     const [metaData, setMetaData] = useState<ISeatMeta>(seatMeta)
+/* 
+    useEffect(() => {
+        const fetchSeats = async () => {
+
+            try {
+              const res = await getAllSeats();
+              if (res) {
+                const seatList: ISeat[] = res;
+                //this needs to be adjusted / removed
+                const allSeatsSortedArray = seatSorter(seatList, "array") as ISeat[]
+                //const allSeatsSorted = seatSorter(seatData)
+                setSeatData(allSeatsSortedArray)
+              } else console.error("Unknown and unhandled error");
+            } catch (err) {
+              console.error(err);
+            }
+          }
+    }) */
 
 
     useEffect(() => {
@@ -43,10 +63,11 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
         updateEventData(prev => ({ ...prev, ['seats']: seatIDArray }))
     }, [metaData])
 
+
     const updatedCreateBtn = eventData.name.length > 0 ? <CreateButton data={eventData} changePage={changePage} /> : null
 
     return (
-        <EventCreator.Provider value={{ sortedSeatData: allSeatsSorted}}>
+        <EventCreator.Provider value={{ sortedSeatData: allSeatsSorted, seatMeta: seatMeta, updateMeta: setMetaData }}>
             <SeatingMapLayout>
                 <SeatingMapLayout.Header>
                     <EventInputCreator updateData={updateEventData} changePage={changePage} />
@@ -55,7 +76,7 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
                     <MapSVGCreator seatMeta={metaData} updateMeta={setMetaData} />
                 </SeatingMapLayout.Main>
                 <SeatingMapLayout.Nav>
-                    <MapNavCreator seatMeta={metaData} updateMeta={setMetaData} />
+                    <MapNavCreator seatMeta={metaData} />
                 </SeatingMapLayout.Nav>
                 <SeatingMapLayout.Footer>
                     {updatedCreateBtn}

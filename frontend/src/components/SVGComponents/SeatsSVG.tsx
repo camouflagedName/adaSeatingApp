@@ -1,18 +1,12 @@
-import { ISeat } from "../../interfaces/interfaces"
 import { IAppLiveEventData } from "../../interfaces/liveEventInterfaces";
-//import { seatList } from "../../seedData/seats"
 import { useContext } from 'react'
 import { LiveEventContext } from "../../context/context"
 import SeatComponent from "./SeatComponent";
 
-const Seats = ({ update }: { update: (param: ISeat) => void }) => {
+const Seats = () => {
     const data = useContext(LiveEventContext);
     const { sortedStructInPlaySeats } = data as IAppLiveEventData;
     const { tierARowA, tierARowB, tierCLeft, tierCLeftCenter, tierCRight, tierCRightCenter, secondLeftWing, secondRightWing, thirdLeftWing, thirdRightWing } = sortedStructInPlaySeats;
-
-    const handleClick = (seatData: ISeat) => {
-        update(seatData)
-    }
 
     return (
         <g className="seats">
@@ -28,7 +22,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                         const cx = "5600";
                                         const cy = (2580 + 45 * index).toString();
 
-                                        return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                        return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                     }
                                 })
                             }
@@ -42,7 +36,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                     const cx = "5680";
                                     const cy = (2580 + 45 * index).toString();
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -60,7 +54,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                     const cx = index < 3 ? (7325 + 45 * index).toString() : "7445"
                                     const cy = index < 3 ? (2225 + 60 * index).toString() : (2225 + 70 * index).toString()
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -73,7 +67,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                     const cx = "7445";
                                     const cy = (2745 + 70 * index).toString();
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -86,7 +80,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                     const cx = "7445";
                                     const cy = (3880 + 70 * index).toString();
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -100,7 +94,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                     const cy = index < 5 ? (4965 + 70 * index).toString() :
                                         index === 5 ? "5315" : (5100 + 45 * index).toString()
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -118,7 +112,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                     const cx = (6400 + 40 * index).toString();
                                     const cy = (2200 + 60 * index).toString();
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -131,7 +125,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                     const cx = (6525 - 38 * index).toString();
                                     const cy = (5300 + 55 * index).toString();
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -148,7 +142,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                 thirdRightWing.map((seat, index) => {
                                     const cx = (8050 + 42 * index).toString()
                                     const cy = (2275 + 62 * index).toString()
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -160,7 +154,7 @@ const Seats = ({ update }: { update: (param: ISeat) => void }) => {
                                 thirdLeftWing.map((seat, index) => {
                                     const cx = (8175 - 40 * index).toString()
                                     const cy = (5200 + 60 * index).toString()
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatSelected={!seat.available} handleClick={() => handleClick(seat)} />
+                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>

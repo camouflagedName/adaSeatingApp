@@ -17,25 +17,58 @@
 } from '@chakra-ui/react' */
 //import SeatingMap from './components/SeatingMap';
 import { getAllSeats } from './api/seatAPI';
-import { IEventData, ISeat, IPatronData } from './interfaces/interfaces';
+import { IEventData, ISeat } from './interfaces/interfaces';
 import { useEffect, useState } from 'react';
 import { DataContext } from './context/context';
 import { getEvent } from './api/eventAPI';
 import MainPage from './components/MainPage';
 import seatSorter from './utils/seatSorter';
-import { patronsSeedData } from './seedData/patrons';
-import mapper from './utils/mapper';
+import { ErrorPage } from './components/ErrorPage';
+import ping from "./api/serverCheck";
 
 function App() {
   const [seatData, setSeatData] = useState<ISeat[]>([]);
-  const [eventData, setEventData] = useState<IEventData[]>([])
-  const [patronData, setPatronData] = useState<IPatronData[]>([])
-  const [patronDataMap, setPatronDataMap] = useState<Map<string, IPatronData>>()
-  const [currentPage, setCurrentPage] = useState<React.ReactElement>()
+  const [eventData, setEventData] = useState<IEventData[]>([]);
+  const [currentPage, setCurrentPage] = useState<React.ReactElement>();
+  const [status, setStatus] = useState({
+    init: true,
+    isError: false,
+    message: '',
+  });
 
   const changePage = (page: React.ReactElement) => {
     setCurrentPage(page)
   }
+
+  useEffect(() => {
+    const initServerCheck = async () => {
+      try {
+        const serverStatus = await ping();
+        if (serverStatus !== 200) {
+          setStatus({
+            init: false,
+            isError: true,
+            message: "unhandled error"
+          });
+        } else {
+          setStatus({
+            init: false,
+            isError: false,
+            message: ""
+          });
+        }
+
+      } catch (err) {
+        setStatus({
+          init: false,
+          isError: true,
+          message: (err as Error).message,
+        });
+      }
+    }
+
+    initServerCheck();
+  }, [])
 
   useEffect(() => {
     const fetchSeats = async () => {
@@ -43,14 +76,14 @@ function App() {
       try {
         const res = await getAllSeats();
         if (res) {
-          const seatList: ISeat[] = res.data;
+          const seatList: ISeat[] = res;
           //this needs to be adjusted / removed
           const allSeatsSortedArray = seatSorter(seatList, "array") as ISeat[]
           //const allSeatsSorted = seatSorter(seatData)
           setSeatData(allSeatsSortedArray)
-        }
+        } else console.error("Unknown and unhandled error");
       } catch (err) {
-        console.log(err)
+        console.error(err);
       }
     }
 
@@ -58,34 +91,26 @@ function App() {
       try {
         const res = await getEvent();
         if (res) {
-          const eventList = res.data;
+          const eventList = res;
           setEventData(eventList);
-        }
+        } else console.error("Unknown and unhandled error");
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     }
 
-    const fetchPatrons = async () => {
-      setPatronData(patronsSeedData)
+    if (!status.init) {
+      if (status.isError) setCurrentPage(<ErrorPage errorMessage={status.message} />);
+      else {
+        fetchEvents();
+        fetchSeats();
+        setCurrentPage(<MainPage changePage={changePage} />);
+      }
     }
-
-    fetchEvents();
-    fetchSeats();
-    fetchPatrons();
-  }, [])
-
-  useEffect(() => {
-    setCurrentPage(<MainPage changePage={changePage} />)
-  }, [])
-
-  useEffect(() => {
-    const dataMap = mapper(patronData) as Map<string, IPatronData>;
-    setPatronDataMap(dataMap);
-  }, [patronData])
+  }, [status]);
 
   return (
-    <DataContext.Provider value={{ seatData: seatData, eventData: eventData, patronData: patronData, patronDataMap: patronDataMap, updateEvents: setEventData, updateSeats: setSeatData, updatePatrons: setPatronData }}>
+    <DataContext.Provider value={{ seatData: seatData, eventData: eventData, updateEvents: setEventData, updateSeats: setSeatData }}>
       {currentPage}
     </DataContext.Provider>
   )

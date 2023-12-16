@@ -1,11 +1,11 @@
 import { ChevronDownIcon, ChevronLeftIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex, Input, Menu, MenuButton, MenuList } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
-import { DateValue, IEventData } from "../interfaces/creatorInterfaces";
+import { DateValue, IEventData } from "../../interfaces/creatorInterfaces";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
-import '../Calendar.css';
-import MainPage from "./MainPage";
+import '../../Calendar.css';
+import MainPage from "../MainPage";
 
 const EventInputCreator = ({ updateData, changePage }: {
     updateData: React.Dispatch<React.SetStateAction<IEventData>>,
@@ -34,14 +34,14 @@ const EventInputCreator = ({ updateData, changePage }: {
 
     return (
         <Flex direction="column" justify={'space-evenly'} h={'100%'}>
-            <Box marginBottom={'auto'} marginTop={'auto'}>
+            <Box marginBottom={'auto'} marginTop={'auto'} padding={"5px"}>
                 <Button onClick={handleReturnBtnClick}>
                     <ChevronLeftIcon color='gray.500' />
                     Return
                 </Button>
             </Box>
-            <Flex justify={'space-evenly'} h={'100%'}>
-                <Box w="50%" marginBottom={'auto'} marginTop={'auto'}>
+            <Flex direction={{ base: "column", lg: "row" }} justify={{base: "center", lg: 'space-evenly'}} h={'100%'}>
+                <Box w={{base: "100%", lg: "50%"}} marginBottom={'auto'} marginTop={'auto'}>
                     <Input name="event_title_input"  placeholder='Event Title' size='lg' onChange={(evt) => onInputChange(evt.target.value)} />
                 </Box>
                 <Box marginBottom={'auto'} marginTop={'auto'}>

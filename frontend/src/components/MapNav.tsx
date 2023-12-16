@@ -1,77 +1,36 @@
 import { Box, Button, Center, Flex, SimpleGrid } from "@chakra-ui/react"
-import { IAppData, IPatronData, ISeat } from "../interfaces/interfaces";
-import { IAppLiveEventData } from "../interfaces/liveEventInterfaces";
-import { useContext, useEffect, useState } from "react";
-import { DataContext, LiveEventContext } from "../context/context";
+import { ISeat } from "../interfaces/interfaces";
+import { useState } from "react";
 import ScrollChunkComponent from "./ScrollChunkComponent";
-import dataUpdater from "../utils/dataUpdater";
 import MapNavAccordion from "./MapNavAccordion";
-import seatSorter from "../utils/seatSorter";
 
-const MapNav = ({ mapNavSeatData, handleModal, updateSidebar, navTitle }:
-    { mapNavSeatData: (ISeat[] | ISeat), handleModal: (param: ISeat) => void, updateSidebar: () => void, navTitle: string }) => {
-    const contextData = useContext(DataContext);
-    const { patronData, updateSeats, updatePatrons } = contextData as IAppData;
-    const liveEventData = useContext(LiveEventContext)
-    const { sortedInPlaySeats } = liveEventData as IAppLiveEventData;
+interface PassedProps {
+    mapNavSeatData: (ISeat[] | ISeat),
+    handleModal: (param: ISeat) => void;
+    navTitle: string;
+    totalNumOfSeats: number;
+    handleZoomOut: () => void;
+}
+
+const MapNav = ({
+    mapNavSeatData,
+    handleModal,
+    navTitle,
+    totalNumOfSeats,
+    handleZoomOut,
+    
+}: PassedProps) => {
     const [isBottom, setIsBottom] = useState(false);
-    const [currentSeats, setCurrentSeats] = useState(mapNavSeatData)
+    const seatData = (Array.isArray(mapNavSeatData) && mapNavSeatData.length === 1) ? mapNavSeatData[0] : mapNavSeatData
 
     const handleScroll = (evt: React.UIEvent<HTMLDivElement>) => {
         const atBottom = evt.currentTarget.scrollHeight - evt.currentTarget.scrollTop === evt.currentTarget.clientHeight;
         setIsBottom(atBottom);
     }
 
-    const handleUpdate = (selectedSeatData: ISeat, selectedPatron: IPatronData) => {
-        const updatedSeatData = { available: false, assignedTo: selectedPatron._id }
-
-        if (selectedPatron.numberRequested > 1) {
-            const seatIDArr: string[] = [];
-            const sortedFilteredSeatList = sortedInPlaySeats.filter(seat => seat.section === selectedSeatData.section && seat.row === selectedSeatData.row).sort((a, b) => a.seatNumber - b.seatNumber)
-            const selectedSeatArr = sortedFilteredSeatList.filter(seat => seat.seatNumber >= selectedSeatData.seatNumber && seat.seatNumber < selectedSeatData.seatNumber + selectedPatron.numberRequested)
-            const updatedAllSeats = dataUpdater(sortedInPlaySeats, selectedSeatArr, updatedSeatData) as ISeat[];
-            const sortedUpdatedSeats = seatSorter(updatedAllSeats, "array") as ISeat[];
-
-            /* UPDATES ALL SEATS */
-            updateSeats(sortedUpdatedSeats);
-
-            selectedSeatArr.forEach(seat => {
-                seatIDArr.push(seat._id)
-            })
-
-            const updatedPatron = dataUpdater(patronData, selectedPatron, { seatID: seatIDArr, arrived: true }) as IPatronData[];
-            updatePatrons(updatedPatron);
-
-            if (Array.isArray(mapNavSeatData)) {
-                setCurrentSeats(prev => {
-                    const currentAsArray = prev as ISeat[];
-                    const updateCurrentSeats = dataUpdater(currentAsArray, selectedSeatArr, updatedSeatData) as ISeat[];
-                    const sortedUpdateCurrentSeats = seatSorter(updateCurrentSeats, "array") as ISeat[];
-                    return sortedUpdateCurrentSeats;
-                });
-            } else setCurrentSeats({ ...selectedSeatData, available: false, assignedTo: selectedPatron._id })
-
-        } else {
-            const updatedSeats = dataUpdater(sortedInPlaySeats, selectedSeatData, updatedSeatData) as ISeat[];
-            const sortedUpdatedSeats = seatSorter(updatedSeats, "array") as ISeat[];
-            const updatedPatron = dataUpdater(patronData, selectedPatron, { seatID: [selectedSeatData._id], arrived: true }) as IPatronData[];
-
-            /* UPDATES ALL SEATS */
-            updateSeats(sortedUpdatedSeats)
-            updatePatrons(updatedPatron);
-            if (Array.isArray(mapNavSeatData)) setCurrentSeats(prev => {
-                const currentAsArray = prev as ISeat[];
-                const updateCurrentSeats = dataUpdater(currentAsArray, selectedSeatData, updatedSeatData) as ISeat[];
-                const sortedUpdateCurrentSeats = seatSorter(updateCurrentSeats, "array") as ISeat[];
-                return sortedUpdateCurrentSeats;
-            });
-            else setCurrentSeats({ ...selectedSeatData, available: false, assignedTo: selectedPatron._id })
-        }
+    const handleClick = () => {
+        handleZoomOut();
     }
-
-    useEffect(() => {
-        setCurrentSeats(mapNavSeatData)
-    }, [mapNavSeatData])
 
     return (
         <>
@@ -86,22 +45,25 @@ const MapNav = ({ mapNavSeatData, handleModal, updateSidebar, navTitle }:
                         <Box>NUM</Box>
                     </SimpleGrid>
                 </Box>
-                {Array.isArray(currentSeats) ?
-                    <ScrollChunkComponent
-                        seatData={currentSeats}
-                        handleModal={handleModal}
-                        handleUpdate={handleUpdate}
-                        isBottom={isBottom} /> :
-                    <>
-                        <MapNavAccordion
-                            key={currentSeats._id}
-                            seatInfo={currentSeats}
+                <>
+                    {Array.isArray(seatData) ?
+                        <ScrollChunkComponent
+                            seatData={seatData}
                             handleModal={handleModal}
-                            handleUpdate={handleUpdate} />
-                        <Button onClick={() => updateSidebar()}>Show All Seats</Button>
-                    </>
-                }
-            </Flex>
+                            isBottom={isBottom}
+                        /> :
+                        <MapNavAccordion
+                            key={seatData._id}
+                            seatInfo={seatData}
+                            handleModal={handleModal}
+                        />
+                    }
+                    {(Array.isArray(seatData) && seatData.length === totalNumOfSeats) ?
+                        null :
+                        < Button onClick={handleClick}>Show All Seats</Button>
+                    }
+                </>
+            </Flex >
         </>
     )
 }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { IPatronData } from "../interfaces/interfaces";
 import API_ROOT from "./apiRoot";
+import handleAPIErrors from "../utils/handleAPIErrors";
 
 const baseURL = API_ROOT + 'patronAPI'
 
@@ -10,11 +11,11 @@ export const getPatrons = async (query: { [key: string]: string | boolean | obje
     try {
         const patronList = await axios.get(url, {
             params: query
-        })
+        });
 
         return patronList;
     } catch (err) {
-        console.log(err)
+        handleAPIErrors(err, "getPatrons", url)
     }
 }
 
@@ -28,7 +29,7 @@ export const updatePatron = async (id: string, data: object) => {
             return res;
         }
     } catch (err) {
-        console.log(err)
+        handleAPIErrors(err, "updatePatron", url)
     }
 }
 
@@ -42,6 +43,6 @@ export const addPatron = async (data: IPatronData) => {
             data: data,
         });
     } catch (err) {
-        console.error('Error when adding patron: ', err)
+        handleAPIErrors(err, "addPatron", url)
     }
 }

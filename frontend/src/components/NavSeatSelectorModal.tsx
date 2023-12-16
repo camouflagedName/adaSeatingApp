@@ -5,7 +5,7 @@ import { ISeatMeta } from "../interfaces/creatorInterfaces";
 import handleCheck from "../utils/handleCheck";
 
 
-const NavSeatSelectorModal = ({ isOpen, onClose, content, seatMeta, handleSelectedSeatCheck }: { isOpen: boolean, onClose: () => void, content: ISeat[], seatMeta: ISeatMeta, handleSelectedSeatCheck: (param: object) => void }) => {
+const NavSeatSelectorModal = ({ open, onClose, content, seatMeta, handleSelectedSeatCheck }: { open: boolean, onClose: () => void, content: ISeat[], seatMeta: ISeatMeta, handleSelectedSeatCheck: (param: object) => void }) => {
 
     const contentArray = content.map(seatInfo => {
         const id = seatInfo._id;
@@ -24,7 +24,7 @@ const NavSeatSelectorModal = ({ isOpen, onClose, content, seatMeta, handleSelect
 
     return (
         <>
-            <ModalComponent isOpen={isOpen} onClose={onClose} header="Select Seats" handleModalClose={handleModalClose}>
+            <ModalComponent isOpen={open} onClose={onClose} header="Select Seats" handleModalClose={handleModalClose}>
                 <Center>
                     <Box
                         display="flex" flexDirection="column"

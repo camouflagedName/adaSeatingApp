@@ -17,8 +17,8 @@ interface PassedProps {
     handleClick: () => void;
 }
 
-const withSeatCreatorLogic = <P extends SeatComponentProps>(WrappedComponent: ComponentType<PassedProps>) => {
-    const SeatComponent: React.FC<P> = (props) => {
+const withSeatCreatorLogic = (WrappedComponent: ComponentType<PassedProps>) => {
+    const SeatComponent: React.FC<SeatComponentProps> = (props) => {
         const { seatData, isSelected, update } = props;
         const [seatSelected, setSeatSelected] = useState(isSelected);
 
@@ -33,7 +33,7 @@ const withSeatCreatorLogic = <P extends SeatComponentProps>(WrappedComponent: Co
 
         return (
             <WrappedComponent
-                {...props as P}
+                {...props as SeatComponentProps}
                 seatSelected={seatSelected}
                 handleClick={handleClick}
             />

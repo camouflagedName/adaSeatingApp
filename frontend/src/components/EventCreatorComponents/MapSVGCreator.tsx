@@ -1,10 +1,8 @@
 import { useState, useRef } from "react";
 import SeatsLayoutCreator from "./SeatsLayoutCreator";
-//import ZoomedMap from "./ZoomedMap";
 import { Center, Flex } from "@chakra-ui/react";
-import Path from "./Path";
+import Path from "../SVGComponents/Path";
 import { ISeatMeta } from "../../interfaces/creatorInterfaces";
-
 
 const MapSVGCreator = ({ seatMeta, updateMeta }: { seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
     const [zoom, setZoom] = useState(1);

@@ -1,6 +1,5 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import Seats from "./SeatsSVG";
-//import ZoomedMap from "./ZoomedMap";
 import { Center, Flex } from "@chakra-ui/react";
 import { ISeat } from "../../interfaces/interfaces";
 import { IAppLiveEventData } from "../../interfaces/liveEventInterfaces";
@@ -9,7 +8,14 @@ import { LiveEventContext } from "../../context/context";
 import SVGLayout from "./SVGLayout";
 import seatSorter from "../../utils/seatSorter";
 
-const MapSVG = ({ update, updateNavTitle }: { update: (param: ISeat | ISeat[]) => void, updateNavTitle: (title: string) => void }) => {
+
+interface PassedProps {
+    updateSideBarNav: (param?: ISeat | ISeat[]) => void;
+    updateNavTitle: (title: string) => void;
+    zoomOut: boolean;
+}
+
+const MapSVG = ({ updateSideBarNav, updateNavTitle, zoomOut }: PassedProps) => {
     const [zoom, setZoom] = useState(1);
     const [viewBox, setViewBox] = useState({
         minX: 0,
@@ -23,6 +29,19 @@ const MapSVG = ({ update, updateNavTitle }: { update: (param: ISeat | ISeat[]) =
     const mapDimensions = {
         width: 1024,
         height: 750
+    }
+
+    const resetZoom = () => {
+        console.log("USE CALLBACK")
+        updateNavTitle("All SEATS");
+        updateSideBarNav();
+        setZoom(1)
+        setViewBox({
+            minX: 0,
+            minY: 0,
+            width: 10240,
+            height: 7680,
+        });
     }
 
     const handleZoom = (event: React.MouseEvent<SVGElement>) => {
@@ -46,7 +65,6 @@ const MapSVG = ({ update, updateNavTitle }: { update: (param: ISeat | ISeat[]) =
 
                 setViewBox(newViewBox);
                 setZoom(zoomFactor);
-                //setSvgHeightFactor(zoomFactor * 2 + (-5 + 5 * (zoomFactor - 1)))
 
                 if (event.currentTarget.parentElement) {
                     const id = event.currentTarget.parentElement.id.split("_").join(" ")
@@ -56,17 +74,20 @@ const MapSVG = ({ update, updateNavTitle }: { update: (param: ISeat | ISeat[]) =
                     })
 
                     const sortedSeats: ISeat[] = seatSorter(filteredData, "array") as ISeat[];
-                    //console.table(sortedSeats)
-                    update(sortedSeats)
+                    updateSideBarNav(sortedSeats)
                     updateNavTitle(id)
                 }
 
             }
-        } else {
+        } else resetZoom();
+    }
+
+
+
+    useEffect(() => {
+        if (zoomOut) {
             updateNavTitle("All SEATS");
-            const sortedSeats: ISeat[] = seatSorter(sortedInPlaySeats, "array") as ISeat[];
-            console.table(sortedSeats)
-            update(sortedSeats)
+            updateSideBarNav();
             setZoom(1)
             setViewBox({
                 minX: 0,
@@ -74,9 +95,8 @@ const MapSVG = ({ update, updateNavTitle }: { update: (param: ISeat | ISeat[]) =
                 width: 10240,
                 height: 7680,
             });
-            //setSvgHeightFactor(1)
         }
-    }
+    }, [zoomOut, updateNavTitle, updateSideBarNav])
 
     const tierA = (
         <g id="TIER_A">
@@ -141,7 +161,7 @@ const MapSVG = ({ update, updateNavTitle }: { update: (param: ISeat | ISeat[]) =
                         </filter>
                     </defs>
                     <SVGLayout tierA={tierA} tierC={tierC} secondFloorWings={secondFloorWings} thirdFloorWings={thirdFloorWings} />
-                    <Seats update={update} />
+                    <Seats />
                 </svg>
             </Center>
         </Flex>

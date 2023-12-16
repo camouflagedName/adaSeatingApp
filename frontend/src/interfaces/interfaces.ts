@@ -25,21 +25,18 @@ export interface ISortedSeatMap {
 }
 
 type UpdateEvent = React.Dispatch<React.SetStateAction<IEventData[]>>;
-type UpdatePatrons = React.Dispatch<React.SetStateAction<IPatronData[]>>;
+
 type UpdateSeats = React.Dispatch<React.SetStateAction<ISeat[]>>;
 
 export interface IAppData {
     seatData: ISeat[];
     eventData: IEventData[];
-    patronData: IPatronData[];
-    patronDataMap: Map<string, IPatronData>
     updateEvents: UpdateEvent;
     updateSeats: UpdateSeats;
-    updatePatrons: UpdatePatrons;
 }
 
 export interface IPatronData {
-    _id: string;
+    _id?: string;
     eventID: string;
     fullName: string;
     callAhead: boolean;

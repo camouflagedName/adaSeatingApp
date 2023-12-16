@@ -1,17 +1,16 @@
 import { Box, SimpleGrid, Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Button, Center, MenuButton, MenuList, MenuItem, Menu, Text, Card, CardBody, CardHeader, Heading, Badge, useDisclosure, Stack, StackDivider } from "@chakra-ui/react"
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { IAppData, IPatronData, ISeat } from "../interfaces/interfaces"
+import { IPatronData, ISeat } from "../interfaces/interfaces"
 import { useContext, useEffect, useState } from "react"
-import { patronsSeedData } from "../seedData/patrons"
-import { DataContext, LiveEventContext } from "../context/context"
+//import { patronsSeedData } from "../seedData/patrons"
+import { LiveEventContext } from "../context/context"
 import SeatNotesModal from "./SeatNotesModal"
 import { IAppLiveEventData } from "../interfaces/liveEventInterfaces"
 
-const MapNavAccordion = ({ seatInfo, handleModal, handleUpdate }:
-    { seatInfo: ISeat, handleModal: (param: ISeat) => void, handleUpdate: (arg1: ISeat, arg2: IPatronData) => void }) => {
-    const isAvailable = seatInfo.available;
-    const { patronDataMap } = useContext(DataContext) as IAppData;
-    const { seatDataMap } = useContext(LiveEventContext) as IAppLiveEventData;
+const MapNavAccordion = ({ seatInfo, handleModal }:
+    { seatInfo: ISeat, handleModal: (param: ISeat) => void }) => {
+    const isSeatAvailable = seatInfo.available;
+    const { seatDataMap, patronDataMap, patronData, savePatronsToSeats } = useContext(LiveEventContext) as IAppLiveEventData;
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const [thisPatronData, setThisPatronData] = useState<IPatronData>({
@@ -33,14 +32,18 @@ const MapNavAccordion = ({ seatInfo, handleModal, handleUpdate }:
         setThisPatronData(prev => ({ ...prev, notes: modalData }))
     }
 
-    const handleAssignToClick = (evt: React.MouseEvent<HTMLButtonElement>) => {
-        let patronObj = {};
-        const value = evt.currentTarget.textContent || "";
-        const callAhead = value !== 'Walk-Up';
-        patronObj = { fullName: value, callAhead: callAhead }
-        Object.assign(patronObj, { _id: evt.currentTarget.value })
+    const handleAssignToClick = (evt: React.MouseEvent<HTMLButtonElement>, patron?: IPatronData) => {
 
-        setThisPatronData({ ...thisPatronData, ...patronObj });
+        if (patron) {
+            setThisPatronData(patron)
+        } else {
+            const value = evt.currentTarget.textContent || "";
+            const callAhead = false;
+            const patronObj = { fullName: value, callAhead: callAhead }
+            Object.assign(patronObj, { _id: evt.currentTarget.value })
+
+            setThisPatronData({ ...thisPatronData, ...patronObj });
+        }
     }
 
     const handleSeatNumberClick = (evt: React.MouseEvent<HTMLButtonElement>) => {
@@ -52,12 +55,12 @@ const MapNavAccordion = ({ seatInfo, handleModal, handleUpdate }:
 
 
     useEffect(() => {
-        if (!isAvailable) {
+        if (!isSeatAvailable) {
             const patronID = seatInfo.assignedTo;
-            const patronData = patronDataMap.get(patronID) as IPatronData
-            setThisPatronData(patronData)
+            const patronData = patronDataMap.get(patronID) as IPatronData;
+            setThisPatronData(patronData);
         }
-    }, [isAvailable, seatInfo, patronDataMap])
+    }, [isSeatAvailable, seatInfo, patronDataMap])
 
     return (
         <>
@@ -77,7 +80,7 @@ const MapNavAccordion = ({ seatInfo, handleModal, handleUpdate }:
                         <Box w='100%' p={4} >
                             <SimpleGrid columns={1} row={6} spacing={5} marginBottom={5}>
                                 {
-                                    isAvailable ?
+                                    isSeatAvailable ?
                                         <>
                                             <Box>
                                                 <Center>- Seat is AVAILABLE -</Center>
@@ -87,7 +90,7 @@ const MapNavAccordion = ({ seatInfo, handleModal, handleUpdate }:
                                                     {thisPatronData.fullName.length > 0 ? `Assigned to ${thisPatronData.fullName}` : 'Assign to:'}</MenuButton>
                                                 <MenuList >
                                                     <MenuItem value='walk-up' onClick={handleAssignToClick}>Walk-Up</MenuItem>
-                                                    {patronsSeedData.map(patronData => <MenuItem key={patronData._id} value={patronData._id} onClick={handleAssignToClick}>{patronData.fullName}</MenuItem>)}
+                                                    {patronData.map(patron => <MenuItem key={patron._id} value={patron._id} onClick={(evt) => handleAssignToClick(evt, patron)}>{patron.fullName}</MenuItem>)}
 
                                                 </MenuList>
                                             </Menu>
@@ -109,13 +112,12 @@ const MapNavAccordion = ({ seatInfo, handleModal, handleUpdate }:
                                                 </Center>
                                             </Box>
                                             <Center>
-                                                <Button marginBottom={5} onClick={() => handleUpdate(seatInfo, thisPatronData)}>Update Seat Data</Button>
+                                                <Button marginBottom={5} onClick={() => savePatronsToSeats(seatInfo, thisPatronData)}>Update Seat Data</Button>
                                             </Center>
                                             <Center>
                                                 <Button onClick={() => handleModal(seatInfo)} isDisabled>EDIT SEAT DATA</Button>
                                             </Center>
-                                        </>
-                                        :
+                                        </> :
                                         <>
                                             <Card variant="elevated">
                                                 <CardHeader>
@@ -139,11 +141,7 @@ const MapNavAccordion = ({ seatInfo, handleModal, handleUpdate }:
                                                             {
                                                                 thisPatronData.seatID.map(id => {
                                                                     const seatData = seatDataMap.get(id) as ISeat;
-                                                                    return (
-                                                                        <>
-                                                                            <Text key={id} pt='2' fontSize='sm'>{`${seatData.section.split(/(?=[A-Z])/).join(" ")}, Row ${seatData.row}, #${seatData.seatNumber}`}</Text>
-                                                                        </>
-                                                                    )
+                                                                    return <Text key={id} pt='2' fontSize='sm'>{`${seatData.section.split(/(?=[A-Z])/).join(" ")}, Row ${seatData.row}, #${seatData.seatNumber}`}</Text>
                                                                 })
                                                             }
 
@@ -153,8 +151,8 @@ const MapNavAccordion = ({ seatInfo, handleModal, handleUpdate }:
                                                                 Notes
                                                             </Heading>
                                                             {thisPatronData.notes.map(note => (
-                                                                <Box>
-                                                                    <Badge key={note}>{note}</Badge>
+                                                                <Box key={note}>
+                                                                    <Badge>{note}</Badge>
                                                                 </Box>
                                                             ))}
                                                         </Box>

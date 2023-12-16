@@ -1,6 +1,8 @@
 import { ISeat } from "../interfaces/interfaces";
 
-
+/**
+ * Maps seats either by row/section as ISeat[] or as a key => value object
+ */
 const seatSorter = (seatData: ISeat[], returnType: string = "") => {
 
     /* TIER A */

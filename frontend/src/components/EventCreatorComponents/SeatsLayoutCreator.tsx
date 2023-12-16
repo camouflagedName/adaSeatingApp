@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 import { EventCreator } from "../../context/context"
 import { IAppEventCreatorData, ISeatMeta } from "../../interfaces/creatorInterfaces"
-import SeatComponent from "./SeatComponent"
-import withSeatCreatorLogic from "./withSeatCreatorLogic"
+import SeatComponent from "../SVGComponents/SeatComponent"
+import withSeatCreatorLogic from "../SVGComponents/withSeatCreatorLogic"
 
 const SeatCreator = withSeatCreatorLogic(SeatComponent);
 

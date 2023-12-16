@@ -1,12 +1,10 @@
 import { Button, Text } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
-
 const SelectableButton = ({ id, label, updateSelection }: { id: string, label: string, updateSelection: (value: string, selected: boolean) => void }) => {
     const [variant, setVariant] = useState('outline');
-    //const [color, setColor] = useState('whiteAlpha');
     const [isSelected, setSelected] = useState(false);
-    const [textWidth, setTextWidth] = useState('sm')
+    const [textWidth, setTextWidth] = useState('sm');
 
     const btnRef = useRef<HTMLButtonElement | null>(null);
     const textRef = useRef<HTMLParagraphElement | null>(null);
@@ -15,7 +13,6 @@ const SelectableButton = ({ id, label, updateSelection }: { id: string, label: s
         updateSelection(label, !isSelected)
         setSelected(!isSelected);
     }
-
 
     useEffect(() => {
         if (isSelected) setVariant('solid');

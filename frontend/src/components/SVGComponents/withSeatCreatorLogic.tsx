@@ -14,7 +14,7 @@ interface PassedProps {
     seatData: ISeat;
     cx: string;
     cy: string;
-    seatSelected: boolean;
+    seatAvailable: boolean;
     handleClick: () => void;
 }
 
@@ -22,6 +22,7 @@ const withSeatCreatorLogic = <P extends SeatComponentProps>(WrappedComponent: Co
     const SeatComponent: React.FC<P> = (props) => {
         const { seatData, isSelected, updateMeta } = props;
         const [seatSelected, setSeatSelected] = useState(isSelected);
+        //const [seatColor, setSeatColor] = useState("#ebebeb");
 
         const handleClick = () => {
             updateMeta(prev => {
@@ -38,12 +39,16 @@ const withSeatCreatorLogic = <P extends SeatComponentProps>(WrappedComponent: Co
 
         useEffect(() => {
             setSeatSelected(isSelected)
-        }, [isSelected])
+        }, [isSelected]);
+
+/*         useEffect(() => {
+            setSeatColor(seatSelected ? "#026cdf" : "#ebebeb")
+        }, [seatSelected]) */
 
         return (
             <WrappedComponent
                 {...props as P}
-                seatSelected={seatSelected}
+                seatAvailable={!seatSelected}
                 handleClick={handleClick}
             />
         )
