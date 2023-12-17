@@ -28,7 +28,7 @@ class PatronModel {
         try {
             const result = await this.collection.insertOne(
                 {
-                    eventId: eventID,
+                    eventID: eventID,
                     callAhead: callAhead,
                     fullName: fullName,
                     numberRequested: numberRequested,
