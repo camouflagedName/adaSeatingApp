@@ -8,7 +8,9 @@ const collectionName = process.argv[2]; 4
 const runSeedData = async () => {
     try {
         const dataModule =
-            collectionName === 'seats' ? await import("./seatList.js") : null
+            collectionName === 'seats' ? await import("./seatList.js") : 
+            collectionName === 'patrons' ? await import("./patronList.js") :
+            null
 
         const client = await clientPromise;
         const db = client.db(databaseName);

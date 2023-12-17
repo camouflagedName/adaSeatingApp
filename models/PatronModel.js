@@ -12,32 +12,37 @@ class PatronModel {
     }
 
     async getPatrons(query) {
+        console.log(query)
         try {
             const cursor = this.collection.find(query);
             const patronList = cursor.toArray();
             return patronList;
         } catch (err) {
-            console.log(err);
+            console.error("Error getting patrons at PatronModel ", err);
         }
     }
 
     async addPatron(data) {
-        const { eventId, callAhead, fullName, numberRequested, arrived, notes, seatID } = data
+        const { eventID, callAhead, fullName, numberRequested, arrived, notes, seatID } = data;
+        const currentDate = new Date();
         try {
             const result = await this.collection.insertOne(
                 {
-                    eventId: eventId,
+                    eventId: eventID,
                     callAhead: callAhead,
                     fullName: fullName,
                     numberRequested: numberRequested,
                     arrived: arrived,
                     notes: notes,
                     seatID: seatID,
+                    created_on: currentDate,
                 }
             )
 
+            return result;
+
         } catch (err) {
-            console.log(err)
+            console.error("Error add patron at patron model: ", err)
         }
     }
 
@@ -55,8 +60,7 @@ class PatronModel {
                 return false;
             }
         } catch (error) {
-            console.error("Error updating seat: ", error);
-            throw error;
+            console.error("Error updating patron at patron model: ", error);
         }
     }
 
