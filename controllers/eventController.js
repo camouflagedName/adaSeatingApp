@@ -7,8 +7,9 @@ const model = new EventModel(client);
 
 export async function getEvents(req, res) {
     try {
-       // const query = Object.keys(req.query).length > 0 ? req.query : {};
+        const query = req.param;
         const result = await model.getEvents();
+
         if (result) {
             return res.json(result);
         } else {

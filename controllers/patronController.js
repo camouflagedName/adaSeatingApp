@@ -6,7 +6,7 @@ const model = new PatronModel(client);
 
 export async function getPatrons(req, res) {
     try {
-        const query = req.query;
+        const query = req.params;
         const result = await model.getPatrons(query);
         if (result) {
             return res.json(result);
