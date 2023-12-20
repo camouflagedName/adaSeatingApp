@@ -33,7 +33,7 @@ function App() {
   const [status, setStatus] = useState({
     init: true,
     isError: false,
-    message: '',
+    message: 'Contacting server...',
   });
 
   const changePage = (page: React.ReactElement) => {
@@ -42,19 +42,20 @@ function App() {
 
   useEffect(() => {
     const initServerCheck = async () => {
-      try {
+      try {       
         const serverStatus = await ping();
+
         if (serverStatus !== 200) {
           setStatus({
             init: false,
             isError: true,
-            message: "unhandled error"
+            message: "unhandled error while connecting to server"
           });
         } else {
           setStatus({
             init: false,
             isError: false,
-            message: ""
+            message: "Connected to server."
           });
         }
 
@@ -98,7 +99,8 @@ function App() {
         console.error(err);
       }
     }
-
+    
+    console.log(status.message)
     if (!status.init) {
       if (status.isError) setCurrentPage(<ErrorPage errorMessage={status.message} />);
       else {
@@ -107,7 +109,7 @@ function App() {
         setCurrentPage(<MainPage changePage={changePage} />);
       }
     }
-  }, [status]);
+  }, [status]); 
 
   return (
     <DataContext.Provider value={{ seatData: seatData, eventData: eventData, updateEvents: setEventData, updateSeats: setSeatData }}>

@@ -7,7 +7,7 @@ const model = new EventModel(client);
 
 export async function getEvents(req, res) {
     try {
-        const query = req.body;
+        const query = req.param;
         const result = await model.getEvents(query);
         if (result) {
             return res.json(result);

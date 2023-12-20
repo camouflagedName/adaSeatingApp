@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import SeatsLayoutCreator from "./SeatsLayoutCreator";
 import { Center, Flex } from "@chakra-ui/react";
-import Path from "../SVGComponents/Path";
+import Path from "../SVGComponents/old_Path";
 import { ISeatMeta } from "../../interfaces/creatorInterfaces";
 
 const MapSVGCreator = ({ seatMeta, updateMeta }: { seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {

@@ -1,17 +1,18 @@
 import { useDisclosure } from "@chakra-ui/react"
-import { IAppData, IPatronData, ISeat, ISortedSeatMap } from "../interfaces/interfaces";
+import { IAppData, IPatronData, ISeat, ISortedSeatMap } from "../../interfaces/interfaces";
 import { useState, useContext, useMemo, useEffect } from "react";
-import SeatDataModal from "./SeatDataModal";
-import SeatingMapLayout from "./SeatingMapLayout";
-import MapNav from "./MapNav";
-import MapSVG from "./SVGComponents/MapSVG";
-import SeatingMapTitle from "./SeatingMapTitle";
-import { DataContext } from "../context/context";
-import { LiveEventContext } from '../context/context';
-import seatSorter from "../utils/seatSorter";
-import mapper from "../utils/mapper";
-import { getPatrons } from "../api/patronAPI";
-import dataUpdater from "../utils/dataUpdater";
+import SeatDataModal from "../SeatDataModal";
+import SeatingMapLayout from "../SeatingMapLayout";
+import MapNav from "../MapNav";
+import MapSVG from "../SVGComponents/MapSVG";
+import SeatingMapTitle from "../SeatingMapTitle";
+import { DataContext } from "../../context/context";
+import { LiveEventContext } from '../../context/context';
+import seatSorter from "../../utils/seatSorter";
+import mapper from "../../utils/mapper";
+import dataUpdater from "../../utils/dataUpdater";
+import { getPatrons } from "../../api/patronAPI";
+
 //import { patronsSeedData } from "../seedData/patrons";
 
 const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage: (param: React.ReactElement) => void, inPlaySeatIDs: string[], eventID: string }) => {

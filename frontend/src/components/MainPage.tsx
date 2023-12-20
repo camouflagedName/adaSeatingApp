@@ -15,18 +15,6 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
     const { seatData, eventData } = contextData as IAppData;
     const [modalComponent, setModalComponent] = useState<React.ReactElement>(<></>);
 
-    /*     const showAddPatronModal = async (event: IEventData) => {
-            onOpen();
-            try {
-                const { default: AddPatronForm } = await import("./AddPatronForm");
-                setModalComponent(<AddPatronForm event={event} />);
-                setModalButtonLabel("Submit");
-                setModalHeader("Add Patron Information");
-            } catch (err) {
-                console.error("Error while importing AddPatronForm", err)
-            }
-        } */
-
     const showAddPatronModal = (event: IEventData) => {
         onOpen();
 
@@ -37,7 +25,7 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
     const handleClickStart = async (event: IEventData) => {
         try {
             const inPlaySeatIDs = event.seats ? event.seats : [];
-            const { default: SeatingMapManager } = await import("./SeatingMapManager");
+            const { default: SeatingMapManager } = await import("./LiveEventComponents/SeatingMapManager");
             changePage(<SeatingMapManager changePage={changePage} inPlaySeatIDs={inPlaySeatIDs} eventID={event._id} />);
         } catch (err) {
             console.error("Error while importing SeatingMapManager", err)
@@ -124,31 +112,3 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
 }
 
 export default MainPage;
-
-/* 
-
-                <Modal isOpen={isOpen} onClose={onClose}>
-                    <ModalOverlay />
-                    <ModalContent>
-                        <ModalHeader>Scan</ModalHeader>
-                        <ModalCloseButton />
-                        <ModalBody>
-                            <Center>
-                                {modalComponent}
-                            </Center>
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button colorScheme='blue' mr={3} onClick={onClose}>Close</Button>
-                        </ModalFooter>
-                    </ModalContent>
-                </Modal>
-
-*/
-
-/*
-
-                <MainPageModal isOpen={isOpen} onClose={onClose} header={modalHeader} buttonLabel={modalButtonLabel}>
-                    {modalComponent}
-                </MainPageModal>
-
-*/
