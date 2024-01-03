@@ -15,12 +15,13 @@ const MapNavCreator = ({ seatMeta }: { seatMeta: ISeatMeta }) => {
 
     const tierA = { "Row A": tierARowA, "Row B": tierARowB };
     const secondFloor = { "2nd Floor Right Wing": secondRightWing, "2nd Floor Left Wing": secondLeftWing };
-    const tierCSections = [...tierCRight, ...tierCRightCenter, ...tierCLeft, ...tierCLeftCenter];
+    const tierCSections = [...tierCRight, ...tierCRightCenter, ...tierCLeftCenter, ...tierCLeft ];
     const tierC = { "Tier C": tierCSections };
     const thirdFloor = { "3rd Floor Right Wing": thirdRightWing, "3rd Floor Left Wing": thirdLeftWing };
     const allSectionsArray = [tierA, secondFloor, tierC, thirdFloor]
 
     const handleModalBtnClick = (content: ISeat[]) => {
+        console.log(content)
         setModalContent(content);
         onOpen();
     }
@@ -44,6 +45,7 @@ const MapNavCreator = ({ seatMeta }: { seatMeta: ISeatMeta }) => {
                             label = "3rd Floor";
                             break;
                     }
+
                     return <MapNavCreatorAccordion key={index} title={label} section={section} seatMeta={seatMeta} handleModalBtnClick={handleModalBtnClick}/>
                 })}
             </Flex>

@@ -1,7 +1,7 @@
 import { Center, Spinner } from "@chakra-ui/react"
 import MapNavAccordion from "./MapNavAccordion"
 import { useEffect, useRef, useState } from "react"
-import { ISeat } from "../interfaces/interfaces";
+import { ISeat } from "../../interfaces/interfaces";
 
 
 const ScrollChunkComponent = ({ seatData, handleModal, isBottom }:

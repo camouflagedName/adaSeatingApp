@@ -1,17 +1,18 @@
 import { useDisclosure } from "@chakra-ui/react"
-import { IAppData, IPatronData, ISeat, ISortedSeatMap } from "../interfaces/interfaces";
+import { IAppData, IPatronData, ISeat, ISortedSeatMap } from "../../interfaces/interfaces";
 import { useState, useContext, useMemo, useEffect } from "react";
-import SeatDataModal from "./SeatDataModal";
-import SeatingMapLayout from "./SeatingMapLayout";
-import MapNav from "./MapNav";
-import MapSVG from "./SVGComponents/MapSVG";
-import SeatingMapTitle from "./SeatingMapTitle";
-import { DataContext } from "../context/context";
-import { LiveEventContext } from '../context/context';
-import seatSorter from "../utils/seatSorter";
-import mapper from "../utils/mapper";
-import { getPatrons } from "../api/patronAPI";
-import dataUpdater from "../utils/dataUpdater";
+import SeatDataModal from "../SeatDataModal";
+import SeatingMapLayout from "../SeatingMapLayout";
+import MapNav from "../MapNav";
+import MapSVG from "../SVGComponents/MapSVG";
+import SeatingMapTitle from "../SeatingMapTitle";
+import { DataContext } from "../../context/context";
+import { LiveEventContext } from '../../context/context';
+import seatSorter from "../../utils/seatSorter";
+import mapper from "../../utils/mapper";
+import dataUpdater from "../../utils/dataUpdater";
+import { getPatrons } from "../../api/patronAPI";
+
 //import { patronsSeedData } from "../seedData/patrons";
 
 const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage: (param: React.ReactElement) => void, inPlaySeatIDs: string[], eventID: string }) => {
@@ -72,13 +73,15 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
 
     const getCurrentSeats = (patron: IPatronData, seatToSave: ISeat) => {
         if (patron.numberRequested > 1) {
-            return sessionSeats.filter(
-                seat =>
-                    seat.section === seatToSave.section &&
-                    seat.row === seatToSave.row &&
-                    seat.seatNumber >= seatToSave.seatNumber &&
-                    seat.seatNumber < seatToSave.seatNumber + patron.numberRequested
-            ).sort((a, b) => a.seatNumber - b.seatNumber);
+            return sessionSeats
+                .filter(
+                    seat =>
+                        seat.section === seatToSave.section &&
+                        seat.row === seatToSave.row &&
+                        seat.seatNumber >= seatToSave.seatNumber &&
+                        seat.seatNumber < seatToSave.seatNumber + patron.numberRequested
+                )
+                .sort((a, b) => a.seatNumber - b.seatNumber);
         }
 
         return seatToSave;
@@ -156,6 +159,8 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
                 savePatronsToSeats: savePatronsToSeats,
                 addSelectedSeat: addSelectedSeat,
                 removeSelectedSeat: removeSelectedSeat,
+                updateSideBarNav: updateSideBarNav,
+                updateNavTitle: updateNavTitle,
             }}>
             <SeatingMapLayout>
                 <SeatingMapLayout.Header>
@@ -164,8 +169,8 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
                 <SeatingMapLayout.Main>
                     <MapSVG
                         updateSideBarNav={updateSideBarNav}
-                        updateNavTitle={updateNavTitle} 
-                        zoomOut={zoomOut}/>
+                        updateNavTitle={updateNavTitle}
+                        zoomOut={zoomOut} />
                 </SeatingMapLayout.Main>
                 <SeatingMapLayout.Nav>
                     <MapNav

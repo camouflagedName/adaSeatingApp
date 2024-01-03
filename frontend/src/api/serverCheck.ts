@@ -8,8 +8,8 @@ export default async () => {
 
     try {
         const response = await axios.get(url);
-
         if (response && response.status) return response.status;
+        else {console.log("NO RESPONSE")}
 
     } catch (err) {
         handleAPIErrors(err, "server check", url)

@@ -3,7 +3,7 @@ import { IAppData, ISeat } from "../../interfaces/interfaces";
 import { useContext, useEffect, useMemo, useState } from "react";
 import SeatingMapLayout from "../SeatingMapLayout";
 import MapNavCreator from "./MapNavCreator";
-import MapSVGCreator from "./MapSVGCreator";
+import MapSVGEventCreator from "./MapSVGEventCreator";
 import { ISeatMeta, IEventData } from "../../interfaces/creatorInterfaces";
 import EventInputCreator from "./EventInputCreator";
 import { addEvent } from "../../api/eventAPI";
@@ -35,25 +35,24 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
         seats: [''],
     });
     const [metaData, setMetaData] = useState<ISeatMeta>(seatMeta)
-/* 
-    useEffect(() => {
-        const fetchSeats = async () => {
-
-            try {
-              const res = await getAllSeats();
-              if (res) {
-                const seatList: ISeat[] = res;
-                //this needs to be adjusted / removed
-                const allSeatsSortedArray = seatSorter(seatList, "array") as ISeat[]
-                //const allSeatsSorted = seatSorter(seatData)
-                setSeatData(allSeatsSortedArray)
-              } else console.error("Unknown and unhandled error");
-            } catch (err) {
-              console.error(err);
-            }
-          }
-    }) */
-
+    /* 
+        useEffect(() => {
+            const fetchSeats = async () => {
+    
+                try {
+                  const res = await getAllSeats();
+                  if (res) {
+                    const seatList: ISeat[] = res;
+                    //this needs to be adjusted / removed
+                    const allSeatsSortedArray = seatSorter(seatList, "array") as ISeat[]
+                    //const allSeatsSorted = seatSorter(seatData)
+                    setSeatData(allSeatsSortedArray)
+                  } else console.error("Unknown and unhandled error");
+                } catch (err) {
+                  console.error(err);
+                }
+              }
+        }) */
 
     useEffect(() => {
         const seatIDArray: string[] = []
@@ -70,13 +69,18 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
         <EventCreator.Provider value={{ sortedSeatData: allSeatsSorted, seatMeta: seatMeta, updateMeta: setMetaData }}>
             <SeatingMapLayout>
                 <SeatingMapLayout.Header>
-                    <EventInputCreator updateData={updateEventData} changePage={changePage} />
+                    <EventInputCreator
+                        updateData={updateEventData}
+                        changePage={changePage} />
                 </SeatingMapLayout.Header>
                 <SeatingMapLayout.Main>
-                    <MapSVGCreator seatMeta={metaData} updateMeta={setMetaData} />
+                    <MapSVGEventCreator
+                        seatMeta={metaData}
+                        updateMeta={setMetaData} />
                 </SeatingMapLayout.Main>
                 <SeatingMapLayout.Nav>
-                    <MapNavCreator seatMeta={metaData} />
+                    <MapNavCreator
+                        seatMeta={metaData} />
                 </SeatingMapLayout.Nav>
                 <SeatingMapLayout.Footer>
                     {updatedCreateBtn}

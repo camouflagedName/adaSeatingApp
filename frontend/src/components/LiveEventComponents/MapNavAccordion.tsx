@@ -1,11 +1,11 @@
 import { Box, SimpleGrid, Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Button, Center, MenuButton, MenuList, MenuItem, Menu, Text, Card, CardBody, CardHeader, Heading, Badge, useDisclosure, Stack, StackDivider } from "@chakra-ui/react"
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { IPatronData, ISeat } from "../interfaces/interfaces"
+import { IPatronData, ISeat } from "../../interfaces/interfaces"
 import { useContext, useEffect, useState } from "react"
 //import { patronsSeedData } from "../seedData/patrons"
-import { LiveEventContext } from "../context/context"
-import SeatNotesModal from "./SeatNotesModal"
-import { IAppLiveEventData } from "../interfaces/liveEventInterfaces"
+import { LiveEventContext } from "../../context/context"
+import SeatNotesModal from "../SeatNotesModal"
+import { IAppLiveEventData } from "../../interfaces/liveEventInterfaces"
 
 const MapNavAccordion = ({ seatInfo, handleModal }:
     { seatInfo: ISeat, handleModal: (param: ISeat) => void }) => {

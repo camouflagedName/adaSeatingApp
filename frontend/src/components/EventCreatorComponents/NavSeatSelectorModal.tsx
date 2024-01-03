@@ -10,8 +10,7 @@ console.timeEnd('StaticImportTime');
 
 const NavSeatSelectorModal = ({ open, onClose, content, seatMeta }: { open: boolean, onClose: () => void, content: ISeat[], seatMeta: ISeatMeta }) => {
 
-    const handleModalClose = () => {
-    }
+    const handleModalClose = () => {}
 
     return (
         <>

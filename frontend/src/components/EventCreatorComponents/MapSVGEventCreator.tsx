@@ -1,16 +1,10 @@
-import { useState, useRef, useEffect } from "react";
-import Seats from "./SeatsSVG";
+import { useState, useRef } from "react";
+import SeatsLayoutCreator from "./SeatsLayoutCreator";
 import { Center, Flex } from "@chakra-ui/react";
-import { ISeat } from "../../interfaces/interfaces";
-import SVGLayout from "./SVGLayout";
-import InteractiveSection from "./InteractiveSection";
-import withLiveEventSectionLogic from "./withLiveEventMapSVGLogic";
-
-interface PassedProps {
-    updateSideBarNav: (param?: ISeat | ISeat[]) => void;
-    updateNavTitle: (title: string) => void;
-    zoomOut: boolean;
-}
+//import Path from "../SVGComponents/old_Path";
+import SVGLayout from "../SVGComponents/SVGLayout";
+import { ISeatMeta } from "../../interfaces/creatorInterfaces";
+import InteractiveSection from "../SVGComponents/InteractiveSection";
 
 interface ViewBox {
     minX: number;
@@ -26,13 +20,8 @@ const baseViewBox: ViewBox = {
     height: 7680,
 }
 
-const InteractiveSectionLiveEvent = withLiveEventSectionLogic(InteractiveSection);
 
-const MapSVG = ({
-    updateSideBarNav,
-    updateNavTitle,
-    zoomOut
-}: PassedProps) => {
+const MapSVGEventCreator = ({ seatMeta, updateMeta }: { seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
     const [zoom, setZoom] = useState(1);
     const [viewBox, setViewBox] = useState(baseViewBox);
 
@@ -43,21 +32,34 @@ const MapSVG = ({
         height: 750
     }
 
-/*     const updateNavData = (navTitle: string, seats: ISeat[]) => {
-        updateNavTitle(navTitle);
-        if (seats.length > 0) updateSideBarNav(seats);
-        else updateSideBarNav();
-    } */
-
     const updateSVGState = (zoomAmount: number, viewBoxData: ViewBox) => {
         setZoom(zoomAmount)
         setViewBox(viewBoxData);
     }
 
-    useEffect(() => {
-        if (zoomOut) {
-            updateNavTitle("All SEATS");
-            updateSideBarNav();
+/*     const handleZoom = (event: React.MouseEvent<SVGElement>) => {
+        if (zoom < 4) {
+            const zoomFactor = zoom + 2;
+
+            if (svgRef.current) {
+                const svgPoint = svgRef.current.createSVGPoint();
+                svgPoint.x = event.clientX;
+                svgPoint.y = event.clientY;
+                const transPoint = svgPoint.matrixTransform(
+                    svgRef.current.getScreenCTM()?.inverse()
+                );
+
+                const newViewBox = {
+                    minX: transPoint.x - viewBox.width / (2 * zoomFactor),
+                    minY: transPoint.y - viewBox.height / (2 * zoomFactor),
+                    width: viewBox.width / zoomFactor,
+                    height: viewBox.height / zoomFactor,
+                }
+
+                setViewBox(newViewBox);
+                setZoom(zoomFactor);
+            }
+        } else {
             setZoom(1)
             setViewBox({
                 minX: 0,
@@ -66,11 +68,11 @@ const MapSVG = ({
                 height: 7680,
             });
         }
-    }, [zoomOut, updateNavTitle, updateSideBarNav])
+    } */
 
     const tierA = (
         <g id="TIER_A">
-            <InteractiveSectionLiveEvent
+            <InteractiveSection
                 id="TIERAR"
                 zoom={zoom}
                 updateSVGState={updateSVGState}
@@ -143,6 +145,7 @@ const MapSVG = ({
         </g>
     );
 
+
     return (
         <Flex style={{ background: "rgb(232, 236, 242)", justifyContent: "center", maxHeight: "100%", overflow: "auto" }}>
             <Center style={{ maxHeight: "100vh" }}>
@@ -155,7 +158,8 @@ const MapSVG = ({
                     height={mapDimensions.height}
                     style={{ maxWidth: "100%", minWidth: "100%", minHeight: "100%" }}
                     xmlns="http://www.w3.org/2000/svg"
-                    ref={svgRef}>
+                    ref={svgRef}
+                >
                     <defs>
                         <filter id="ISM_Shadow" filterUnits="objectBoundingBox">
                             <feGaussianBlur in="SourceAlpha" result="blur" stdDeviation="5" />
@@ -172,52 +176,11 @@ const MapSVG = ({
                         tierC={tierC}
                         secondFloorWings={secondFloorWings}
                         thirdFloorWings={thirdFloorWings} />
-                    <Seats />
+                    <SeatsLayoutCreator seatMeta={seatMeta} updateMeta={updateMeta} />
                 </svg>
             </Center>
         </Flex>
     )
 }
 
-export default MapSVG;
-
-/* const createNewViewBox = (pathElement: SVGPathElement): ViewBox => {
-    // Get the bounding box of the SVGPathElement
-    const bbox = pathElement.getBBox();
-
-    // Construct the new ViewBox object
-    const newViewBox: ViewBox = {
-        minX: bbox.x,
-        minY: bbox.y,
-        width: bbox.width,
-        height: bbox.height,
-    };
-
-    return newViewBox;
-};
- */
-
-/* const createNewViewBox = (event: React.MouseEvent<SVGElement>, svgRefCurrent: SVGSVGElement, viewBoxBase: ViewBox, zoomFactor: number): ViewBox => {
-    zoomFactor = zoomFactor * 1.25;
-    const svgPoint = svgRefCurrent.createSVGPoint();
-    svgPoint.x = event.clientX;
-    svgPoint.y = event.clientY;
-    const transPoint = svgPoint.matrixTransform(
-        svgRefCurrent.
-            getScreenCTM()?.
-            inverse()
-    );
-
-    console.log(viewBoxBase);
-    console.log(svgPoint);
-    console.log(transPoint);
-
-    const newViewBox = {
-        minX: transPoint.x - viewBoxBase.width / (2 * zoomFactor),
-        minY: transPoint.y - viewBoxBase.height / (2 * zoomFactor),
-        width: viewBoxBase.width / zoomFactor,
-        height: viewBoxBase.height / zoomFactor,
-    }
-
-    return newViewBox;
-} */
+export default MapSVGEventCreator;
