@@ -1,21 +1,3 @@
-//import { useState } from 'react'
-/* import {
-  Button,
-  Container,
-  Flex,
-  Text,
-  VStack,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
-  Spacer,
-} from '@chakra-ui/react' */
-//import SeatingMap from './components/SeatingMap';
 import { getAllSeats } from './api/seatAPI';
 import { IEventData, ISeat } from './interfaces/interfaces';
 import { useEffect, useState } from 'react';
@@ -99,7 +81,7 @@ function App() {
         console.error(err);
       }
     }
-    
+
     console.log(status.message)
     if (!status.init) {
       if (status.isError) setCurrentPage(<ErrorPage errorMessage={status.message} />);

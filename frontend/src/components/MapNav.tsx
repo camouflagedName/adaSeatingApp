@@ -1,8 +1,8 @@
 import { Box, Button, Center, Flex, SimpleGrid } from "@chakra-ui/react"
 import { ISeat } from "../interfaces/interfaces";
 import { useState } from "react";
-import ScrollChunkComponent from "./ScrollChunkComponent";
-import MapNavAccordion from "./MapNavAccordion";
+import ScrollChunkComponent from "./LiveEventComponents/ScrollChunkComponent";
+import MapNavAccordion from "./LiveEventComponents/MapNavAccordion";
 
 interface PassedProps {
     mapNavSeatData: (ISeat[] | ISeat),

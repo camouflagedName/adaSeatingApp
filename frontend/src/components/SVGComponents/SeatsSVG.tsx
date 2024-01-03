@@ -2,11 +2,28 @@ import { IAppLiveEventData } from "../../interfaces/liveEventInterfaces";
 import { useContext } from 'react'
 import { LiveEventContext } from "../../context/context"
 import SeatComponent from "./SeatComponent";
+import withLiveEventSeatLogic from "./withLiveEventSeatLogic";
+
+const LiveEventSeat = withLiveEventSeatLogic(SeatComponent)
 
 const Seats = () => {
     const data = useContext(LiveEventContext);
     const { sortedStructInPlaySeats } = data as IAppLiveEventData;
     const { tierARowA, tierARowB, tierCLeft, tierCLeftCenter, tierCRight, tierCRightCenter, secondLeftWing, secondRightWing, thirdLeftWing, thirdRightWing } = sortedStructInPlaySeats;
+
+    const tierARowASeatStart = 101;
+    const tierARowBSeatStart = 101;
+
+    const tierCRightSeatStart = 101;
+    const tierCRightCenterStart = 107;
+    const tierCLeftCenterStart = 123;
+    const tierCLeftSeatStart = 138;
+
+    const secondFloorLeftSeatStart = 101;
+    const secondFloorRightSeatStart = 101;
+
+    const thirdFloorLeftSeatStart = 101;
+    const thirdFloorRightSeatStart = 101;
 
     return (
         <g className="seats">
@@ -17,13 +34,13 @@ const Seats = () => {
                         tierARowA &&
                         <g data-component="svg__row" data-row-name="A" className="row">
                             {
-                                tierARowA.map((seat, index) => {
-                                    if (seat.inPlay) {
-                                        const cx = "5600";
-                                        const cy = (2580 + 45 * index).toString();
+                                tierARowA.map((seat) => {
+                                    const index = seat.seatNumber - tierARowASeatStart;
 
-                                        return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
-                                    }
+                                    const cx = "5600";
+                                    const cy = (2580 + 45 * index).toString();
+
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -32,11 +49,12 @@ const Seats = () => {
                         tierARowB &&
                         <g data-component="svg__row" data-row-name="B" className="row">
                             {
-                                tierARowB.map((seat, index) => {
+                                tierARowB.map(seat => {
+                                    const index = seat.seatNumber - tierARowBSeatStart;
                                     const cx = "5680";
                                     const cy = (2580 + 45 * index).toString();
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -50,11 +68,13 @@ const Seats = () => {
                         tierCRight &&
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
-                                tierCRight.map((seat, index) => {
+                                tierCRight.map(seat => {
+                                    const index = seat.seatNumber - tierCRightSeatStart;
+
                                     const cx = index < 3 ? (7325 + 45 * index).toString() : "7445"
                                     const cy = index < 3 ? (2225 + 60 * index).toString() : (2225 + 70 * index).toString()
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -63,11 +83,13 @@ const Seats = () => {
                         tierCRightCenter &&
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
-                                tierCRightCenter.map((seat, index) => {
+                                tierCRightCenter.map(seat => {
+                                    const index = seat.seatNumber - tierCRightCenterStart;
+
                                     const cx = "7445";
                                     const cy = (2745 + 70 * index).toString();
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -76,11 +98,13 @@ const Seats = () => {
                         tierCLeftCenter &&
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
-                                tierCLeftCenter.map((seat, index) => {
+                                tierCLeftCenter.map(seat => {
+                                    const index = seat.seatNumber - tierCLeftCenterStart;
+
                                     const cx = "7445";
                                     const cy = (3880 + 70 * index).toString();
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -89,12 +113,14 @@ const Seats = () => {
                         tierCLeft &&
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
-                                tierCLeft.map((seat, index) => {
+                                tierCLeft.map(seat => {
+                                    const index = seat.seatNumber - tierCLeftSeatStart;
+
                                     const cx = index <= 5 ? "7445" : (7625 - 35 * index).toString();
                                     const cy = index < 5 ? (4965 + 70 * index).toString() :
                                         index === 5 ? "5315" : (5100 + 45 * index).toString()
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -108,11 +134,14 @@ const Seats = () => {
                         secondRightWing &&
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
-                                secondRightWing.map((seat, index) => {
+                                secondRightWing.map(seat => {
+                                    const index = seat.seatNumber - secondFloorRightSeatStart;
+
                                     const cx = (6400 + 40 * index).toString();
                                     const cy = (2200 + 60 * index).toString();
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+
                                 })
                             }
                         </g>
@@ -121,11 +150,14 @@ const Seats = () => {
                         secondLeftWing &&
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
-                                secondLeftWing.map((seat, index) => {
+                                secondLeftWing.map(seat => {
+                                    const index = seat.seatNumber - secondFloorLeftSeatStart;
+
                                     const cx = (6525 - 38 * index).toString();
                                     const cy = (5300 + 55 * index).toString();
 
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+
                                 })
                             }
                         </g>
@@ -139,10 +171,12 @@ const Seats = () => {
                         thirdRightWing &&
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
-                                thirdRightWing.map((seat, index) => {
+                                thirdRightWing.map(seat => {
+                                    const index = seat.seatNumber - thirdFloorRightSeatStart;
+
                                     const cx = (8050 + 42 * index).toString()
                                     const cy = (2275 + 62 * index).toString()
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>
@@ -151,10 +185,13 @@ const Seats = () => {
                         thirdLeftWing &&
                         <g data-component="svg__row" data-row-name="F" className="row">
                             {
-                                thirdLeftWing.map((seat, index) => {
+                                thirdLeftWing.map(seat => {
+
+                                    const index = seat.seatNumber - thirdFloorLeftSeatStart;
+
                                     const cx = (8175 - 40 * index).toString()
                                     const cy = (5200 + 60 * index).toString()
-                                    return <SeatComponent key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
                                 })
                             }
                         </g>

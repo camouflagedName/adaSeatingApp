@@ -11,44 +11,42 @@ interface SeatComponentProps {
 }
 
 interface PassedProps {
-    seatData: ISeat;
     cx: string;
     cy: string;
-    seatAvailable: boolean;
+    seatID: string;
+    seatColor: string;
     handleClick: () => void;
 }
 
-const withSeatCreatorLogic = <P extends SeatComponentProps>(WrappedComponent: ComponentType<PassedProps>) => {
+const withEventCreatorSeatLogic = <P extends SeatComponentProps>(WrappedComponent: ComponentType<PassedProps>) => {
     const SeatComponent: React.FC<P> = (props) => {
         const { seatData, isSelected, updateMeta } = props;
         const [seatSelected, setSeatSelected] = useState(isSelected);
-        //const [seatColor, setSeatColor] = useState("#ebebeb");
+        const [seatColor, setSeatColor] = useState("#ebebeb");
 
         const handleClick = () => {
             updateMeta(prev => {
-                const copyOfPrev = {
-                    ...prev,
-                    [seatData._id]: !isSelected,
-                };
-
-                return copyOfPrev;
+                return { ...prev, [seatData._id]: !isSelected }
             });
+
+            if (seatColor === "#ebebeb") setSeatColor("#026cdf");
+            else if (seatColor === "#026cdf") setSeatColor("#ebebeb");
 
             setSeatSelected(!seatSelected);
         }
 
         useEffect(() => {
+            if (isSelected) setSeatColor("#026cdf");
+            else setSeatColor("#ebebeb")
             setSeatSelected(isSelected)
-        }, [isSelected]);
 
-/*         useEffect(() => {
-            setSeatColor(seatSelected ? "#026cdf" : "#ebebeb")
-        }, [seatSelected]) */
+        }, [isSelected]);
 
         return (
             <WrappedComponent
                 {...props as P}
-                seatAvailable={!seatSelected}
+                seatID={seatData._id}
+                seatColor={seatColor}
                 handleClick={handleClick}
             />
         )
@@ -56,4 +54,4 @@ const withSeatCreatorLogic = <P extends SeatComponentProps>(WrappedComponent: Co
     return SeatComponent;
 }
 
-export default withSeatCreatorLogic;
+export default withEventCreatorSeatLogic;

@@ -14,6 +14,8 @@ export interface IAppLiveEventData {
     savePatronsToSeats:  (selectedSeat: ISeat, selectedPatron: IPatronData) => void;
     addSelectedSeat: (data: ISeat) => void;
     removeSelectedSeat: (data: ISeat) => void;
+    updateSideBarNav: (data?: ISeat | ISeat[]) => void; 
+    updateNavTitle: (title: string) => void;
 }
 
 /*

@@ -73,13 +73,15 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
 
     const getCurrentSeats = (patron: IPatronData, seatToSave: ISeat) => {
         if (patron.numberRequested > 1) {
-            return sessionSeats.filter(
-                seat =>
-                    seat.section === seatToSave.section &&
-                    seat.row === seatToSave.row &&
-                    seat.seatNumber >= seatToSave.seatNumber &&
-                    seat.seatNumber < seatToSave.seatNumber + patron.numberRequested
-            ).sort((a, b) => a.seatNumber - b.seatNumber);
+            return sessionSeats
+                .filter(
+                    seat =>
+                        seat.section === seatToSave.section &&
+                        seat.row === seatToSave.row &&
+                        seat.seatNumber >= seatToSave.seatNumber &&
+                        seat.seatNumber < seatToSave.seatNumber + patron.numberRequested
+                )
+                .sort((a, b) => a.seatNumber - b.seatNumber);
         }
 
         return seatToSave;
@@ -157,6 +159,8 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
                 savePatronsToSeats: savePatronsToSeats,
                 addSelectedSeat: addSelectedSeat,
                 removeSelectedSeat: removeSelectedSeat,
+                updateSideBarNav: updateSideBarNav,
+                updateNavTitle: updateNavTitle,
             }}>
             <SeatingMapLayout>
                 <SeatingMapLayout.Header>
@@ -165,8 +169,8 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
                 <SeatingMapLayout.Main>
                     <MapSVG
                         updateSideBarNav={updateSideBarNav}
-                        updateNavTitle={updateNavTitle} 
-                        zoomOut={zoomOut}/>
+                        updateNavTitle={updateNavTitle}
+                        zoomOut={zoomOut} />
                 </SeatingMapLayout.Main>
                 <SeatingMapLayout.Nav>
                     <MapNav
