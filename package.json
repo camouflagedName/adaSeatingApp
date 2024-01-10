@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha __tests__/*.test.js",
+    "test:watch": "mocha __tests__/*.test.js --watch",
+    "test:coverage": "nyc --reporter=lcov --reporter=text mocha __tests__/*.test.js",
     "seed": "node ./db/seed/seed.js"
   },
   "keywords": [],
