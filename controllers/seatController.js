@@ -30,10 +30,7 @@ export async function updateSeat(req, res) {
         console.log(success);
 
         if (success) {
-            webSocketServer.clients.forEach(client => {
-                //TODO: add logic to send to each client
-                console.log()
-            })
+            webSocketServer.emit('seat updated', { seatId, updates })
 
         }
         res.json(success)
