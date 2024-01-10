@@ -7,10 +7,12 @@ import ping from './routes/api/ping.js';
 import home from './routes/api/home.js';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import createWebSocketServer from './webSocketServer.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
+const server = http.createServer(app);
 const port = process.env.PORT || 30001
 
 /* MIDDLEWARE */
@@ -25,4 +27,9 @@ app.use('/patronAPI', patronRouter)
 app.use('/eventAPI', eventRouter)
 app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
 
+/* WebSocket */
+const webSocketServer = createWebSocketServer(server); 
+
 app.listen(port, () => console.log(`Server is running on port ${port}`));
+
+export { webSocketServer };
