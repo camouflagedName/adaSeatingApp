@@ -5,6 +5,7 @@ const createWebSocketServer = (httpServer) => {
     const wss = new Server(httpServer, {
         cors: {
             origin: ["http://localhost:5173", "https://development.d1nz1b86b1hzbx.amplifyapp.com/"],
+            methods: ["GET", "POST"]
         }
 
     });
