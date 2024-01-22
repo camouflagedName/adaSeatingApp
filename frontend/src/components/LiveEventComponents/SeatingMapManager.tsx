@@ -226,7 +226,10 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
 
 
     useEffect(() => {
-        const socket = io(API_ROOT);
+        const socket = io(API_ROOT, {
+            withCredentials: true,
+            transports: ['websocket'],
+        });
 
         socket.on('connect', () => {
             console.log(`Connected to websocket with socked ID ${socket.id}`)
