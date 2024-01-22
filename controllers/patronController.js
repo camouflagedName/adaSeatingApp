@@ -24,6 +24,8 @@ export async function getPatrons(req, res) {
 export async function updatePatron(req, res) {
     const { patronID } = req.params;
     const updates = req.body;
+    console.log(`updating patron ${patronID}`)
+    console.log(updates)
     try {
         const success = await model.updatePatron(patronID, updates);
         console.log(success);

@@ -1,6 +1,8 @@
 //import clientPromise from "../db/mongoDB";
 //import { MongoClient, ObjectId, Collection, WithId } from "mongodb";
 //import { IEvents, IPatrons, ISeats } from "../utils/interfaces";
+import pkg from 'mongodb';
+const { ObjectId, MongoClient, Document } = pkg;
 
 /* COLLECTION NAME */
 const databaseName = 'ADASeatingDB';
@@ -12,7 +14,6 @@ class PatronModel {
     }
 
     async getPatrons(query) {
-        console.log(query)
         try {
             const cursor = this.collection.find(query);
             const patronList = cursor.toArray();
@@ -47,20 +48,20 @@ class PatronModel {
     }
 
     async updatePatron(patronID, updates) {
+        const objectID = new ObjectId(patronID)
         try {
             const result = await this.collection.updateOne(
-                { _id: patronID },
+                { _id: objectID },
                 { $set: updates }
             )
-
+            
             // check if update was successful
-            if (result.modifiedCount === 1) {
-                return true;
-            } else {
-                return false;
-            }
+            if (result.modifiedCount === 1) return true;
+            else return false;
         } catch (error) {
+            //TODO: log error
             console.error("Error updating patron at patron model: ", error);
+            return false;
         }
     }
 

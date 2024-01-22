@@ -1,25 +1,21 @@
 import { Server } from "socket.io";
 
-const createWebSocketServer = (appServer) => {
-    const wss = new Server(appServer);
+const createWebSocketServer = (httpServer) => {
+
+    const wss = new Server(httpServer, {
+        cors: {
+            origin: ["http://localhost:5173", "https://development.d1nz1b86b1hzbx.amplifyapp.com/"],
+        }
+
+    });
 
     wss.on('connection', (socket) => {
-        socket.on('message', (message) => {
-            console.log(`Received message ${message}`);
-            
-            //TODO: add logic
-        })
+        console.log(`User ${socket.id} at ${socket.handshake.address} is now connected.`);
+        wss.emit('client connected', { clientID: socket.id });
 
         socket.on('disconnect', () => {
-            console.log('A user disconnected')
+            console.log(`User ${socket.id} at ${socket.handshake.address} is now connected.`);
         })
-
-        socket.on('close', () => {
-            console.log('Client disconnected');
-            //TODO: add logic for cleanup and/or handle disconnection
-        })
-
-
     })
 
     return wss;

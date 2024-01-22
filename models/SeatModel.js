@@ -1,37 +1,102 @@
-//import clientPromise from "../db/mongoDB";
-//import { MongoClient, ObjectId, Collection, WithId } from "mongodb";
-//import { IEvents, IPatrons, ISeats } from "../utils/interfaces";
+//import { ObjectId, MongoClient, Document } from "mongodb";
+import pkg from 'mongodb';
+const { ObjectId, MongoClient, Document } = pkg;
 
 /* COLLECTION NAME */
 const databaseName = 'ADASeatingDB';
 const collectionName = 'seats';
+
+/**
+ * 
+ */
 class SeatModel {
+    /**
+     * 
+     * @param {MongoClient} client 
+     */
     constructor(client) {
         const db = client.db(databaseName);
         this.collection = db.collection(collectionName);
+        this.client = client;
     }
-    async updateSeat(seatId, updates) {
+
+    /**
+     * 
+     * @param {string} seatID 
+     * @param {Document} updates 
+     * @returns boolean
+     */
+    async updateSeat(seatID, updates) {
         try {
+            const objectID = new ObjectId(seatID)
             const result = await this.collection.updateOne(
-                { _id: seatId },
+                { _id: objectID },
                 { $set: updates }
             )
 
             // check if update was successful
-            if (result.modifiedCount === 1) {
-                return true;
-            } else {
-                return false;
-            }
+            if (result.modifiedCount === 1) return true;
+            else return false;
+
         } catch (error) {
             console.error("Error updating seat: ", error);
             throw error;
         }
     }
+
+
+    /**
+ * 
+ * @param {Array<string>} seatID 
+ * @param {Document} updates 
+ * @returns boolean
+ */
+    async updateMultipleSeats(seatID, updates) {
+        try {
+
+            if (seatID.length === 1) {
+                const objectID = new ObjectId(seatID[0])
+                const result = await this.collection.updateOne(
+                    { _id: objectID },
+                    { $set: updates }
+                )
+
+                // check if update was successful
+                if (result.modifiedCount === 1) return true;
+                else return false;
+            } else if (seatID.length > 1) {
+                const objectIDArray = seatID.map(id => new ObjectId(id));
+
+                const result = await this.collection.updateMany(
+                    { _id: { $in: objectIDArray } },
+                    { $set: updates },
+                    (updateErr, result) => {
+                        if (updateErr) {
+                            console.error('Error occurred while updating seats', updateErr);
+                            this.client.close();
+                            return false;
+                        }
+                    }
+                )
+
+                // TODO: fix return
+
+                console.log(result.modifiedCount);
+                return true;
+
+            }
+
+        } catch (error) {
+            console.error("Error updating multiple seats: ", error);
+            throw error;
+        }
+    }
+
+
     async getAvailableSeatsForEvent() {
         const query = { available: true };
         const availableSeats = await this.collection.find(query).toArray();
-        
+
         return availableSeats;
     }
 
@@ -75,11 +140,8 @@ class SeatModel {
                 }
             )
 
-            if (result) {
-                console.log(`Patron ${patronID} added successfully.`)
-            } else {
-                console.log("Patron unable to be added.")
-            }
+            if (result) console.log(`Patron ${patronID} added successfully.`)
+            else console.log("Patron unable to be added.")
         } catch (err) {
 
         }

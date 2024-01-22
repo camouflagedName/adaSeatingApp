@@ -10,11 +10,12 @@ const router = Router();
 router.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.sendFile(path.join(__dirname, '../../view/seats.html'))
-})
+});
 
 router.get('/allSeats', seatController.getAvailableSeats);
-router.post('/addSeat', seatController.addSeat)
-router.put('/update/:seatId', seatController.updateSeat);
+router.post('/addSeat', seatController.addSeat);
+router.put('/updateSeat/:seatID', seatController.updateSeat);
+router.put('/updateSeat/', seatController.updateMultipleSeats);
 
 
 export default router;

@@ -1,3 +1,4 @@
+import http from 'http'
 import express from 'express';
 import cors from 'cors';
 import seatRouter from './routes/api/seats.js';
@@ -26,10 +27,11 @@ app.use('/seatAPI', seatRouter)
 app.use('/patronAPI', patronRouter)
 app.use('/eventAPI', eventRouter)
 app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
+//app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io/client-dist'));
 
 /* WebSocket */
 const webSocketServer = createWebSocketServer(server); 
 
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+server.listen(port, () => console.log(`Server is running on port ${port}`));
 
-export { webSocketServer };
+export { webSocketServer, server };
