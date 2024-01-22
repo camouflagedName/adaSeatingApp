@@ -62,6 +62,8 @@ const MapNavAccordion = ({ seatInfo, handleModal }:
         }
     }, [isSeatAvailable, seatInfo, patronDataMap])
 
+    console.log("MapNavAccordion Patron Date: ", thisPatronData)
+
     return (
         <>
             <Accordion allowToggle>
@@ -112,7 +114,7 @@ const MapNavAccordion = ({ seatInfo, handleModal }:
                                                 </Center>
                                             </Box>
                                             <Center>
-                                                <Button marginBottom={5} onClick={() => savePatronsToSeats(seatInfo, thisPatronData)}>Update Seat Data</Button>
+                                                <Button marginBottom={5} onClick={() => savePatronsToSeats(seatInfo, thisPatronData)} isDisabled={thisPatronData.fullName.length === 0}>Update Seat Data</Button>
                                             </Center>
                                             <Center>
                                                 <Button onClick={() => handleModal(seatInfo)} isDisabled>EDIT SEAT DATA</Button>

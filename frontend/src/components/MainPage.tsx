@@ -8,6 +8,9 @@ import withShowQRCode from "./withShowQRCode";
 
 const currentDate = new Date();
 
+//TODO: reset seats
+//TODO: fix date
+
 
 const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => void }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -27,6 +30,8 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
             const inPlaySeatIDs = event.seats ? event.seats : [];
             const { default: SeatingMapManager } = await import("./LiveEventComponents/SeatingMapManager");
             changePage(<SeatingMapManager changePage={changePage} inPlaySeatIDs={inPlaySeatIDs} eventID={event._id} />);
+
+            //TODO: update database with liveEventMode: true OR make only current event available to "start"
         } catch (err) {
             console.error("Error while importing SeatingMapManager", err)
         }

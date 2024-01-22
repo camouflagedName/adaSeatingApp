@@ -32,15 +32,39 @@ export const addSeat = async (data: ISeat) => {
     }
 }
 
-export const getSeats = async(query: { [key: string]: string | boolean | object }) => {
+export const getSeats = async (query: { [key: string]: string | boolean | object }) => {
     const url = `${baseURL}/getSeats`;
 
     try {
-        return await axios.get(url, {
+        return await axios.put(url, {
             params: query,
         });
 
     } catch (err) {
         handleAPIErrors(err, "getSeats", url);
+    }
+}
+
+
+interface UpdateSeatData {
+    seatID: string | string[];
+    assignedTo: string;
+    available: boolean;
+}
+
+export const updateSeat = async (data: UpdateSeatData ) => {
+    const { seatID } = data;
+    let url = `${baseURL}/updateSeat/`;
+
+    if (!Array.isArray(seatID)) url += seatID;
+
+    try {
+        return await axios({
+            method: "put",
+            url: url,
+            data: data,
+        })
+    } catch (err) {
+        handleAPIErrors(err, 'updateSeat', url)
     }
 }
