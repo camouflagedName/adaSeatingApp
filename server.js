@@ -1,3 +1,4 @@
+import http from 'http'
 import express from 'express';
 import cors from 'cors';
 import seatRouter from './routes/api/seats.js';
@@ -7,10 +8,12 @@ import ping from './routes/api/ping.js';
 import home from './routes/api/home.js';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import createWebSocketServer from './webSocketServer.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
+const server = http.createServer(app);
 const port = process.env.PORT || 30001
 
 /* MIDDLEWARE */
@@ -24,5 +27,11 @@ app.use('/seatAPI', seatRouter)
 app.use('/patronAPI', patronRouter)
 app.use('/eventAPI', eventRouter)
 app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
+//app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io/client-dist'));
 
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+/* WebSocket */
+const webSocketServer = createWebSocketServer(server); 
+
+server.listen(port, () => console.log(`Server is running on port ${port}`));
+
+export { webSocketServer, server };

@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha __tests__/*.test.js",
+    "test:watch": "mocha __tests__/*.test.js --watch",
+    "test:coverage": "nyc --reporter=lcov --reporter=text mocha __tests__/*.test.js",
     "seed": "node ./db/seed/seed.js"
   },
   "keywords": [],
@@ -18,11 +20,15 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "mongodb": "^6.0.0",
-    "mongoose": "^7.5.1"
+    "mongoose": "^7.5.1",
+    "socket.io": "^4.7.3",
+    "socket.io-client": "^4.7.3"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/node": "^20.6.1",
+    "chai": "^5.0.0",
+    "mocha": "^10.2.0",
     "typescript": "^5.2.2"
   }
 }
