@@ -11,15 +11,28 @@ import { LiveEventContext } from '../../context/context';
 import seatSorter from "../../utils/seatSorter";
 import mapper from "../../utils/mapper";
 import dataUpdater from "../../utils/dataUpdater";
-import { getPatrons } from "../../api/patronAPI";
+import { getPatrons, updatePatron } from "../../api/patronAPI";
+import { io } from "socket.io-client";
+import API_ROOT from "../../api/apiRoot";
+import { updateSeat } from "../../api/seatAPI";
 
 //import { patronsSeedData } from "../seedData/patrons";
+
+interface WebSocketData {
+    seatID: string | string[];
+    updates: {
+        available: boolean,
+        assignedTo?: string,
+    };
+}
+
+//TODO: check for occupied seats
 
 const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage: (param: React.ReactElement) => void, inPlaySeatIDs: string[], eventID: string }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const contextData = useContext(DataContext);
 
-    //TODO - create state for sortedInPlaySeats
+    //TODO: create state for sortedInPlaySeats
     const { seatData } = contextData as IAppData;
     const inPlaySeats = seatData.filter(seat => inPlaySeatIDs.includes(seat._id))
 
@@ -32,15 +45,16 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
 
     const [modalData, setModalData] = useState<ISeat>();
     const [navTitle, setNavTitle] = useState('ALL SEATS');
-    const [patronData, updatePatrons] = useState<IPatronData[]>([])
-    const [patronDataMap, setPatronDataMap] = useState<Map<string, IPatronData>>()
+    const [patronData, updatePatrons] = useState<IPatronData[]>([]);
+    const [patronDataMap, setPatronDataMap] = useState<Map<string, IPatronData>>();
+    //const [seatDataMap, setSeatDataMap] = useState<Map<string, ISeat>>();
     const [sessionSeats, updateSessionSeats] = useState(inPlaySeats);
     const sortedInPlaySeats = seatSorter(sessionSeats, "array") as ISeat[];
     const sortedStructInPlaySeats = seatSorter(sessionSeats) as ISortedSeatMap;
     const [mapNavSeatData, setMapNavSeatData] = useState<ISeat[] | ISeat>(sortedInPlaySeats);
     const [selectedSeats, setSelectedSeats] = useState<ISeat[]>([]);
     const [zoomOut, setZoomOut] = useState(false);
-
+    const seatDataMap = useMemo(() => mapper(inPlaySeats) as Map<string, ISeat>, [inPlaySeats])
 
     const handleZoom = () => {
         setZoomOut(true);
@@ -87,23 +101,78 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
         return seatToSave;
     }
 
-    const savePatronsToSeats = (seatToSave: ISeat, selectedPatron: IPatronData) => {
-        const updatedSeatData = { available: false, assignedTo: selectedPatron._id }
-        const currentSeats = getCurrentSeats(selectedPatron, seatToSave);
+    //TODO: finish this function
+    /*     const updateSessionSeatsCallback = (allSeats: ISeat[], targetSeats, updateData) => {
+            const updateCurrentSeats = dataUpdater(allSeats, targetSeats, updateData) as ISeat[];
+            const sortedUpdateCurrentSeats = seatSorter(updateCurrentSeats, "array") as ISeat[];
+            return sortedUpdateCurrentSeats;
+        } */
 
-        /* UPDATES ALL SEATS */
+    /* UPDATES ALL SEATS */
+    const handleUpdatingSessionsSeats = async (currentSeats: ISeat | ISeat[], patronID: string) => {
+        const updatedSeatData = { available: false, assignedTo: patronID }
+
+        /* update state - client side */
         updateSessionSeats(prev => {
             const updateCurrentSeats = dataUpdater(prev, currentSeats, updatedSeatData) as ISeat[];
             const sortedUpdateCurrentSeats = seatSorter(updateCurrentSeats, "array") as ISeat[];
             return sortedUpdateCurrentSeats;
         });
 
-        /*UPDATES ALL PATRONS */
+        /* update database - server side */
+        try {
+            const response = await updateSeat({
+                seatID: Array.isArray(currentSeats) ? currentSeats.map(seat => seat._id) : currentSeats._id,
+                ...updatedSeatData
+            })
+
+            console.log('patron update: ', response)
+        } catch (err) {
+            console.log("Error when updating seats in database.")
+            console.error(err);
+        }
+    }
+
+    /* UPDATES ALL PATRONS */
+    const handleUpdatingPatrons = async (currentSeats: ISeat | ISeat[], selectedPatron: IPatronData, seatToSaveID: string) => {
+        const seatID = Array.isArray(currentSeats) ? currentSeats.map(seat => seat._id) : [seatToSaveID];
+        const updatedPatronData = { seatID: seatID, arrived: true }
+
+        /* update state - client side */
         updatePatrons(prev => {
-            const seatID = Array.isArray(currentSeats) ? currentSeats.map(seat => seat._id) : seatToSave._id;
-            const updatedPatron = dataUpdater(prev, selectedPatron, { seatID: seatID, arrived: true }) as IPatronData[];
-            return updatedPatron;
+            return dataUpdater(prev, selectedPatron, updatedPatronData) as IPatronData[];
         });
+
+        /* update database - server side */
+        try {
+            const response = await updatePatron(selectedPatron._id as string, updatedPatronData)
+            console.log('patron update: ', response)
+        } catch (err) {
+            console.log("Error when updating patron in database.");
+            console.error(err);
+        }
+    }
+
+    const savePatronsToSeats = (seatToSave: ISeat, selectedPatron: IPatronData) => {
+        //const updatedSeatData = { available: false, assignedTo: selectedPatron._id }
+        const currentSeats = getCurrentSeats(selectedPatron, seatToSave);
+
+        /* UPDATES ALL SEATS */
+        /*         updateSessionSeats(prev => {
+                    const updateCurrentSeats = dataUpdater(prev, currentSeats, updatedSeatData) as ISeat[];
+                    const sortedUpdateCurrentSeats = seatSorter(updateCurrentSeats, "array") as ISeat[];
+                    return sortedUpdateCurrentSeats;
+                }); */
+
+        handleUpdatingSessionsSeats(currentSeats, selectedPatron._id as string);
+        handleUpdatingPatrons(currentSeats, selectedPatron, seatToSave._id);
+
+        /*UPDATES ALL PATRONS */
+        /*         updatePatrons(prev => {
+                    const seatID = Array.isArray(currentSeats) ? currentSeats.map(seat => seat._id) : seatToSave._id;
+                    const updatedPatron = dataUpdater(prev, selectedPatron, { seatID: seatID, arrived: true }) as IPatronData[];
+                    return updatedPatron;
+                }); */
 
         setMapNavSeatData(sessionSeats)
 
@@ -114,7 +183,15 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
                     return sortedUpdateCurrentSeats;
                 }); */
 
-        setSelectedSeats([])
+        /*    
+            seatID: string[];
+            assignedTo: string;
+            available: boolean; 
+        */
+
+
+
+        setSelectedSeats([]);
     }
 
     useEffect(() => {
@@ -123,8 +200,10 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
     }, [selectedSeats, sessionSeats])
 
     useEffect(() => {
-        const dataMap = mapper(patronData) as Map<string, IPatronData>;
-        setPatronDataMap(dataMap);
+        const pDataMap = mapper(patronData) as Map<string, IPatronData>;
+        //const sDataMap = mapper(seatData) as Map<string, ISeat>;
+        setPatronDataMap(pDataMap);
+        //setSeatDataMap(sDataMap)
     }, [patronData]);
 
 
@@ -144,7 +223,50 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
         fetchPatrons();
     }, [eventID])
 
-    const seatDataMap = useMemo(() => mapper(inPlaySeats) as Map<string, ISeat>, [inPlaySeats])
+
+
+    useEffect(() => {
+        const socket = io(API_ROOT);
+
+        socket.on('connect', () => {
+            console.log(`Connected to websocket with socked ID ${socket.id}`)
+        })
+
+        socket.on('seat updated', (data: WebSocketData) => {
+            console.log('Received data: ', data);
+
+            //TODO: fix and add more logic
+            let updatedSeatData = data.updates;
+            let seatsToUpdate: ISeat | ISeat[];
+
+            /* REMOVE AFTER TESTING */
+            if (!data.updates.available) {
+                const randomPatron = patronData[0]._id;
+                updatedSeatData = {
+                    ...data.updates,
+                    assignedTo: randomPatron
+                };
+            }
+
+            // TODO: update logic after testing
+            if (Array.isArray(data.seatID)) {
+                seatsToUpdate = data.seatID.map(seatID => seatDataMap.get(seatID) as ISeat);
+            } else {
+                seatsToUpdate = seatDataMap.get(data.seatID) as ISeat;
+            }
+
+            updateSessionSeats(prev => {
+                const updateCurrentSeats = dataUpdater(prev, seatsToUpdate, updatedSeatData) as ISeat[];
+                const sortedUpdateCurrentSeats = seatSorter(updateCurrentSeats, "array") as ISeat[];
+
+                return sortedUpdateCurrentSeats;
+            });
+        });
+
+        return () => {
+            socket.disconnect();
+        }
+    }, [seatDataMap, patronData])
 
     return (
         <LiveEventContext.Provider

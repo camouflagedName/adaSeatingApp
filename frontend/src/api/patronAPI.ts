@@ -22,6 +22,8 @@ export const getPatrons = async (query: { [key: string]: string | boolean | obje
 export const updatePatron = async (id: string, data: object) => {
     const url = `${baseURL}/update/${id}`;
 
+    console.log(data)
+
     try {
         const res = await axios.put(url, data)
         if (res) {

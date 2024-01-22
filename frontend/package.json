@@ -20,7 +20,8 @@
     "react": "^18.2.0",
     "react-calendar": "^4.6.1",
     "react-dom": "^18.2.0",
-    "react-qr-code": "^2.0.12"
+    "react-qr-code": "^2.0.12",
+    "socket.io-client": "^4.7.3"
   },
   "devDependencies": {
     "@types/node": "^20.8.2",
