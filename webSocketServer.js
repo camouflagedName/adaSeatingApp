@@ -17,6 +17,19 @@ const createWebSocketServer = (httpServer) => {
         socket.on('disconnect', () => {
             console.log(`User ${socket.id} at ${socket.handshake.address} is now connected.`);
         })
+
+        socket.on('event started', (data) => {
+
+            //TODO: add more details
+            console.log("Client has started an event");
+            socket.broadcast.emit("event started", { hasStarted: data.hasStarted })
+        })
+
+        socket.on('event ended', (data) => {
+            //TODO: add more details
+            console.log("Client has ended an event");
+            socket.broadcast.emit("event ended", { hasStarted: data.hasStarted })
+        })
     })
 
     return wss;

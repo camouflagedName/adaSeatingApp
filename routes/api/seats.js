@@ -12,10 +12,12 @@ router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../view/seats.html'))
 });
 
-router.get('/allSeats', seatController.getAvailableSeats);
+router.get('/allSeats', seatController.getAllSeats);
+router.put('/getEventSeats', seatController.getEventSeats);
 router.post('/addSeat', seatController.addSeat);
 router.put('/updateSeat/:seatID', seatController.updateSeat);
 router.put('/updateSeat/', seatController.updateMultipleSeats);
+router.put('/resetSeats/', seatController.resetSeats);
 
 
 export default router;

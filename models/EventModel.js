@@ -1,5 +1,6 @@
 /* COLLECTION NAME */
-
+import pkg from 'mongodb';
+const { ObjectId, MongoClient, Document } = pkg;
 const databaseName = 'ADASeatingDB';
 const collectionName = 'events';
 
@@ -37,6 +38,21 @@ class EventModel {
             console.log("Error in Event Model: ", err)
         }
     }
+
+    async getEventSeatIDs(query) {
+        const objectID = new ObjectId(query.eventId)
+        try {
+            const eventSeats = await this.collection.find({ _id: objectID }, {_id: 0, seats: 1}).toArray();
+
+            console.log(eventSeats[0].seats)
+            return eventSeats;
+        } catch (err) {
+            console.error("Error gettings event seats: ", err);
+            throw err;
+        }
+    }
+
 }
+
 
 export default EventModel;
