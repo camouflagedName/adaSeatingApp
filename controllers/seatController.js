@@ -15,9 +15,9 @@ import { webSocketServer } from "../server.js";
 const client = await clientPromise;
 const model = new SeatModel(client);
 
-export async function getAvailableSeats(_, res) {
+export async function getAllSeats(_, res) {
     try {
-        const result = await model.getAvailableSeatsForEvent();
+        const result = await model.getAllSeats();
         if (result) {
             return res.json(result);
         } else {
@@ -29,6 +29,23 @@ export async function getAvailableSeats(_, res) {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 }
+
+export async function getEventSeats(req, res) {
+    try {
+        const query = req.body;
+        const result = await model.getEventSeats(query);
+        if (result) {
+            return res.json(result);
+        } else {
+            console.log("No seats could be found.")
+        }
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
 
 /**
  * Update a seat.
@@ -102,8 +119,19 @@ export async function updateMultipleSeats(req, res) {
 export async function addSeat(req, res) {
     const seatData = req.body;
     try {
-        res = await model.addSeat(seatData)
-        res.json(res);
+        const result = await model.addSeat(seatData);
+        res.status(200).json(result);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+
+export async function resetSeats(req, res) {
+
+    try {
+        const result = await model.resetSeats();
+        res.status(200).json(result);
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "Internal Server Error" })

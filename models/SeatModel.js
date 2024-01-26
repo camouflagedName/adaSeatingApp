@@ -44,6 +44,32 @@ class SeatModel {
         }
     }
 
+    async getAllSeats() {
+        try {
+            //const query = { available: true };
+            const allSeats = await this.collection.find().toArray();
+            return allSeats;
+        } catch (err) {
+            console.error("Error getting all seats at SeatsModel ", err);
+        }
+    }
+
+
+    async getEventSeats(query) {
+        const seatIDArray = query.seatIDs
+
+        const objectIDArray = seatIDArray.map(seatID => new ObjectId(seatID));
+        try {
+            const eventSeats = await this.collection
+                .find({ _id: { $in: objectIDArray } })
+                .toArray();
+            return eventSeats;
+        } catch (err) {
+            console.error("Error gettings event seats: ", err);
+            throw err;
+        }
+    }
+
 
     /**
  * 
@@ -93,12 +119,6 @@ class SeatModel {
     }
 
 
-    async getAvailableSeatsForEvent() {
-        const query = { available: true };
-        const availableSeats = await this.collection.find(query).toArray();
-
-        return availableSeats;
-    }
 
     async resetSeats() {
 
@@ -143,7 +163,7 @@ class SeatModel {
             if (result) console.log(`Patron ${patronID} added successfully.`)
             else console.log("Patron unable to be added.")
         } catch (err) {
-
+            //TODO
         }
 
     }
@@ -168,7 +188,29 @@ class SeatModel {
             )
 
         } catch (err) {
+            //TODO
             console.log(err)
+        }
+    }
+
+    async resetSeats() {
+        try {
+            const result = await this.collection.updateMany(
+                {},
+                { $set: {
+                    available: true,
+                    assignedTo: "",
+                } },
+                (updateErr, result) => {
+                    if (updateErr) {
+                        console.error('Error occurred while reseting seats', updateErr);
+                        this.client.close();
+                        return false;
+                    }
+                }
+            )
+        } catch (err) {
+            //TODO
         }
     }
 }

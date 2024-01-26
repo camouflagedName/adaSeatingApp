@@ -34,3 +34,18 @@ export async function addEvent(req, res) {
         res.status(500).json({ message: 'Internal Server Error when creating event' });
     }
 }
+
+
+
+export async function getEventSeatIDs(req, res) {
+    try {
+        //TODO
+        const query = req.body;
+        const result = await model.getEventSeats(query);
+        if (result) return res.json(result);
+        else console.log("No event seats could be found.");
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}

@@ -12,7 +12,8 @@ router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../view/events.html'));
 })
 
-router.get('/events', eventController.getEvents)
-router.post('/addEvent', eventController.addEvent)
+router.get('/events', eventController.getEvents);
+router.post('/addEvent', eventController.addEvent);
+router.put('/getEventSeatIDs', eventController.getEventSeatIDs);
 
 export default router;
