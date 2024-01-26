@@ -34,3 +34,19 @@ export const addEvent = async (data: IEventData) => {
         handleAPIErrors(err, "addEvent", url)
     }
 }
+
+
+
+export const getEventSeatIDs = async (data: object) => {
+    const url = `${baseURL}/getEventSeatsIDs`;
+
+    try {
+        const eventSeatList = await axios.put(url, data);
+        console.log(eventSeatList.data)
+        if (eventSeatList && eventSeatList.data) return eventSeatList.data[0].seats;
+        else throw new Error('No data received from seatAPI');
+
+    } catch (err) {
+        handleAPIErrors(err, "getEventSeats", url);
+    }
+}
