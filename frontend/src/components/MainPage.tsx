@@ -1,12 +1,14 @@
 import { Flex, Container, Menu, MenuButton, Button, MenuList, MenuItem, VStack, Text, StackDivider, useDisclosure, Modal, ModalOverlay, Badge } from "@chakra-ui/react"
 import { IAppData, IEventData } from "../interfaces/interfaces"
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../context/context";
 import MainPageModal from "./MainPageModal";
 import withAddPatrons from "./withAddPatrons";
 import withShowQRCode from "./withShowQRCode";
+import { resetSeats } from "../api/seatAPI";
 
 const currentDate = new Date();
+currentDate.setHours(0, 0, 0, 0);
 
 //TODO: reset seats
 //TODO: fix date
@@ -15,7 +17,7 @@ const currentDate = new Date();
 const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => void }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const contextData = useContext(DataContext);
-    const { seatData, eventData } = contextData as IAppData;
+    const { seatData, eventData, eventHasStarted, setEventHasStarted, socket } = contextData as IAppData;
     const [modalComponent, setModalComponent] = useState<React.ReactElement>(<></>);
 
     const showAddPatronModal = (event: IEventData) => {
@@ -27,11 +29,17 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
 
     const handleClickStart = async (event: IEventData) => {
         try {
+            setEventHasStarted(true)
             const inPlaySeatIDs = event.seats ? event.seats : [];
             const { default: SeatingMapManager } = await import("./LiveEventComponents/SeatingMapManager");
             changePage(<SeatingMapManager changePage={changePage} inPlaySeatIDs={inPlaySeatIDs} eventID={event._id} />);
 
+
             //TODO: update database with liveEventMode: true OR make only current event available to "start"
+            if (socket) {
+                console.log(socket);
+                socket.emit("event started", { hasStarted: true })
+            }
         } catch (err) {
             console.error("Error while importing SeatingMapManager", err)
         }
@@ -46,25 +54,78 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
         }
     }
 
-    const currentEvent = eventData.filter(event => event.date.toLocaleString().split("T")[0] === currentDate.toISOString().split("T")[0]).map(event => {
-        return (
-            <Menu key={`menu-${event._id}`}>
-                <MenuButton as={Button}>
-                    {event.name}
-                </MenuButton>
-                <MenuList>
-                    <MenuItem onClick={() => showAddPatronModal(event)}>Add Patron</MenuItem>
-                    <MenuItem onClick={() => handleClickStart(event)}>Start</MenuItem>
-                </MenuList>
-            </Menu>
-        )
-    })
+    const handleEndEvent = async () => {
+        try {
+            const res = await resetSeats();
+            console.log(res);
+            if (res && res.status === 200) {
+                //TODO
+                setEventHasStarted(false);
+                if (socket) {
+                    socket.emit("event ended", { hasStarted: false })
+                }
+            }
+        } catch (err) {
+            console.error("Error when closing event", err);
+        }
+    }
+
+    const currentEvent = eventData.filter(event => event.date.toLocaleString().split("T")[0] === currentDate.toISOString().split("T")[0])
+        .map(event => {
+            return (
+                <Menu key={`menu-${event._id}`}>
+                    <MenuButton as={Button}>
+                        {event.name}
+                    </MenuButton>
+                    <MenuList>
+                        <MenuItem onClick={() => showAddPatronModal(event)}>Add Patron</MenuItem>
+                        <MenuItem onClick={() => handleClickStart(event)}>{` ${eventHasStarted ? "Return to Event" : "Start Event"}`}</MenuItem>
+                        {
+                            eventHasStarted ? <MenuItem onClick={() => handleEndEvent()}>End Event</MenuItem> : <></>
+                        }
+                    </MenuList>
+                </Menu>
+            )
+        })
 
     const showQRCode = () => {
         onOpen();
-            const ShowQRComponent = withShowQRCode(MainPageModal);
-            setModalComponent(<ShowQRComponent onClose={onClose} />);
+        const ShowQRComponent = withShowQRCode(MainPageModal);
+        setModalComponent(<ShowQRComponent onClose={onClose} />);
     }
+
+    interface LiveEventSocket {
+        hasStarted: boolean;
+    }
+
+    useEffect(() => {
+        if (socket) {
+            socket.on('event started', (data: LiveEventSocket) => {
+                console.log('event started');
+                console.log(data)
+                setEventHasStarted(data.hasStarted)
+
+            });
+
+            socket.on('event ended', (data: LiveEventSocket) => {
+                console.log('event ended');
+                console.log(data)
+                setEventHasStarted(data.hasStarted)
+            })
+        } else {
+            console.log("NO SOCKET CONNECTION FOUND");
+        }
+
+        return () => {
+            if (socket) {
+                // Remove event listener
+                socket.off('event started');
+                socket.off('event ended');
+            }
+        };
+
+
+    }, [socket, setEventHasStarted]);
 
     return (
         <>
@@ -87,14 +148,13 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
                             <VStack>
                                 {
                                     eventData.map(event => {
-                                        if (event.date.toLocaleString().split("T")[0] !== currentDate.toISOString().split("T")[0]) return (
+                                        if (event.date.toLocaleString().split("T")[0] > currentDate.toISOString().split("T")[0]) return (
                                             <Menu key={`futureEvents-menu-${event._id}`}>
                                                 <MenuButton as={Button}>
                                                     {event.name}
                                                 </MenuButton>
                                                 <MenuList>
                                                     <MenuItem onClick={() => showAddPatronModal(event)}>Add Patrons</MenuItem>
-                                                    <MenuItem onClick={() => handleClickStart(event)}>Start</MenuItem>
                                                 </MenuList>
                                             </Menu>
                                         )

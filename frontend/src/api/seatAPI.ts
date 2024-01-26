@@ -32,16 +32,16 @@ export const addSeat = async (data: ISeat) => {
     }
 }
 
-export const getSeats = async (query: { [key: string]: string | boolean | object }) => {
-    const url = `${baseURL}/getSeats`;
+export const getEventSeats = async (data: object) => {
+    const url = `${baseURL}/getEventSeats`;
 
     try {
-        return await axios.put(url, {
-            params: query,
-        });
+        const eventSeatList = await axios.put(url, data);
+        if (eventSeatList && eventSeatList.data) return eventSeatList.data;
+        else throw new Error('No data received from seatAPI');
 
     } catch (err) {
-        handleAPIErrors(err, "getSeats", url);
+        handleAPIErrors(err, "getEventSeats", url);
     }
 }
 
@@ -66,5 +66,17 @@ export const updateSeat = async (data: UpdateSeatData ) => {
         })
     } catch (err) {
         handleAPIErrors(err, 'updateSeat', url)
+    }
+}
+
+export const resetSeats = async () => {
+    const url = `${baseURL}/resetSeats/`;
+
+    try {
+        const response = await axios.put(url);
+        console.log(response);
+        return response;
+    } catch (err) {
+        handleAPIErrors(err, 'resetSeats', url)
     }
 }

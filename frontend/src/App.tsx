@@ -7,24 +7,28 @@ import MainPage from './components/MainPage';
 import seatSorter from './utils/seatSorter';
 import { ErrorPage } from './components/ErrorPage';
 import ping from "./api/serverCheck";
+import { Socket, io } from "socket.io-client";
+import API_ROOT from './api/apiRoot';
 
 function App() {
   const [seatData, setSeatData] = useState<ISeat[]>([]);
   const [eventData, setEventData] = useState<IEventData[]>([]);
   const [currentPage, setCurrentPage] = useState<React.ReactElement>();
+  const [eventHasStarted, setEventHasStarted] = useState(false);
   const [status, setStatus] = useState({
     init: true,
     isError: false,
     message: 'Contacting server...',
   });
+  const [socketInState, setSocket] = useState<Socket>();
 
   const changePage = (page: React.ReactElement) => {
-    setCurrentPage(page)
+    setCurrentPage(page);
   }
 
   useEffect(() => {
     const initServerCheck = async () => {
-      try {       
+      try {
         const serverStatus = await ping();
 
         if (serverStatus !== 200) {
@@ -91,10 +95,36 @@ function App() {
         setCurrentPage(<MainPage changePage={changePage} />);
       }
     }
-  }, [status]); 
+  }, [status]);
+
+  useEffect(() => {
+    //console.log("DDDDDDDDDDD")
+    const socket = io(API_ROOT, {
+        withCredentials: true,
+        transports: ['websocket'],
+    });
+
+    socket.on('connect', () => {
+        console.log(`Connected to websocket with socked ID ${socket.id}`)
+    });
+
+    setSocket(socket);
+
+    return () => {
+      socket.disconnect();
+  }
+  }, []);
 
   return (
-    <DataContext.Provider value={{ seatData: seatData, eventData: eventData, updateEvents: setEventData, updateSeats: setSeatData }}>
+    <DataContext.Provider value={{
+      seatData: seatData,
+      eventData: eventData,
+      updateEvents: setEventData,
+      updateSeats: setSeatData,
+      eventHasStarted: eventHasStarted,
+      setEventHasStarted: setEventHasStarted,
+      socket: socketInState,
+    }}>
       {currentPage}
     </DataContext.Provider>
   )

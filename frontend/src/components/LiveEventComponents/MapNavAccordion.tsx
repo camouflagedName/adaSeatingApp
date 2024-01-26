@@ -7,22 +7,24 @@ import { LiveEventContext } from "../../context/context"
 import SeatNotesModal from "../SeatNotesModal"
 import { IAppLiveEventData } from "../../interfaces/liveEventInterfaces"
 
+const initPatronData: IPatronData = {
+    _id: "",
+    eventID: "",
+    fullName: "",
+    callAhead: false,
+    numberRequested: 0,
+    arrived: false,
+    notes: [],
+    seatID: [],
+}
+
 const MapNavAccordion = ({ seatInfo, handleModal }:
     { seatInfo: ISeat, handleModal: (param: ISeat) => void }) => {
     const isSeatAvailable = seatInfo.available;
     const { seatDataMap, patronDataMap, patronData, savePatronsToSeats } = useContext(LiveEventContext) as IAppLiveEventData;
     const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const [thisPatronData, setThisPatronData] = useState<IPatronData>({
-        _id: "",
-        eventID: "",
-        fullName: "",
-        callAhead: false,
-        numberRequested: 0,
-        arrived: false,
-        notes: [],
-        seatID: [],
-    })
+    const [thisPatronData, setThisPatronData] = useState<IPatronData>(initPatronData)
 
     const handleNotesBtnClick = () => {
         onOpen();
@@ -55,14 +57,20 @@ const MapNavAccordion = ({ seatInfo, handleModal }:
 
 
     useEffect(() => {
-        if (!isSeatAvailable) {
-            const patronID = seatInfo.assignedTo;
-            const patronData = patronDataMap.get(patronID) as IPatronData;
-            setThisPatronData(patronData);
+        try {
+            if (!isSeatAvailable) {
+                const patronID = seatInfo.assignedTo;
+                const patronData = patronDataMap.get(patronID) as IPatronData;
+
+                if (patronData === undefined) throw new Error("Seat/Patron data mismatch")
+
+                setThisPatronData(patronData);
+            }
+        } catch (err) {
+            console.error(err)
+            setThisPatronData(initPatronData)
         }
     }, [isSeatAvailable, seatInfo, patronDataMap])
-
-    console.log("MapNavAccordion Patron Date: ", thisPatronData)
 
     return (
         <>

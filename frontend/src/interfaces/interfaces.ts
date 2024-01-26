@@ -1,3 +1,4 @@
+import { Socket } from "socket.io-client";
 
 export interface ISeat {
     _id: string;
@@ -33,6 +34,9 @@ export interface IAppData {
     eventData: IEventData[];
     updateEvents: UpdateEvent;
     updateSeats: UpdateSeats;
+    eventHasStarted: boolean;
+    setEventHasStarted:  React.Dispatch<React.SetStateAction<boolean>>;
+    socket: Socket;
 }
 
 export interface IPatronData {
