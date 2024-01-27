@@ -106,7 +106,7 @@ export async function updateMultipleSeats(req, res) {
         console.log("CHECK HERE: ", success);
 
         if (success) {
-            webSocketServer.emit('seats updated', { seatID, updates })
+            webSocketServer.emit('seat updated', { seatID, updates })
 
         }
         res.json(success)
