@@ -11,11 +11,12 @@ export async function getPatrons(req, res) {
         if (result) {
             return res.json(result);
         } else {
+            //TODO: improve
             console.log(`No patrons matching query ${query} could be found.`)
         }
 
     } catch (err) {
-        console.log(err)
+        console.error(err)
         res.status(500).json({ message: 'Internal Server Error when retrieving patron data' });
     }
 }
@@ -24,15 +25,14 @@ export async function getPatrons(req, res) {
 export async function updatePatron(req, res) {
     const { patronID } = req.params;
     const updates = req.body;
-    console.log(`updating patron ${patronID}`)
-    console.log(updates)
+
     try {
         const success = await model.updatePatron(patronID, updates);
         console.log(success);
-        res.json(success)
+        res.status(200).json(success)
 
     } catch (err) {
-        console.log("At patron controller: ", err)
+        console.error("At patron controller: ", err)
         res.status(500).json({ message: "Internal Server Error when attempting to update patron data"})
     }
 }
@@ -42,10 +42,10 @@ export async function addPatron(req, res) {
     try {
         const result = await model.addPatron(patronData);
 
-        if (result) return res.json(patronData)
+        if (result) return res.status(200).json(patronData)
         else throw new Error(result);
     } catch (err) {
-        console.log(err);
+        console.error(err);
         res.status(500).json({ message: "Internal Server Error when adding new patron"})
     }
 }

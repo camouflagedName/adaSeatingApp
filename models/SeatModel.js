@@ -106,10 +106,13 @@ class SeatModel {
                 )
 
                 // TODO: fix return
-
-                console.log(result.modifiedCount);
-                return true;
-
+                console.log("Multiple seats updated.")
+                if (result.modifiedCount === seatID.length ) return true;
+                else {
+                    //TODO: improve messaging/handling
+                    console.log("Not all seats could be modified.")
+                    return false;
+                }
             }
 
         } catch (error) {
