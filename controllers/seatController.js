@@ -103,6 +103,7 @@ export async function updateMultipleSeats(req, res) {
         const success = await model.updateMultipleSeats(seatID, updates);
 
         // TODO: fix success and error logic
+        console.log("CHECK HERE: ", success);
 
         if (success) {
             webSocketServer.emit('seats updated', { seatID, updates })
@@ -111,7 +112,7 @@ export async function updateMultipleSeats(req, res) {
         res.json(success)
 
     } catch (err) {
-        console.log(err)
+        console.error(err)
         res.status(500).json({ message: "Internal Server Error" })
     }
 }

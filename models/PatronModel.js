@@ -56,7 +56,9 @@ class PatronModel {
             )
             
             // check if update was successful
-            if (result.modifiedCount === 1) return true;
+            if (result.modifiedCount >= 1) return true;
+
+            //TODO: improve
             else return false;
         } catch (error) {
             //TODO: log error
