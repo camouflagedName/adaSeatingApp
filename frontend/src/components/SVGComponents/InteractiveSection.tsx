@@ -1,24 +1,17 @@
 import { FC, MutableRefObject, useRef, useState } from "react";
-//import { ISeat } from "../../interfaces/interfaces";
-//import seatSorter from "../../utils/seatSorter";
-//import { LiveEventContext } from "../../context/context";
-//import { IAppLiveEventData } from "../../interfaces/liveEventInterfaces";
+import { ViewBox } from "../../interfaces/liveEventInterfaces";
+import calculateNewViewBox from "../../utils/calculateNewViewBox";
+
 
 interface PassedProps {
     id: string;
     dString: string;
     zoom: number;
     parentSVGRef: MutableRefObject<SVGSVGElement | null>;
-
+    forwardRef?: MutableRefObject<SVGPathElement | null>;
     updateSVGState: (zoomAmount: number, viewBoxData: ViewBox) => void;
 }
 
-interface ViewBox {
-    minX: number;
-    minY: number;
-    width: number;
-    height: number;
-}
 
 const baseViewBox: ViewBox = {
     minX: 0,
@@ -29,11 +22,11 @@ const baseViewBox: ViewBox = {
 
 const InteractiveSection: FC<PassedProps> = ({
     id,
-
     updateSVGState,
     parentSVGRef,
     dString,
-    zoom
+    zoom,
+    forwardRef
 }) => {
     //const data = useContext(LiveEventContext);
     //const { sortedInPlaySeats } = data as IAppLiveEventData;
@@ -42,7 +35,7 @@ const InteractiveSection: FC<PassedProps> = ({
         width: "10",
     });
 
-    const pathRef = useRef(null);
+    const pathRef = useRef<SVGPathElement | null>(null);
 
     const handleMouseOver = () => {
         setBorder({
@@ -60,16 +53,15 @@ const InteractiveSection: FC<PassedProps> = ({
 
     const handleClick = (event: React.MouseEvent<SVGElement>) => {
         const svgRefCurrent = parentSVGRef.current;
-        const pathRefCurrent = pathRef.current;
+        const pathRefCurrent = forwardRef ? forwardRef.current : pathRef.current;
         let zoomFactor = 1;
-        //let navTitle = "ALL SEATS";
         let updatedViewBox = baseViewBox;
-        //let seats: ISeat[] = [];
-
+        
         if (zoom < 3) {
             zoomFactor = zoom + 1;
 
-            if (pathRefCurrent && svgRefCurrent) updatedViewBox = createNewViewBox(pathRefCurrent, zoomFactor)
+            if (pathRefCurrent && svgRefCurrent)
+                updatedViewBox = calculateNewViewBox(pathRefCurrent, zoomFactor)
 
             if (event.currentTarget.parentElement) {
                 //const sectionTitleArray = event.currentTarget.parentElement.id.split("_");
@@ -87,7 +79,7 @@ const InteractiveSection: FC<PassedProps> = ({
 
     return (
         <path
-            ref={pathRef}
+            ref={forwardRef || pathRef}
             id={id}
             onClick={handleClick}
             onMouseOver={handleMouseOver}
@@ -101,19 +93,3 @@ const InteractiveSection: FC<PassedProps> = ({
 };
 
 export default InteractiveSection;
-
-const createNewViewBox = (pathElement: SVGPathElement, zoomFactor: number): ViewBox => {
-    // Get the bounding box of the SVGPathElement
-    const bbox = pathElement.getBBox();
-    const padding = 1250 - (zoomFactor * 375); // Adjust this as needed for padding around the path
-
-    // Calculate the new ViewBox values for zooming and centering
-    const newViewBox: ViewBox = {
-        minX: bbox.x - padding,
-        minY: bbox.y - padding,
-        width: bbox.width + 2 * padding,
-        height: bbox.height + 2 * padding,
-    };
-
-    return newViewBox;
-};

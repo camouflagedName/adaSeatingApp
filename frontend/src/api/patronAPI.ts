@@ -19,31 +19,35 @@ export const getPatrons = async (query: { [key: string]: string | boolean | obje
     }
 }
 
-export const updatePatron = async (id: string, data: object) => {
+export const updatePatronAPI = async (id: string, data: object) => {
     const url = `${baseURL}/update/${id}`;
 
 
     try {
         const res = await axios.put(url, data)
-        if (res) {
-            console.log(res)
+        if (res.status === 200) {
             return res;
-        }
+        } else throw new Error(`Error status ${res.status}`);
     } catch (err) {
-        handleAPIErrors(err, "updatePatron", url)
+        handleAPIErrors(err, "updatePatron", url);
     }
 }
 
-export const addPatron = async (data: IPatronData) => {
+export const addPatronAPI = async (data: IPatronData) => {
     const url = `${baseURL}/addPatron`;
 
     try {
-        return await axios({
+        const res = await axios({
             method: "post",
             url: url,
             data: data,
         });
+
+        if (res.status === 200) {
+            return res.data;
+        } else throw new Error(`Error status ${res.status}`);
     } catch (err) {
-        handleAPIErrors(err, "addPatron", url)
+        handleAPIErrors(err, "addPatron", url);
+        return null
     }
 }

@@ -10,7 +10,7 @@ import { resetSeats } from "../api/seatAPI";
 const currentDate = new Date();
 currentDate.setHours(0, 0, 0, 0);
 
-//TODO: reset seats
+//TEST: reset seats
 //TODO: fix date
 
 
@@ -37,7 +37,6 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
 
             //TODO: update database with liveEventMode: true OR make only current event available to "start"
             if (socket) {
-                console.log(socket);
                 socket.emit("event started", { hasStarted: true })
             }
         } catch (err) {
@@ -79,7 +78,7 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
                     </MenuButton>
                     <MenuList>
                         <MenuItem onClick={() => showAddPatronModal(event)}>Add Patron</MenuItem>
-                        <MenuItem onClick={() => handleClickStart(event)}>{` ${eventHasStarted ? "Return to Event" : "Start Event"}`}</MenuItem>
+                        <MenuItem onClick={() => handleClickStart(event)}>{` ${eventHasStarted ? "Join Event" : "Start Event"}`}</MenuItem>
                         {
                             eventHasStarted ? <MenuItem onClick={() => handleEndEvent()}>End Event</MenuItem> : <></>
                         }
@@ -102,7 +101,6 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
         if (socket) {
             socket.on('event started', (data: LiveEventSocket) => {
                 console.log('event started');
-                console.log(data)
                 setEventHasStarted(data.hasStarted)
 
             });
@@ -112,9 +110,7 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
                 console.log(data)
                 setEventHasStarted(data.hasStarted)
             })
-        } else {
-            console.log("NO SOCKET CONNECTION FOUND");
-        }
+        } else console.log("NO SOCKET CONNECTION FOUND");
 
         return () => {
             if (socket) {

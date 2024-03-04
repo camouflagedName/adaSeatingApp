@@ -100,19 +100,22 @@ function App() {
   useEffect(() => {
     //console.log("DDDDDDDDDDD")
     const socket = io(API_ROOT, {
-        withCredentials: true,
-        transports: ['websocket'],
+      withCredentials: true,
+      transports: ['websocket'],
     });
 
     socket.on('connect', () => {
-        console.log(`Connected to websocket with socked ID ${socket.id}`)
+      console.log(`Connected to websocket with socked ID ${socket.id}`)
     });
 
     setSocket(socket);
 
     return () => {
-      socket.disconnect();
-  }
+      if (socket && socket.connected) {
+        socket.off('connect');
+        socket.disconnect();
+      }
+    }
   }, []);
 
   return (

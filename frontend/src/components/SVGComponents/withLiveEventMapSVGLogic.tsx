@@ -16,25 +16,19 @@ interface MapSVGComponentProps {
     dString: string;
     zoom: number;
     parentSVGRef: MutableRefObject<SVGSVGElement | null>;
+    forwardRef?: MutableRefObject<SVGPathElement | null>;
     updateSVGState: (zoomAmount: number, viewBoxData: ViewBox) => void;
 }
 
-interface ForwardedProps {
-    id: string;
-    dString: string;
-    zoom: number;
-    parentSVGRef: MutableRefObject<SVGSVGElement | null>;
-    updateSVGState: (zoomAmount: number, viewBoxData: ViewBox) => void;
+interface ForwardedProps extends MapSVGComponentProps {
     updateNavData: (event: React.MouseEvent<SVGElement>, zoom: number) => void;
-
 }
 
 const withLiveEventSectionLogic = (WrappedComponent: React.ComponentType<ForwardedProps>) => {
 
     const MapSVGComponent: React.FC<MapSVGComponentProps> = (props) => {
         const data = useContext(LiveEventContext);
-        const { sortedInPlaySeats, updateNavTitle, updateSideBarNav  } = data as IAppLiveEventData;
-        //const { updateNavTitle, updateSideBarNav } = props;
+        const { sortedInPlaySeats, updateNavTitle, updateSideBarNav } = data as IAppLiveEventData;
 
         const updateNavData = (event: React.MouseEvent<SVGElement>, zoom: number) => {
             let navTitle = "ALL SEATS";
@@ -56,9 +50,9 @@ const withLiveEventSectionLogic = (WrappedComponent: React.ComponentType<Forward
         }
 
         return (
-            <WrappedComponent 
-            {...props as MapSVGComponentProps}
-            updateNavData={updateNavData}
+            <WrappedComponent
+                {...props as MapSVGComponentProps}
+                updateNavData={updateNavData}
             />
         )
     }

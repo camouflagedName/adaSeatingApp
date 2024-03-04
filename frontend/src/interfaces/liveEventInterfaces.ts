@@ -11,11 +11,24 @@ export interface IAppLiveEventData {
     patronDataMap: Map<string, IPatronData>
     updatePatrons: UpdatePatrons;
     updateSessionSeats: UpdateSessionSeats;
-    savePatronsToSeats:  (selectedSeat: ISeat, selectedPatron: IPatronData) => void;
+    savePatronsToSeats:  (selectedSeat: ISeat[], selectedPatron: IPatronData) => void;
     addSelectedSeat: (data: ISeat) => void;
     removeSelectedSeat: (data: ISeat) => void;
     updateSideBarNav: (data?: ISeat | ISeat[]) => void; 
     updateNavTitle: (title: string) => void;
+}
+
+export interface ViewBox {
+    minX: number;
+    minY: number;
+    width: number;
+    height: number;
+}
+
+export interface IMapLocation {
+    zoomIn: boolean;
+    viewBox: ViewBox;
+    zoomAmt: number;
 }
 
 /*

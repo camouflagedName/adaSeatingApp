@@ -14,6 +14,7 @@ import { EventCreator } from "../../context/context";
 //import { getAllSeats } from "../../api/seatAPI";
 
 const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], changePage: (param: React.ReactElement) => void }) => {
+    const [layoutMainHeight, setLayoutMainHeight] = useState(0);
     const allSeatsSorted = useMemo(() => seatSorter(seatData), [seatData]);
     const seatMeta = useMemo(() => {
         let updatedSeatMeta = {}
@@ -54,6 +55,11 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
               }
         }) */
 
+    const handleSetLayoutMainHeight = (height: number) => {
+        console.log("passed map height: ", height);
+        setLayoutMainHeight(height);
+    }
+
     useEffect(() => {
         const seatIDArray: string[] = []
         Object.keys(metaData).forEach(key => {
@@ -65,6 +71,8 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
 
     const updatedCreateBtn = eventData.name.length > 0 ? <CreateButton data={eventData} changePage={changePage} /> : null
 
+    console.log("map height state: ", layoutMainHeight)
+
     return (
         <EventCreator.Provider value={{ sortedSeatData: allSeatsSorted, seatMeta: seatMeta, updateMeta: setMetaData }}>
             <SeatingMapLayout>
@@ -73,10 +81,12 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
                         updateData={updateEventData}
                         changePage={changePage} />
                 </SeatingMapLayout.Header>
-                <SeatingMapLayout.Main>
+                <SeatingMapLayout.Main
+                    setHeight={handleSetLayoutMainHeight}>
                     <MapSVGEventCreator
                         seatMeta={metaData}
-                        updateMeta={setMetaData} />
+                        updateMeta={setMetaData} 
+                        height={layoutMainHeight} />
                 </SeatingMapLayout.Main>
                 <SeatingMapLayout.Nav>
                     <MapNavCreator

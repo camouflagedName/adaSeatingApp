@@ -15,7 +15,7 @@ interface PassedProps {
     cy: string;
     seatID: string;
     seatColor: string;
-    handleClick: () => void;
+    handleClick: (param: SVGCircleElement | undefined) => void;
 }
 
 const withEventCreatorSeatLogic = <P extends SeatComponentProps>(WrappedComponent: ComponentType<PassedProps>) => {

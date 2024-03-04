@@ -1,71 +1,116 @@
-import { Box, Button, Center, Flex, SimpleGrid } from "@chakra-ui/react"
+import { Box, Flex, SimpleGrid, TabList, Tabs } from "@chakra-ui/react"
 import { ISeat } from "../interfaces/interfaces";
-import { useState } from "react";
-import ScrollChunkComponent from "./LiveEventComponents/ScrollChunkComponent";
-import MapNavAccordion from "./LiveEventComponents/MapNavAccordion";
+import { useRef } from "react";
+import CustomizedTab from "./CustomComponents/CustomizedTab";
+import MapNavSeatDisplay from "./LiveEventComponents/MapNavSeatDisplay";
 
 interface PassedProps {
-    mapNavSeatData: (ISeat[] | ISeat),
+    mapNavSeatData: ISeat[] | ISeat | undefined,
     handleModal: (param: ISeat) => void;
-    navTitle: string;
     totalNumOfSeats: number;
     handleZoomOut: () => void;
+    setMapLocation: (index: number) => void;
 }
 
 const MapNav = ({
     mapNavSeatData,
-    handleModal,
-    navTitle,
-    totalNumOfSeats,
-    handleZoomOut,
-    
+    setMapLocation
+
 }: PassedProps) => {
-    const [isBottom, setIsBottom] = useState(false);
-    const seatData = (Array.isArray(mapNavSeatData) && mapNavSeatData.length === 1) ? mapNavSeatData[0] : mapNavSeatData
+    //const [isBottom, setIsBottom] = useState(false);
 
-    const handleScroll = (evt: React.UIEvent<HTMLDivElement>) => {
-        const atBottom = evt.currentTarget.scrollHeight - evt.currentTarget.scrollTop === evt.currentTarget.clientHeight;
-        setIsBottom(atBottom);
-    }
+    const topBoxRef = useRef<HTMLDivElement>(null);
+    //const seatData = (Array.isArray(mapNavSeatData) && mapNavSeatData.length === 1) ? mapNavSeatData[0] : mapNavSeatData;
+    /*
+        const handleScroll = (evt: React.UIEvent<HTMLDivElement>) => {
+             const atBottom = evt.currentTarget.scrollHeight - evt.currentTarget.scrollTop === evt.currentTarget.clientHeight;
+            setIsBottom(atBottom); 
+        }
+    */
 
-    const handleClick = () => {
-        handleZoomOut();
-    }
+
+    // set height of header box
 
     return (
         <>
-            <Flex id="navContainer" direction="column" borderWidth="1px" borderRadius={"sm"} style={{ position: 'relative', height: "100%", overflow: 'auto' }} onScroll={handleScroll}>
-                <Box w='100%' p={4} borderWidth='1px' borderRadius='sm' fontWeight='bold' color={'blue.600'} style={{ position: 'sticky', top: 0, width: "100%" }}>
-                    <Center>{navTitle}</Center>
+            <Flex id="navContainer" direction="column" borderWidth="1px" borderRadius={"sm"} >
+                <Box ref={topBoxRef} w='100%' p={4} borderWidth='1px' borderRadius='sm' fontWeight='bold' bg={'white'} color={'blue.600'} style={{ top: 0, padding: '0px' }}>
+                    <Tabs variant='enclosed' colorScheme='blue' onChange={setMapLocation} size="sm" align="center" isFitted defaultIndex={6}>
+                        <TabList style={{ overflow: 'auto', width: '100%' }}>
+                            <CustomizedTab text="Tier A" />
+                            <CustomizedTab text="Tier C" />
+                        </TabList>
+                        <TabList style={{ overflow: 'auto', width: '100%' }}>
+                            <CustomizedTab text="2nd Right" />
+                            <CustomizedTab text="2nd Left" />
+                            <CustomizedTab text="3rd Right" />
+                            <CustomizedTab text="3rd Left" />
+                        </TabList>
+                        <TabList style={{ overflow: 'auto', width: '100%' }}>
+                            <CustomizedTab text="All" />
+                        </TabList>
+                    </Tabs>
                 </Box>
-                <Box w='100%' p={4} borderWidth='1px' borderRadius='sm' fontWeight='bold' bg={'gray.100'} color={'blue.600'} style={{ position: 'sticky', top: 0, width: "100%", zIndex: 100, }}>
-                    <SimpleGrid columns={3} spacing={10} >
-                        <Box>SEC</Box>
-                        <Box>ROW</Box>
-                        <Box>NUM</Box>
-                    </SimpleGrid>
-                </Box>
-                <>
-                    {Array.isArray(seatData) ?
-                        <ScrollChunkComponent
-                            seatData={seatData}
-                            handleModal={handleModal}
-                            isBottom={isBottom}
-                        /> :
-                        <MapNavAccordion
-                            key={seatData._id}
-                            seatInfo={seatData}
-                            handleModal={handleModal}
-                        />
-                    }
-                    {(Array.isArray(seatData) && seatData.length === totalNumOfSeats) ?
-                        null :
-                        < Button onClick={handleClick}>Show All Seats</Button>
-                    }
-                </>
+
+                {(Array.isArray(mapNavSeatData) && mapNavSeatData.length > 0) &&
+                    <>
+                        <Box w='100%' p={4} borderWidth='1px' borderRadius='sm' fontWeight='bold' bg={'gray.100'} color={'blue.600'} >
+                            <SimpleGrid columns={3} spacing={10} >
+                                <Box>SEC</Box>
+                                <Box>ROW</Box>
+                                <Box>NUM</Box>
+                            </SimpleGrid>
+                        </Box>
+                        <MapNavSeatDisplay seatData={mapNavSeatData} />
+                    </>
+                }
+
             </Flex >
         </>
     )
 }
 
 export default MapNav;
+
+
+/*
+
+                            {
+                                Array.isArray(seatData) ?
+                                    <ScrollChunkComponent
+                                        seatData={seatData}
+                                        handleModal={handleModal}
+                                        isBottom={isBottom}
+                                    /> :
+                                    <MapNavAccordion
+                                        key={seatData._id}
+                                        seatInfo={seatData}
+                                        handleModal={handleModal}
+                                    />
+                            }
+
+*/
+
+/*
+
+
+                        <>
+                            {
+                                Array.isArray(mapNavSeatData) ?
+                                    <MapNavSeatDisplay
+                                        seatData={mapNavSeatData}
+                                    /> :
+                                    <MapNavAccordion
+                                        key={mapNavSeatData._id}
+                                        seatInfo={mapNavSeatData}
+                                        handleModal={handleModal}
+                                    />
+                            }
+                            {
+                                (Array.isArray(mapNavSeatData) && mapNavSeatData.length === totalNumOfSeats) ?
+                                    null :
+                                    < Button onClick={handleClick}>Show All Seats</Button>
+                            }
+                        </>
+
+*/
