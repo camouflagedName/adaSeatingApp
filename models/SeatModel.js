@@ -27,20 +27,23 @@ class SeatModel {
      * @returns boolean
      */
     async updateSeat(seatID, updates) {
-        try {
-            const objectID = new ObjectId(seatID)
-            const result = await this.collection.updateOne(
-                { _id: objectID },
-                { $set: updates }
-            )
+        if (Array.isArray(seatID)) this.updateMultipleSeats(seatID, updates);
+        else {
+            try {
+                const objectID = new ObjectId(seatID)
+                const result = await this.collection.updateOne(
+                    { _id: objectID },
+                    { $set: updates }
+                )
 
-            // check if update was successful
-            if (result.modifiedCount === 1) return true;
-            else return false;
+                // check if update was successful
+                if (result.modifiedCount === 1) return true;
+                else return false;
 
-        } catch (error) {
-            console.error("Error updating seat: ", error);
-            throw error;
+            } catch (error) {
+                console.error("Error updating seat: ", error);
+                throw error;
+            }
         }
     }
 
@@ -65,8 +68,7 @@ class SeatModel {
                 .toArray();
             return eventSeats;
         } catch (err) {
-            console.error("Error gettings event seats: ", err);
-            throw err;
+            console.error("Error getting event seats: ", err);
         }
     }
 
@@ -106,8 +108,7 @@ class SeatModel {
                 )
 
                 // TODO: fix return
-                console.log("Multiple seats updated.")
-                if (result.modifiedCount === seatID.length ) return true;
+                if (result.modifiedCount === seatID.length) return true;
                 else {
                     //TODO: improve messaging/handling
                     console.log("Not all seats could be modified.")
@@ -200,10 +201,12 @@ class SeatModel {
         try {
             const result = await this.collection.updateMany(
                 {},
-                { $set: {
-                    available: true,
-                    assignedTo: "",
-                } },
+                {
+                    $set: {
+                        available: true,
+                        assignedTo: "",
+                    }
+                },
                 (updateErr, result) => {
                     if (updateErr) {
                         console.error('Error occurred while reseting seats', updateErr);

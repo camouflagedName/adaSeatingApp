@@ -1,4 +1,3 @@
-import PatronModel from "../models/PatronModel.js";
 import EventModel from "../models/EventModel.js";
 import clientPromise from "../db/mongoDB.js";
 
@@ -44,6 +43,15 @@ export async function getEventSeatIDs(req, res) {
         const result = await model.getEventSeats(query);
         if (result) return res.json(result);
         else console.log("No event seats could be found.");
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+export async function updateEvent(req, res) {
+    try {
+        //TODO
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "Internal Server Error" });

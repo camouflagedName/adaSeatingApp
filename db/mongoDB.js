@@ -2,8 +2,9 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 import dotenv from 'dotenv'
 dotenv.config();
 
-if (!process.env.MONGODB_URI)
-    throw new Error("Missing environment variable 'MONGODB_URI'.");
+
+if (!process.env.MONGODB_URI) throw new Error("Missing environment variable 'MONGODB_URI'.");
+
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri, {
     serverApi: {
@@ -12,15 +13,21 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
+
+/**
+ * Promise that resolves to a connected MongoDB client.
+ * @type {Promise<MongoClient>}
+ */
 let clientPromise;
+
 if (process.env.NODE_ENV === 'development') {
     let globalMongo = global;
-    if (!globalMongo._mongoConnect) {
-        globalMongo._mongoConnect = client.connect();
-    }
+
+    if (!globalMongo._mongoConnect) globalMongo._mongoConnect = client.connect();
+    
     clientPromise = globalMongo._mongoConnect;
 }
-else {
-    clientPromise = client.connect();
-}
+else clientPromise = client.connect();
+
+
 export default clientPromise;
