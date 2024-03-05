@@ -32,7 +32,7 @@ const MainPage = ({ changePage, eventsLoaded }: { changePage: (param: React.Reac
             setEventHasStarted(true)
             const inPlaySeatIDs = event.seats ? event.seats : [];
             const { default: SeatingMapManager } = await import("./LiveEventComponents/SeatingMapManager");
-            changePage(<SeatingMapManager changePage={changePage} inPlaySeatIDs={inPlaySeatIDs} eventID={event._id} />);
+            changePage(<SeatingMapManager changePage={changePage} inPlaySeatIDs={inPlaySeatIDs} eventID={event._id} eventsLoaded={eventsLoaded} />);
 
 
             //TODO: update database with liveEventMode: true OR make only current event available to "start"
@@ -47,7 +47,7 @@ const MainPage = ({ changePage, eventsLoaded }: { changePage: (param: React.Reac
     const handleClickCreate = async () => {
         try {
             const { default: SeatingMapCreator } = await import("./EventCreatorComponents/SeatingMapCreator");
-            changePage(<SeatingMapCreator seatData={seatData} changePage={changePage} />);
+            changePage(<SeatingMapCreator seatData={seatData} changePage={changePage} eventsLoaded={eventsLoaded} />);
         } catch (err) {
             console.error("Error while loading SeatingMapCreator", err);
         }
@@ -122,8 +122,6 @@ const MainPage = ({ changePage, eventsLoaded }: { changePage: (param: React.Reac
 
 
     }, [socket, setEventHasStarted]);
-
-    console.log(eventsLoaded);
 
     return (
         <>

@@ -1,6 +1,3 @@
-//TEST + DEBUG IMPLEMENTATION
-
-
 import { useCallback, useContext, useEffect } from "react";
 import MainPage from "../components/MainPage";
 import { DataContext } from "../context/context";
@@ -16,7 +13,7 @@ interface WebSocketData {
     };
 }
 
-const useSocket = ({ seatDataMap, updateSessionSeats, changePage }: { seatDataMap: Map<string, ISeat>, updateSessionSeats: React.Dispatch<React.SetStateAction<ISeat[]>>, changePage: (param: React.ReactElement) => void }) => {
+const useSocket = ({ seatDataMap, updateSessionSeats, changePage, eventsLoaded }: { seatDataMap: Map<string, ISeat>, updateSessionSeats: React.Dispatch<React.SetStateAction<ISeat[]>>, changePage: (param: React.ReactElement) => void, eventsLoaded: boolean }) => {
     const contextData = useContext(DataContext);
     const { setEventHasStarted, socket } = contextData as IAppData;
 
@@ -48,8 +45,8 @@ const useSocket = ({ seatDataMap, updateSessionSeats, changePage }: { seatDataMa
         console.log('event ended')
         console.log(data);
         setEventHasStarted(false);
-        changePage(<MainPage changePage={changePage} />);
-    }, [setEventHasStarted, changePage])
+        changePage(<MainPage changePage={changePage} eventsLoaded={eventsLoaded} />);
+    }, [setEventHasStarted, changePage, eventsLoaded])
 
     useEffect(() => {
         if (socket) {

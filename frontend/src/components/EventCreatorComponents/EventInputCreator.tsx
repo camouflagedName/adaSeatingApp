@@ -7,9 +7,10 @@ import 'react-calendar/dist/Calendar.css';
 import '../../Calendar.css';
 import MainPage from "../MainPage";
 
-const EventInputCreator = ({ updateData, changePage }: {
+const EventInputCreator = ({ updateData, changePage, eventsLoaded }: {
     updateData: React.Dispatch<React.SetStateAction<IEventData>>,
-    changePage: (param: React.ReactElement) => void
+    changePage: (param: React.ReactElement) => void,
+    eventsLoaded: boolean
 }) => {
     const [dateValue, onCalendarChange] = useState<DateValue>(new Date());
     const [dateSelected, setDataSelected] = useState(false);
@@ -24,7 +25,7 @@ const EventInputCreator = ({ updateData, changePage }: {
     }, [inputValue, updateData])
 
     const handleReturnBtnClick = () => {
-        changePage(<MainPage changePage={changePage} />)
+        changePage(<MainPage changePage={changePage} eventsLoaded={eventsLoaded}/>)
     }
 
     const handleCalendarChange = (dateVal: DateValue) => {
