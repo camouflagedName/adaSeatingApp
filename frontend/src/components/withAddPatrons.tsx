@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { IEventData, IPatronData } from "../interfaces/interfaces";
-import { addPatron } from "../api/patronAPI";
+import { addPatronAPI } from "../api/patronAPI";
 
 interface ImportedProps {
     event: IEventData;
@@ -41,14 +41,16 @@ const withAddPatrons = (WrappedComponent: React.ComponentType<PassedProps>) => {
             }
 
             try {
-                const result = await addPatron(patronData);
-                if (result && result.status === 200) {
+                const result = await addPatronAPI(patronData);
+                if (result) {
                     //insert a notification
                     getAlert(patronData.fullName);
                     setTimeout(onClose, 5000);
-                }
+                } else throw new Error("api error when adding patron")
             } catch (err) {
-                console.log("Error at AddPatronForm ", err)
+                console.log("Error at AddPatronForm ", err);
+                // TODO: add error messaging for ui
+                setTimeout(onClose, 5000);
             }
 
 

@@ -21,7 +21,7 @@ const baseViewBox: ViewBox = {
 }
 
 
-const MapSVGEventCreator = ({ seatMeta, updateMeta }: { seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>> }) => {
+const MapSVGEventCreator = ({ seatMeta, updateMeta, height }: { seatMeta: ISeatMeta, updateMeta: React.Dispatch<React.SetStateAction<ISeatMeta>>, height: number }) => {
     const [zoom, setZoom] = useState(1);
     const [viewBox, setViewBox] = useState(baseViewBox);
 
@@ -29,46 +29,13 @@ const MapSVGEventCreator = ({ seatMeta, updateMeta }: { seatMeta: ISeatMeta, upd
 
     const mapDimensions = {
         width: 1024,
-        height: 750
+        height: height || 750
     }
 
     const updateSVGState = (zoomAmount: number, viewBoxData: ViewBox) => {
         setZoom(zoomAmount)
         setViewBox(viewBoxData);
     }
-
-/*     const handleZoom = (event: React.MouseEvent<SVGElement>) => {
-        if (zoom < 4) {
-            const zoomFactor = zoom + 2;
-
-            if (svgRef.current) {
-                const svgPoint = svgRef.current.createSVGPoint();
-                svgPoint.x = event.clientX;
-                svgPoint.y = event.clientY;
-                const transPoint = svgPoint.matrixTransform(
-                    svgRef.current.getScreenCTM()?.inverse()
-                );
-
-                const newViewBox = {
-                    minX: transPoint.x - viewBox.width / (2 * zoomFactor),
-                    minY: transPoint.y - viewBox.height / (2 * zoomFactor),
-                    width: viewBox.width / zoomFactor,
-                    height: viewBox.height / zoomFactor,
-                }
-
-                setViewBox(newViewBox);
-                setZoom(zoomFactor);
-            }
-        } else {
-            setZoom(1)
-            setViewBox({
-                minX: 0,
-                minY: 0,
-                width: 10240,
-                height: 7680,
-            });
-        }
-    } */
 
     const tierA = (
         <g id="TIER_A">

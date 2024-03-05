@@ -24,7 +24,7 @@ const MapNavAccordion = ({ seatInfo, handleModal }:
     const { seatDataMap, patronDataMap, patronData, savePatronsToSeats } = useContext(LiveEventContext) as IAppLiveEventData;
     const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const [thisPatronData, setThisPatronData] = useState<IPatronData>(initPatronData)
+    const [thisPatronData, setThisPatronData] = useState<IPatronData>(initPatronData);
 
     const handleNotesBtnClick = () => {
         onOpen();
@@ -62,7 +62,7 @@ const MapNavAccordion = ({ seatInfo, handleModal }:
                 const patronID = seatInfo.assignedTo;
                 const patronData = patronDataMap.get(patronID) as IPatronData;
 
-                if (patronData === undefined) throw new Error("Seat/Patron data mismatch")
+                if (patronData === undefined) throw new Error("Seat/Patron data mismatch");
 
                 setThisPatronData(patronData);
             }
@@ -97,7 +97,8 @@ const MapNavAccordion = ({ seatInfo, handleModal }:
                                             </Box>
                                             <Menu>
                                                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                                                    {thisPatronData.fullName.length > 0 ? `Assigned to ${thisPatronData.fullName}` : 'Assign to:'}</MenuButton>
+                                                    {thisPatronData.fullName.length > 0 ? `Assigned to ${thisPatronData.fullName}` : 'Assign to:'}
+                                                </MenuButton>
                                                 <MenuList >
                                                     <MenuItem value='walk-up' onClick={handleAssignToClick}>Walk-Up</MenuItem>
                                                     {patronData.map(patron => <MenuItem key={patron._id} value={patron._id} onClick={(evt) => handleAssignToClick(evt, patron)}>{patron.fullName}</MenuItem>)}
@@ -122,7 +123,7 @@ const MapNavAccordion = ({ seatInfo, handleModal }:
                                                 </Center>
                                             </Box>
                                             <Center>
-                                                <Button marginBottom={5} onClick={() => savePatronsToSeats(seatInfo, thisPatronData)} isDisabled={thisPatronData.fullName.length === 0}>Update Seat Data</Button>
+                                                <Button marginBottom={5} onClick={() => savePatronsToSeats([seatInfo], thisPatronData)} isDisabled={thisPatronData.fullName.length === 0}>Update Seat Data</Button>
                                             </Center>
                                             <Center>
                                                 <Button onClick={() => handleModal(seatInfo)} isDisabled>EDIT SEAT DATA</Button>

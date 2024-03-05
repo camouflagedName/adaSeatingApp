@@ -3,10 +3,25 @@ import { useContext } from 'react'
 import { LiveEventContext } from "../../context/context"
 import SeatComponent from "./SeatComponent";
 import withLiveEventSeatLogic from "./withLiveEventSeatLogic";
+//import SeatComponentPopover from "./SeatComponentPopover";
+//TODO: fix seat numbers
+const LiveEventSeat = withLiveEventSeatLogic(SeatComponent);
 
-const LiveEventSeat = withLiveEventSeatLogic(SeatComponent)
+interface ToolTipData {
+    cx: string;
+    cy: string;
+    patronID: string;
+}
 
-const Seats = () => {
+interface SeatProps {
+    onToggle: () => void;
+    handleToolTipData: (param?: ToolTipData) => void;
+    isOpen: boolean;
+    zoom: number;
+    svgHeight: number;
+}
+
+const Seats = ({ onToggle, handleToolTipData, isOpen, zoom, svgHeight }: SeatProps) => {
     const data = useContext(LiveEventContext);
     const { sortedStructInPlaySeats } = data as IAppLiveEventData;
     const { tierARowA, tierARowB, tierCLeft, tierCLeftCenter, tierCRight, tierCRightCenter, secondLeftWing, secondRightWing, thirdLeftWing, thirdRightWing } = sortedStructInPlaySeats;
@@ -32,7 +47,7 @@ const Seats = () => {
                 <g data-component="svg__block" data-section-name="TierA" data-section-id="s_57" className="section" transform="">
                     {
                         tierARowA &&
-                        <g data-component="svg__row" data-row-name="A" className="row">
+                        <g data-component="svg__row" data-row-name="A" className="row" >
                             {
                                 tierARowA.map((seat) => {
                                     const index = seat.seatNumber - tierARowASeatStart;
@@ -40,9 +55,20 @@ const Seats = () => {
                                     const cx = "5600";
                                     const cy = (2580 + 45 * index).toString();
 
-                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat
+                                        key={seat._id}
+                                        seatData={seat}
+                                        cx={cx}
+                                        cy={cy}
+                                        seatAvailable={seat.available}
+                                        popoverToggle={onToggle}
+                                        handleToolTipData={handleToolTipData}
+                                        isOpen={isOpen}
+                                        zoomFactor={zoom}
+                                        svgHeight={svgHeight} />
                                 })
                             }
+
                         </g>
                     }
                     {
@@ -54,7 +80,7 @@ const Seats = () => {
                                     const cx = "5680";
                                     const cy = (2580 + 45 * index).toString();
 
-                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} popoverToggle={onToggle} handleToolTipData={handleToolTipData} isOpen={isOpen} zoomFactor={zoom} svgHeight={svgHeight} />
                                 })
                             }
                         </g>
@@ -74,7 +100,7 @@ const Seats = () => {
                                     const cx = index < 3 ? (7325 + 45 * index).toString() : "7445"
                                     const cy = index < 3 ? (2225 + 60 * index).toString() : (2225 + 70 * index).toString()
 
-                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} popoverToggle={onToggle} handleToolTipData={handleToolTipData} isOpen={isOpen} zoomFactor={zoom} svgHeight={svgHeight} />
                                 })
                             }
                         </g>
@@ -89,7 +115,7 @@ const Seats = () => {
                                     const cx = "7445";
                                     const cy = (2745 + 70 * index).toString();
 
-                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} popoverToggle={onToggle} handleToolTipData={handleToolTipData} isOpen={isOpen} zoomFactor={zoom} svgHeight={svgHeight} />
                                 })
                             }
                         </g>
@@ -104,7 +130,7 @@ const Seats = () => {
                                     const cx = "7445";
                                     const cy = (3880 + 70 * index).toString();
 
-                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} popoverToggle={onToggle} handleToolTipData={handleToolTipData} isOpen={isOpen} zoomFactor={zoom} svgHeight={svgHeight} />
                                 })
                             }
                         </g>
@@ -120,7 +146,7 @@ const Seats = () => {
                                     const cy = index < 5 ? (4965 + 70 * index).toString() :
                                         index === 5 ? "5315" : (5100 + 45 * index).toString()
 
-                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} popoverToggle={onToggle} handleToolTipData={handleToolTipData} isOpen={isOpen} zoomFactor={zoom} svgHeight={svgHeight} />
                                 })
                             }
                         </g>
@@ -140,7 +166,7 @@ const Seats = () => {
                                     const cx = (6400 + 40 * index).toString();
                                     const cy = (2200 + 60 * index).toString();
 
-                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} popoverToggle={onToggle} handleToolTipData={handleToolTipData} isOpen={isOpen} zoomFactor={zoom} svgHeight={svgHeight} />
 
                                 })
                             }
@@ -156,7 +182,7 @@ const Seats = () => {
                                     const cx = (6525 - 38 * index).toString();
                                     const cy = (5300 + 55 * index).toString();
 
-                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} popoverToggle={onToggle} handleToolTipData={handleToolTipData} isOpen={isOpen} zoomFactor={zoom} svgHeight={svgHeight} />
 
                                 })
                             }
@@ -176,7 +202,7 @@ const Seats = () => {
 
                                     const cx = (8050 + 42 * index).toString()
                                     const cy = (2275 + 62 * index).toString()
-                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} popoverToggle={onToggle} handleToolTipData={handleToolTipData} isOpen={isOpen} zoomFactor={zoom} svgHeight={svgHeight} />
                                 })
                             }
                         </g>
@@ -191,7 +217,7 @@ const Seats = () => {
 
                                     const cx = (8175 - 40 * index).toString()
                                     const cy = (5200 + 60 * index).toString()
-                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} />
+                                    return <LiveEventSeat key={seat._id} seatData={seat} cx={cx} cy={cy} seatAvailable={seat.available} popoverToggle={onToggle} handleToolTipData={handleToolTipData} isOpen={isOpen} zoomFactor={zoom} svgHeight={svgHeight} />
                                 })
                             }
                         </g>

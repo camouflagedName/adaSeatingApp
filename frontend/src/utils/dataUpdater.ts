@@ -9,15 +9,15 @@ type Selected = DataArray | SingleOption;
 const dataUpdater = (mainArray: DataArray, selected: Selected, changedData: object) => {
 
     if (Array.isArray(selected)) {
-        const filteredSeats = mainArray.filter(mainData => !selected.some(selectedData => selectedData._id === mainData._id));
-        const updatedSelectedSeatArr = selected.map(data => ({ ...data, ...changedData }));
+        const filteredData = mainArray.filter(mainData => !selected.some(selectedData => selectedData._id === mainData._id));
+        const updatedSelectedDataArr = selected.map(data => ({ ...data, ...changedData }));
 
-        return [...filteredSeats, ...updatedSelectedSeatArr];
+        return [...filteredData, ...updatedSelectedDataArr];
     } else if (!Array.isArray(selected)) {
-        const filteredSeats = mainArray.filter(mainData => mainData._id !== selected._id);
-        const updatedSelectedSeat = [{ ...selected, ...changedData }];
+        const filteredData = mainArray.filter(mainData => mainData._id !== selected._id);
+        const updatedSelectedData = [{ ...selected, ...changedData }];
 
-        return [...filteredSeats, ...updatedSelectedSeat];
+        return [...filteredData, ...updatedSelectedData];
     }
 
     return [];
