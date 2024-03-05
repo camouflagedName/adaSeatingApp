@@ -11,9 +11,8 @@ import MainPage from "../MainPage";
 import { DataContext } from "../../context/context";
 import seatSorter from "../../utils/seatSorter";
 import { EventCreator } from "../../context/context";
-//import { getAllSeats } from "../../api/seatAPI";
 
-const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], changePage: (param: React.ReactElement) => void }) => {
+const SeatingMapCreator = ({ seatData, changePage, eventsLoaded }: { seatData: ISeat[], changePage: (param: React.ReactElement) => void, eventsLoaded: boolean }) => {
     const [layoutMainHeight, setLayoutMainHeight] = useState(0);
     const allSeatsSorted = useMemo(() => seatSorter(seatData), [seatData]);
     const seatMeta = useMemo(() => {
@@ -36,24 +35,6 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
         seats: [''],
     });
     const [metaData, setMetaData] = useState<ISeatMeta>(seatMeta)
-    /* 
-        useEffect(() => {
-            const fetchSeats = async () => {
-    
-                try {
-                  const res = await getAllSeats();
-                  if (res) {
-                    const seatList: ISeat[] = res;
-                    //this needs to be adjusted / removed
-                    const allSeatsSortedArray = seatSorter(seatList, "array") as ISeat[]
-                    //const allSeatsSorted = seatSorter(seatData)
-                    setSeatData(allSeatsSortedArray)
-                  } else console.error("Unknown and unhandled error");
-                } catch (err) {
-                  console.error(err);
-                }
-              }
-        }) */
 
     const handleSetLayoutMainHeight = (height: number) => {
         console.log("passed map height: ", height);
@@ -69,7 +50,7 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
     }, [metaData])
 
 
-    const updatedCreateBtn = eventData.name.length > 0 ? <CreateButton data={eventData} changePage={changePage} /> : null
+    const updatedCreateBtn = eventData.name.length > 0 ? <CreateButton data={eventData} changePage={changePage} eventsLoaded={eventsLoaded} /> : null
 
     console.log("map height state: ", layoutMainHeight)
 
@@ -79,7 +60,8 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
                 <SeatingMapLayout.Header>
                     <EventInputCreator
                         updateData={updateEventData}
-                        changePage={changePage} />
+                        changePage={changePage}
+                        eventsLoaded={eventsLoaded} />
                 </SeatingMapLayout.Header>
                 <SeatingMapLayout.Main
                     setHeight={handleSetLayoutMainHeight}>
@@ -104,7 +86,7 @@ const SeatingMapCreator = ({ seatData, changePage }: { seatData: ISeat[], change
 export default SeatingMapCreator;
 
 
-const CreateButton = ({ data, changePage }: { data: IEventData, changePage: (param: React.ReactElement) => void }) => {
+const CreateButton = ({ data, changePage, eventsLoaded }: { data: IEventData, changePage: (param: React.ReactElement) => void, eventsLoaded: boolean }) => {
     const contextData = useContext(DataContext)
     const { updateEvents } = contextData as IAppData;
 
@@ -114,7 +96,7 @@ const CreateButton = ({ data, changePage }: { data: IEventData, changePage: (par
 
             if (res?.status === 200) {
                 updateEvents(prev => [...prev, res.data])
-                changePage(<MainPage changePage={changePage} />);
+                changePage(<MainPage changePage={changePage} eventsLoaded={eventsLoaded} />);
             }
         } catch (err) {
             console.log("This error was generated at SeatingMapCreator component:");

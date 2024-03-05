@@ -16,7 +16,6 @@ import { updateSeat } from "../../api/seatAPI";
 import { getEventSeats } from "../../api/seatAPI";
 import { IMapLocation, ViewBox } from "../../interfaces/liveEventInterfaces";
 import useSocket from "../../hooks/useSocket";
-//import useMapLocation from "../../hooks/useMapLocation";
 import calculateNewViewBox from "../../utils/calculateNewViewBox";
 
 //TODO: sidebar needs to be renamed to seatList or something else
@@ -32,7 +31,7 @@ const baseViewBox: ViewBox = {
 //TEST: make sure it syncs with database
 //TODO: check for occupied seats
 
-const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage: (param: React.ReactElement) => void, inPlaySeatIDs: string[], eventID: string }) => {
+const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID, eventsLoaded }: { changePage: (param: React.ReactElement) => void, inPlaySeatIDs: string[], eventID: string, eventsLoaded: boolean }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const contextData = useContext(DataContext);
     const { seatData } = contextData as IAppData;
@@ -262,7 +261,8 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
     useSocket({
         seatDataMap,
         updateSessionSeats,
-        changePage
+        changePage,
+        eventsLoaded
     });
 
     useEffect(() => {
@@ -303,7 +303,8 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID }: { changePage:
             <SeatingMapLayout isLive={true}>
                 <SeatingMapLayout.Header>
                     <SeatingMapTitle
-                        changePage={changePage} />
+                        changePage={changePage}
+                        eventsLoaded={eventsLoaded} />
                 </SeatingMapLayout.Header>
                 <SeatingMapLayout.Main
                     setHeight={handleSetLayoutMainHeight}>
