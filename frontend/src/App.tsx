@@ -11,6 +11,7 @@ import { Socket, io } from "socket.io-client";
 import API_ROOT from './api/apiRoot';
 
 function App() {
+  const [eventsLoaded, setEventsLoaded] = useState(false);
   const [seatData, setSeatData] = useState<ISeat[]>([]);
   const [eventData, setEventData] = useState<IEventData[]>([]);
   const [currentPage, setCurrentPage] = useState<React.ReactElement>();
@@ -80,6 +81,7 @@ function App() {
         if (res) {
           const eventList = res;
           setEventData(eventList);
+          setEventsLoaded(true);
         } else console.error("Unknown and unhandled error");
       } catch (err) {
         console.error(err);
@@ -92,13 +94,12 @@ function App() {
       else {
         fetchEvents();
         fetchSeats();
-        setCurrentPage(<MainPage changePage={changePage} />);
+        setCurrentPage(<MainPage changePage={changePage} eventsLoaded={eventsLoaded} />);
       }
     }
-  }, [status]);
+  }, [status, eventsLoaded]);
 
   useEffect(() => {
-    //console.log("DDDDDDDDDDD")
     const socket = io(API_ROOT, {
       withCredentials: true,
       transports: ['websocket'],
