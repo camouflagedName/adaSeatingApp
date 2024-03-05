@@ -103,7 +103,6 @@ export async function updateMultipleSeats(req, res) {
         const success = await model.updateMultipleSeats(seatID, updates);
 
         // TODO: fix success and error logic
-        console.log("CHECK HERE: ", success);
 
         if (success) {
             webSocketServer.emit('seat updated', { seatID, updates })
