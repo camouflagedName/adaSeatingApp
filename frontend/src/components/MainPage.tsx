@@ -1,4 +1,4 @@
-import { Flex, Container, Menu, MenuButton, Button, MenuList, MenuItem, VStack, Text, StackDivider, useDisclosure, Modal, ModalOverlay, Badge } from "@chakra-ui/react"
+import { Flex, Container, Menu, MenuButton, Button, MenuList, MenuItem, VStack, Text, StackDivider, useDisclosure, Modal, ModalOverlay, Badge, Spinner } from "@chakra-ui/react"
 import { IAppData, IEventData } from "../interfaces/interfaces"
 import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../context/context";
@@ -14,7 +14,7 @@ currentDate.setHours(0, 0, 0, 0);
 //TODO: fix date
 
 
-const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => void }) => {
+const MainPage = ({ changePage, eventsLoaded }: { changePage: (param: React.ReactElement) => void, eventsLoaded: boolean }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const contextData = useContext(DataContext);
     const { seatData, eventData, eventHasStarted, setEventHasStarted, socket } = contextData as IAppData;
@@ -123,6 +123,8 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
 
     }, [socket, setEventHasStarted]);
 
+    console.log(eventsLoaded);
+
     return (
         <>
             <Flex direction='column' justify='center' style={{ height: "100vh" }}>
@@ -135,11 +137,18 @@ const MainPage = ({ changePage }: { changePage: (param: React.ReactElement) => v
                         <Container centerContent maxW='container.lg' style={{ margin: "auto" }}>
                             <Text fontSize='2xl' > Choose one below: </Text>
                             <Text fontSize='xl' margin={5}> Current Event: </Text>
-                            {currentEvent.length > 0 ? (
-                                <VStack>
-                                    {currentEvent}
-                                </VStack>
-                            ) : <Text fontSize='l' style={{ fontWeight: 'bold' }}> -- No Scheduled Event -- </Text>}
+                            {eventsLoaded ?
+                                <>
+                                    {
+                                        currentEvent.length > 0 ? (
+                                            <VStack>
+                                                {currentEvent}
+                                            </VStack>
+                                        ) : <Text fontSize='l' style={{ fontWeight: 'bold' }}> -- No Scheduled Event -- </Text>
+                                    }
+                                </> :
+                                <Spinner size='xl' />
+                            }
                             <Text fontSize='xl' margin={5}> Upcoming Events: </Text>
                             <VStack>
                                 {
