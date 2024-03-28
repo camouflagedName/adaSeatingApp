@@ -18,7 +18,6 @@ interface SeatComponentProps {
     handleToolTipData: (param?: ToolTipData) => void;
     isOpen: boolean;
     zoomFactor: number;
-    svgHeight: number;
 }
 
 interface PassedProps {
@@ -31,12 +30,12 @@ interface PassedProps {
 
 const withLiveEventSeatLogic = <P extends SeatComponentProps>(WrappedComponent: ComponentType<PassedProps>) => {
     const SeatComponent: React.FC<P> = (props) => {
-        const { seatData, seatAvailable, popoverToggle, handleToolTipData, isOpen: toolTipIsOpen, zoomFactor, svgHeight } = props;
+        const { seatData, seatAvailable, popoverToggle, handleToolTipData, isOpen: toolTipIsOpen } = props;
         const [seatColor, setSeatColor] = useState("#ebebeb");
         //const [seatIsSelected, setSeatIsSelected] = useState(false);
         const data = useContext(LiveEventContext);
         const { addSelectedSeat, removeSelectedSeat } = data as IAppLiveEventData;
-        const resizeFactor = svgHeight / 750;
+        //const resizeFactor = svgHeight / 750;
 
 
         const handleClick = (circleElement: SVGCircleElement | undefined) => {
@@ -50,13 +49,9 @@ const withLiveEventSeatLogic = <P extends SeatComponentProps>(WrappedComponent: 
                 }
             } else {
                 if (circleElement) {
-                    const yFactor = resizeFactor > .5 ? 90 : 95
                     const circleRect = circleElement.getBoundingClientRect();
-                    console.log("ZOOM FACTOR", zoomFactor)
-                    const cxToString = String((circleRect.left + (zoomFactor * 20 * resizeFactor) ));
-                    const cyToString = String((circleRect.top - ( yFactor - (zoomFactor * 5)))); 
-
-                    console.log("SEAT LOGIC", circleRect.left, circleRect.top)
+                    const cxToString = String((circleRect.left + circleRect.width + 15));
+                    const cyToString = String((circleRect.top + circleRect.height / 2) - 85); 
 
                     if (toolTipIsOpen) {
                         handleToolTipData();

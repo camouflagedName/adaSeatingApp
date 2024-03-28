@@ -1,6 +1,6 @@
 import { Popover, PopoverContent, PopoverBody, Stack, StackDivider, Heading, Badge, Box, Text } from "@chakra-ui/react";
 import { IPatronData, ISeat } from "../../interfaces/interfaces";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { LiveEventContext } from "../../context/context";
 import { IAppLiveEventData } from "../../interfaces/liveEventInterfaces";
 import "../../style/style.css"
@@ -21,6 +21,8 @@ const ToolTip = ({ isOpen, toolTipData: { cx, cy, patronID } }: SeatComponentPro
     const { seatDataMap, patronDataMap } = useContext(LiveEventContext) as IAppLiveEventData;
     const [patronData, setPatronData] = useState<IPatronData | null>(null);
 
+    const divRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         if (patronDataMap) {
             const patron = patronDataMap.get(patronID);
@@ -28,17 +30,16 @@ const ToolTip = ({ isOpen, toolTipData: { cx, cy, patronID } }: SeatComponentPro
         }
     }, [patronDataMap, patronID]);
 
-    console.log("TOOL TIP", cx, cy)
 
     return (
-        <div style={{ position: 'absolute', left: cx, top: cy }}>
+        <div style={{ position: 'absolute', left: cx, top: `${cy}` }}>
             {patronData &&
                 <Popover
                     isOpen={isOpen}
                     isLazy
                     closeOnBlur={true}
                 >
-                    <PopoverContent className="tooltip-arrow">
+                    <PopoverContent ref={divRef} className="tooltip-arrow">
                         <PopoverBody>
                             <Stack divider={<StackDivider />} spacing='4'>
                                 <Box>

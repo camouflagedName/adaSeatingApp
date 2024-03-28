@@ -1,35 +1,20 @@
 import { FC, MutableRefObject, useRef, useState } from "react";
-import { ViewBox } from "../../interfaces/liveEventInterfaces";
-import calculateNewViewBox from "../../utils/calculateNewViewBox";
-
 
 interface PassedProps {
     id: string;
     dString: string;
-    zoom: number;
-    parentSVGRef: MutableRefObject<SVGSVGElement | null>;
     forwardRef?: MutableRefObject<SVGPathElement | null>;
-    updateSVGState: (zoomAmount: number, viewBoxData: ViewBox) => void;
-}
-
-
-const baseViewBox: ViewBox = {
-    minX: 0,
-    minY: 0,
-    width: 10240,
-    height: 7680,
+    toggleTooltip?: () => void;
+    tooltipIsOpen?: boolean;
 }
 
 const InteractiveSection: FC<PassedProps> = ({
     id,
-    updateSVGState,
-    parentSVGRef,
     dString,
-    zoom,
-    forwardRef
+    forwardRef,
+    toggleTooltip,
+    tooltipIsOpen
 }) => {
-    //const data = useContext(LiveEventContext);
-    //const { sortedInPlaySeats } = data as IAppLiveEventData;
     const [border, setBorder] = useState({
         color: "#dddddd",
         width: "10",
@@ -51,7 +36,31 @@ const InteractiveSection: FC<PassedProps> = ({
         })
     }
 
-    const handleClick = (event: React.MouseEvent<SVGElement>) => {
+    const handleClick = () => {
+        if (tooltipIsOpen && toggleTooltip) toggleTooltip();
+    }
+
+    return (
+        <path
+            ref={forwardRef || pathRef}
+            id={id}
+            onMouseOver={handleMouseOver}
+            onMouseLeave={handleMouseLeave}
+            onClick={handleClick}
+            onTouchStart={handleClick}
+            fill="#ffffff"
+            stroke={border.color}
+            strokeWidth={border.width}
+            d={dString}
+        />
+    )
+};
+
+export default InteractiveSection;
+
+/* 
+
+    const old_handleClick = (event: React.MouseEvent<SVGElement>) => {
         const svgRefCurrent = parentSVGRef.current;
         const pathRefCurrent = forwardRef ? forwardRef.current : pathRef.current;
         let zoomFactor = 1;
@@ -77,19 +86,4 @@ const InteractiveSection: FC<PassedProps> = ({
         updateSVGState(zoomFactor, updatedViewBox);
     }
 
-    return (
-        <path
-            ref={forwardRef || pathRef}
-            id={id}
-            onClick={handleClick}
-            onMouseOver={handleMouseOver}
-            onMouseLeave={handleMouseLeave}
-            fill="#ffffff"
-            stroke={border.color}
-            strokeWidth={border.width}
-            d={dString}
-        />
-    )
-};
-
-export default InteractiveSection;
+*/
