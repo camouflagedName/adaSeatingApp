@@ -6,8 +6,8 @@ import { useEffect, useRef } from "react";
 
 const SeatingMapLayout = ({ children, isLive }: { children: React.ReactNode, isLive?: boolean }) => {
 
-    const gridTemplateAreasLive =  
-    `"header"
+    const gridTemplateAreasLive =
+        `"header"
     "main"
     "main"
     "main"
@@ -17,8 +17,8 @@ const SeatingMapLayout = ({ children, isLive }: { children: React.ReactNode, isL
     "nav"
     "nav"`;
 
-    const gridTemplateAreasCreator = 
-    `"header"
+    const gridTemplateAreasCreator =
+        `"header"
     "main"
     "main"
     "main"
@@ -31,6 +31,7 @@ const SeatingMapLayout = ({ children, isLive }: { children: React.ReactNode, isL
     return (
         <>
             <Grid
+                style={{ touchAction: 'none' }}
                 css={{
                     "@media (min-width: 768px)": {
                         /* Styles for larger screens (e.g., desktop) */

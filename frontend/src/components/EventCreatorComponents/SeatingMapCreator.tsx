@@ -52,7 +52,6 @@ const SeatingMapCreator = ({ seatData, changePage, eventsLoaded }: { seatData: I
 
     const updatedCreateBtn = eventData.name.length > 0 ? <CreateButton data={eventData} changePage={changePage} eventsLoaded={eventsLoaded} /> : null
 
-    console.log("map height state: ", layoutMainHeight)
 
     return (
         <EventCreator.Provider value={{ sortedSeatData: allSeatsSorted, seatMeta: seatMeta, updateMeta: setMetaData }}>

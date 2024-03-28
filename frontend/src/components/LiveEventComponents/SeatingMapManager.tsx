@@ -80,7 +80,11 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID, eventsLoaded }:
         tFlL: thirdFlLeftRef,
     }
 
-    const handleSetMapLocation = (index: number) => {
+    const handleSetMapLocation = (mapLocationData: IMapLocation) => {
+        setMapLocation(mapLocationData)
+    }
+
+    const handleSetNavHeaderIndex = (index: number) => {
         setNavHeaderIndex(index);
     }
 
@@ -312,7 +316,9 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID, eventsLoaded }:
                         zoomOut={zoomOut}
                         height={layoutMainHeight}
                         fwdRefObj={fwdRefObj}
-                        mapLocation={mapLocation} />
+                        mapLocation={mapLocation} 
+                        setMapLocation={handleSetMapLocation}
+                        />
                 </SeatingMapLayout.Main>
                 <SeatingMapLayout.Nav>
                     <MapNav
@@ -320,7 +326,7 @@ const SeatingMapManager = ({ changePage, inPlaySeatIDs, eventID, eventsLoaded }:
                         handleModal={handleModal}
                         totalNumOfSeats={inPlaySeats.length}
                         handleZoomOut={handleZoom}
-                        setMapLocation={handleSetMapLocation} />
+                        setMapLocation={handleSetNavHeaderIndex} />
                 </SeatingMapLayout.Nav>
             </SeatingMapLayout>
             <SeatDataModal

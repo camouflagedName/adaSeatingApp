@@ -18,6 +18,8 @@ interface MapSVGComponentProps {
     parentSVGRef: MutableRefObject<SVGSVGElement | null>;
     forwardRef?: MutableRefObject<SVGPathElement | null>;
     updateSVGState: (zoomAmount: number, viewBoxData: ViewBox) => void;
+    toggleTooltip?: () => void;
+    tooltipIsOpen?: boolean;
 }
 
 interface ForwardedProps extends MapSVGComponentProps {
